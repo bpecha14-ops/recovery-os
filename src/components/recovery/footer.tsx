@@ -1,7 +1,7 @@
 "use client";
 
 import { Coins } from "lucide-react";
-import { Marquee, LiveClock } from "./effects";
+import { Marquee, LiveClock, GoldenStream } from "./effects";
 
 const PRODUCT_LINKS = [
   { href: "#how", label: "How it works" },
@@ -48,7 +48,8 @@ const REGISTRY_TICKER = [
 
 export function Footer() {
   return (
-    <footer className="mt-auto border-t border-amber-400/[0.10] bg-zinc-950 text-zinc-400">
+    <footer className="relative mt-auto overflow-hidden border-t border-amber-400/[0.10] bg-zinc-950 text-zinc-400">
+      <GoldenStream density={0.4} />
       <div aria-hidden="true" className="hairline-gold" />
 
       {/* World registry ticker — the library never sleeps */}

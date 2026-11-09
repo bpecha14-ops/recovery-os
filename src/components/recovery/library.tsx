@@ -41,7 +41,7 @@ import {
   type Region,
   type SourceType,
 } from "@/lib/world-registry";
-import { Reveal, Spotlight, CountUp, LiveClock, Marquee, TypeCycle } from "./effects";
+import { Reveal, Spotlight, CountUp, LiveClock, Marquee, TypeCycle, GoldenStream } from "./effects";
 
 const TYPE_ICONS: Record<SourceType, typeof Landmark> = {
   state: Building2,
@@ -190,7 +190,7 @@ export function Library() {
             "radial-gradient(50% 36% at 88% 8%, rgba(251,191,36,0.08) 0%, transparent 62%)",
         }}
       />
-      <div aria-hidden="true" className="noise-overlay" />
+      <GoldenStream density={0.55} />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal className="max-w-3xl">
           <p className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.2em] text-amber-400/90">
@@ -409,7 +409,7 @@ export function Library() {
 
               {/* Results — the personal checklist */}
               {result && (
-                <div className="mt-6 rounded-xl border border-amber-400/25 bg-black/70 p-5 sm:p-6">
+                <div className="mt-6 rounded-xl border border-amber-400/25 bg-[#050506] p-5 sm:p-6">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="flex items-center gap-2 text-sm font-semibold text-amber-300">
@@ -521,7 +521,7 @@ export function Library() {
                   {r.label}
                   <span
                     className={`tabular rounded-full px-1.5 text-[11px] ${
-                      region === r.id ? "bg-zinc-950/20" : "bg-amber-400/10 text-amber-300/80"
+                      region === r.id ? "bg-amber-400/20 text-amber-200" : "bg-amber-400/10 text-amber-300/80"
                     }`}
                   >
                     {count}

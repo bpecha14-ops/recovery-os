@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
-import { Reveal, Spotlight } from "./effects";
+import { Reveal, Spotlight, GoldenStream } from "./effects";
 
 const PLANS = [
   {
@@ -57,6 +57,7 @@ const PLANS = [
 export function Pricing() {
   return (
     <section id="pricing" className="relative scroll-mt-20 overflow-hidden bg-zinc-950 py-20 sm:py-28">
+      <GoldenStream density={0.45} />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"

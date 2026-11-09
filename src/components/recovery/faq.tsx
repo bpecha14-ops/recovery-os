@@ -6,7 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Reveal } from "./effects";
+import { Reveal, GoldenStream } from "./effects";
 
 const FAQS = [
   {
@@ -45,7 +45,8 @@ const FAQS = [
 
 export function Faq() {
   return (
-    <section id="faq" className="scroll-mt-20 bg-zinc-950 py-20 sm:py-28">
+    <section id="faq" className="relative scroll-mt-20 overflow-hidden bg-zinc-950 py-20 sm:py-28">
+      <GoldenStream density={0.35} />
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <Reveal className="text-center">
           <p className="flex items-center justify-center gap-3 text-sm font-semibold uppercase tracking-[0.2em] text-amber-400/90">

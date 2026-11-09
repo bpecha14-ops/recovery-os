@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ClaimDialog } from "./claim-dialog";
-import { AnimatedMoney } from "./effects";
+import { AnimatedMoney, GoldenStream } from "./effects";
 import { IEEPA_INFO, fmtUSD } from "@/lib/recovery-data";
 import { Landmark, Percent, CalendarClock, FileCheck2, Timer } from "lucide-react";
 
@@ -45,6 +45,7 @@ export function TariffCalculator() {
 
   return (
     <section id="ieepa" className="relative scroll-mt-20 overflow-hidden bg-zinc-950 py-16 text-white sm:py-24">
+      <GoldenStream density={0.5} />
       <div
         aria-hidden="true"
         className="aurora-drift pointer-events-none absolute inset-0"
@@ -125,7 +126,7 @@ export function TariffCalculator() {
                     min="0"
                     value={principal}
                     onChange={(e) => setPrincipal(e.target.value)}
-                    className="tabular border-amber-400/[0.16] bg-black/50 text-amber-100 focus-visible:ring-amber-400/50"
+                    className="tabular border-amber-400/[0.16] bg-[#050506] text-amber-100 focus-visible:ring-amber-400/50"
                   />
                 </div>
                 <div className="space-y-2">
@@ -135,7 +136,7 @@ export function TariffCalculator() {
                     type="date"
                     value={lastPayDate}
                     onChange={(e) => setLastPayDate(e.target.value)}
-                    className="border-amber-400/[0.16] bg-black/50 text-amber-100 focus-visible:ring-amber-400/50"
+                    className="border-amber-400/[0.16] bg-[#050506] text-amber-100 focus-visible:ring-amber-400/50"
                   />
                 </div>
                 <div className="space-y-2">
@@ -147,7 +148,7 @@ export function TariffCalculator() {
                     min="0"
                     value={ratePct}
                     onChange={(e) => setRatePct(e.target.value)}
-                    className="tabular border-amber-400/[0.16] bg-black/50 text-amber-100 focus-visible:ring-amber-400/50"
+                    className="tabular border-amber-400/[0.16] bg-[#050506] text-amber-100 focus-visible:ring-amber-400/50"
                   />
                 </div>
                 <div className="flex items-center gap-2 sm:col-span-2">

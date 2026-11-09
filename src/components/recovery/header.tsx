@@ -23,7 +23,7 @@ export function Header() {
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 24 });
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/[0.06] bg-zinc-950/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 w-full border-b border-amber-400/[0.10] bg-[#0a0a0c]">
       {/* Gold scroll progress — quiet luxury detail */}
       <motion.div
         aria-hidden="true"

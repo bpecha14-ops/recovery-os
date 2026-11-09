@@ -53,18 +53,17 @@ const spring = { type: "spring" as const, stiffness: 92, damping: 18 };
 export function Hero() {
   return (
     <section className="relative overflow-hidden bg-zinc-950 pb-20 pt-28 text-white sm:pb-28 sm:pt-36">
-      {/* Layered depth: aurora glows → engineering grid → particle stream → grain */}
+      {/* Layered depth: aurora glows → engineering grid → particle stream */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(58% 42% at 26% 18%, rgba(251,191,36,0.13) 0%, transparent 62%), radial-gradient(42% 36% at 82% 76%, rgba(245,158,11,0.10) 0%, transparent 58%), radial-gradient(50% 40% at 55% 0%, rgba(255,255,255,0.05) 0%, transparent 60%)",
+            "radial-gradient(58% 42% at 26% 18%, rgba(251,191,36,0.13) 0%, transparent 62%), radial-gradient(42% 36% at 82% 76%, rgba(245,158,11,0.10) 0%, transparent 58%), radial-gradient(50% 40% at 55% 0%, rgba(251,191,36,0.04) 0%, transparent 60%)",
         }}
       />
       <div aria-hidden="true" className="bg-grid absolute inset-0 [mask-image:radial-gradient(ellipse_75%_65%_at_50%_38%,black,transparent)]" />
       <GoldenStream />
-      <div aria-hidden="true" className="noise-overlay" />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-zinc-950 to-transparent"

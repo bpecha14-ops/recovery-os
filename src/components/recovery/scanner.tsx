@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { ClaimDialog } from "./claim-dialog";
-import { Reveal, CountUp } from "./effects";
+import { Reveal, CountUp, GoldenStream } from "./effects";
 import {
   parsePurchases,
   SAMPLE_CSV,
@@ -111,6 +111,7 @@ export function Scanner() {
 
   return (
     <section id="scanner" className="relative scroll-mt-20 overflow-hidden bg-zinc-950 py-20 sm:py-28">
+      <GoldenStream density={0.45} />
       <div
         aria-hidden="true"
         className="aurora-drift pointer-events-none absolute inset-0"
@@ -236,9 +237,9 @@ export function Scanner() {
                         </span>
                       )}
                     </div>
-                    <div className="mt-3 max-h-44 overflow-y-auto rounded-lg border border-amber-400/[0.10] bg-black/60">
+                    <div className="mt-3 max-h-44 overflow-y-auto rounded-lg border border-amber-400/[0.10] bg-[#050506]">
                       <table className="gold-table w-full text-left text-xs">
-                        <thead className="sticky top-0 bg-black/95 text-[11px] uppercase tracking-wide backdrop-blur">
+                        <thead className="sticky top-0 bg-black text-[11px] uppercase tracking-wide">
                           <tr>
                             <th className="px-3 py-2">Date</th>
                             <th className="px-3 py-2">Description</th>

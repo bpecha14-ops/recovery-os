@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, CheckCircle2 } from "lucide-react";
-import { Reveal, CountUp } from "./effects";
+import { Reveal, CountUp, GoldenStream } from "./effects";
 
 const CHANNEL_OPTIONS = [
   { id: "settlements", label: "Class action settlements" },
@@ -78,6 +78,7 @@ export function Waitlist() {
 
   return (
     <section id="waitlist" className="relative scroll-mt-20 overflow-hidden bg-zinc-950 py-20 sm:py-28">
+      <GoldenStream density={0.55} />
       <div
         aria-hidden="true"
         className="aurora-drift pointer-events-none absolute inset-0"
@@ -209,7 +210,7 @@ export function Waitlist() {
                         {CHANNEL_OPTIONS.map((c) => (
                           <label
                             key={c.id}
-                            className="flex cursor-pointer items-center gap-2 rounded-lg border border-amber-400/[0.16] bg-black/40 px-3 py-2.5 text-sm text-zinc-300 transition-colors hover:border-amber-400/40 hover:bg-amber-400/[0.05] has-[:checked]:border-amber-400/60 has-[:checked]:bg-amber-400/10"
+                            className="flex cursor-pointer items-center gap-2 rounded-lg border border-amber-400/[0.16] bg-[#050506] px-3 py-2.5 text-sm text-zinc-300 transition-colors hover:border-amber-400/40 hover:bg-amber-400/[0.05] has-[:checked]:border-amber-400/60 has-[:checked]:bg-amber-400/10"
                           >
                             <Checkbox
                               checked={channels.includes(c.id)}

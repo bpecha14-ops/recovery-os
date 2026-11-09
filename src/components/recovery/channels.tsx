@@ -11,7 +11,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { CHANNELS } from "@/lib/recovery-data";
-import { Reveal, Spotlight, CountUp, Marquee } from "./effects";
+import { Reveal, Spotlight, CountUp, Marquee, GoldenStream } from "./effects";
 
 const ICONS = {
   "class-actions": Scale,
@@ -47,6 +47,7 @@ const CHANNEL_TICKER = [
 export function Channels() {
   return (
     <section id="channels" className="relative scroll-mt-20 overflow-hidden bg-zinc-950 py-20 sm:py-28">
+      <GoldenStream density={0.5} />
       <div
         aria-hidden="true"
         className="aurora-drift pointer-events-none absolute inset-0"

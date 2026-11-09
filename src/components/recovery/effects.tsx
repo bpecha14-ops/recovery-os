@@ -386,7 +386,14 @@ interface Particle {
   streak: number;
 }
 
-export function GoldenStream({ className }: { className?: string }) {
+export function GoldenStream({
+  className,
+  density = 1,
+}: {
+  className?: string;
+  /** 1 = hero-strength stream; 0.4–0.6 for section backgrounds. */
+  density?: number;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const reduce = useReducedMotion();
 
@@ -430,7 +437,9 @@ export function GoldenStream({ className }: { className?: string }) {
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const count = width < 640 ? 42 : width < 1100 ? 78 : 110;
+      const count = Math.round(
+        (width < 640 ? 42 : width < 1100 ? 78 : 110) * Math.max(0.15, density),
+      );
       particles = Array.from({ length: count }, () => {
         const p = spawn();
         p.x = Math.random() * width * 1.1;

@@ -146,7 +146,7 @@ export default function AdminPage() {
               value={token}
               onChange={(e) => setToken(e.target.value)}
               placeholder="ADMIN_TOKEN from .env"
-              className="mt-3 border-amber-400/[0.16] bg-black/50 text-amber-100 focus-visible:ring-amber-400/50"
+              className="mt-3 border-amber-400/[0.16] bg-[#050506] text-amber-100 focus-visible:ring-amber-400/50"
             />
             {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
             <Button
@@ -203,7 +203,7 @@ export default function AdminPage() {
 
             {/* Tabs + CSV */}
             <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
-              <div className="inline-flex rounded-full border border-amber-400/[0.14] bg-black/60 p-1">
+              <div className="inline-flex rounded-full border border-amber-400/[0.14] bg-[#050506] p-1">
                 {(Object.keys(TABLE_LABELS) as TableKey[]).map((k) => (
                   <button
                     key={k}
@@ -245,7 +245,7 @@ export default function AdminPage() {
             </div>
 
             {/* Table */}
-            <div className="gold-table mt-4 overflow-x-auto rounded-2xl border border-amber-400/[0.14] bg-black/60">
+            <div className="gold-table mt-4 overflow-x-auto rounded-2xl border border-amber-400/[0.14] bg-[#050506]">
               {rows.length === 0 ? (
                 <p className="px-6 py-10 text-center text-sm text-zinc-500">
                   No records yet — this fills up as people use the free world search.

@@ -12,7 +12,7 @@ import {
   fmtDate,
   type ClaimStatus,
 } from "@/lib/recovery-data";
-import { Reveal, Spotlight, Countdown, Marquee } from "./effects";
+import { Reveal, Spotlight, Countdown, Marquee, GoldenStream } from "./effects";
 
 type Filter = "all" | ClaimStatus;
 
@@ -106,8 +106,8 @@ export function SettlementsBrowser() {
   );
 
   return (
-    <section id="settlements" className="relative scroll-mt-20 bg-zinc-950 py-20 sm:py-28">
-      <div aria-hidden="true" className="noise-overlay" />
+    <section id="settlements" className="relative scroll-mt-20 overflow-hidden bg-zinc-950 py-20 sm:py-28">
+      <GoldenStream density={0.5} />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <Reveal className="max-w-2xl">
