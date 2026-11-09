@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model WaitlistEntry {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  company   String?
+  volume    String?
+  channels  String?
+  source    String?
+  createdAt DateTime @default(now())
+}
+
+model ScanRun {
+  id           String   @id @default(cuid())
+  rowsParsed   Int
+  matchesFound Int
+  estimateLow  Float
+  estimateHigh Float
+  email        String?
+  createdAt    DateTime @default(now())
+}
+
+// The World Library — free people search (name → countries → official checklist).
+// This is the data asset: every free scan is stored with the matched sources.
+model PeopleScan {
+  id        String   @id @default(cuid())
+  fullName  String
+  email     String?
+  countries String   // JSON array of ISO country codes
+  matchIds  String   // JSON array of matched source ids
+  matches   Int      // number of official databases on the checklist
+  referrer  String?
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

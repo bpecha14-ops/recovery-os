@@ -1,0 +1,458 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/*
+ * RecoveryOS design system — "Golden Stream".
+ * One idea, executed without compromise: near-black premium canvas,
+ * a single gold accent, money rendered in tabular figures.
+ * Shared DNA: Linear (dark premium, spring motion), Apple (oversized
+ * display type), Stripe (gradient craft), Lusion (particle stream).
+ */
+:root {
+  --radius: 0.75rem;
+  --background: oklch(0.132 0.005 285.8);
+  --foreground: oklch(0.97 0.004 286);
+  --card: oklch(0.146 0.005 285.9);
+  --card-foreground: oklch(0.97 0.004 286);
+  --popover: oklch(0.141 0.004 285.9);
+  --popover-foreground: oklch(0.97 0.004 286);
+  --primary: oklch(0.785 0.157 84);
+  --primary-foreground: oklch(0.145 0.02 85);
+  --secondary: oklch(0.178 0.005 285.9);
+  --secondary-foreground: oklch(0.97 0.004 286);
+  --muted: oklch(0.178 0.005 285.9);
+  --muted-foreground: oklch(0.655 0.012 286);
+  --accent: oklch(0.21 0.04 85);
+  --accent-foreground: oklch(0.97 0.01 85);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 9%);
+  --input: oklch(0.785 0.157 84 / 22%);
+  --ring: oklch(0.785 0.157 84 / 45%);
+  --chart-1: oklch(0.785 0.157 84);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.14 0.004 285.9);
+  --sidebar-foreground: oklch(0.97 0.004 286);
+  --sidebar-primary: oklch(0.785 0.157 84);
+  --sidebar-primary-foreground: oklch(0.145 0.02 85);
+  --sidebar-accent: oklch(0.178 0.005 285.9);
+  --sidebar-accent-foreground: oklch(0.97 0.004 286);
+  --sidebar-border: oklch(1 0 0 / 9%);
+  --sidebar-ring: oklch(0.785 0.157 84 / 45%);
+}
+
+.dark {
+  --background: oklch(0.132 0.005 285.8);
+  --foreground: oklch(0.97 0.004 286);
+  --card: oklch(0.146 0.005 285.9);
+  --card-foreground: oklch(0.97 0.004 286);
+  --popover: oklch(0.141 0.004 285.9);
+  --popover-foreground: oklch(0.97 0.004 286);
+  --primary: oklch(0.785 0.157 84);
+  --primary-foreground: oklch(0.145 0.02 85);
+  --secondary: oklch(0.178 0.005 285.9);
+  --secondary-foreground: oklch(0.97 0.004 286);
+  --muted: oklch(0.178 0.005 285.9);
+  --muted-foreground: oklch(0.655 0.012 286);
+  --accent: oklch(0.21 0.04 85);
+  --accent-foreground: oklch(0.97 0.01 85);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 9%);
+  --input: oklch(0.785 0.157 84 / 22%);
+  --ring: oklch(0.785 0.157 84 / 45%);
+  --chart-1: oklch(0.785 0.157 84);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.14 0.004 285.9);
+  --sidebar-foreground: oklch(0.97 0.004 286);
+  --sidebar-primary: oklch(0.785 0.157 84);
+  --sidebar-primary-foreground: oklch(0.145 0.02 85);
+  --sidebar-accent: oklch(0.178 0.005 285.9);
+  --sidebar-accent-foreground: oklch(0.97 0.004 286);
+  --sidebar-border: oklch(1 0 0 / 9%);
+  --sidebar-ring: oklch(0.785 0.157 84 / 45%);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  ::selection {
+    background: rgba(251, 191, 36, 0.28);
+    color: #ffffff;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Golden Stream design system utilities
+ * ------------------------------------------------------------------------- */
+
+/* Headline gradient — light gold to deep amber, used sparingly. */
+.text-gradient-gold {
+  background: linear-gradient(120deg, #fef3c7 0%, #fcd34d 30%, #fbbf24 55%, #f59e0b 80%, #fde68a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Fine engineering grid, barely visible — depth without noise. */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Film grain overlay — kills the "flat digital" feel. */
+.noise-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Money never wobbles — fixed-width figures everywhere. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Infinite marquee ticker (channels + funds). */
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee-x 42s linear infinite;
+}
+.marquee-paused:hover .animate-marquee {
+  animation-play-state: paused;
+}
+.marquee-mask {
+  mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+}
+
+/* Soft pulsing dot for "live" indicators. */
+@keyframes pulse-dot {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(251, 191, 36, 0);
+  }
+}
+.pulse-dot {
+  animation: pulse-dot 2.2s ease-in-out infinite;
+}
+
+/* Shimmer sweep for the primary CTA. */
+@keyframes shimmer-x {
+  from {
+    transform: translateX(-150%);
+  }
+  to {
+    transform: translateX(150%);
+  }
+}
+
+/* Gradient hairline between sections — quiet luxury. */
+.hairline-gold {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(251, 191, 36, 0.35),
+    transparent
+  );
+}
+
+/* Custom scrollbar — the 1% detail. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0b0d;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a2e;
+  border-radius: 8px;
+  border: 2px solid #0b0b0d;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(251, 191, 36, 0.45);
+}
+
+/* ---------------------------------------------------------------------------
+ * Smooth-black panels & gold surfaces
+ * Replaces every gray frosted slab with deep black + gold hairline.
+ * Lives in @layer components so Tailwind hover:/focus: utilities can still
+ * override the border color.
+ * ------------------------------------------------------------------------- */
+@layer components {
+  .panel-black {
+    background:
+      linear-gradient(180deg, rgba(251, 191, 36, 0.045) 0%, rgba(251, 191, 36, 0.015) 30%, rgba(251, 191, 36, 0) 58%),
+      #0a0a0c;
+    border: 1px solid rgba(251, 191, 36, 0.14);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  }
+
+  /* Inset black well — tables, code, inputs inside panels. */
+  .well-black {
+    background: #050506;
+    border: 1px solid rgba(251, 191, 36, 0.1);
+  }
+
+  /* Shimmer sweep for every primary gold CTA. */
+  .btn-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-shimmer::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: 33%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: shimmer-x 3.2s ease-in-out infinite;
+    pointer-events: none;
+  }
+}
+
+/* Living light — slow drifting aurora blobs behind sections. */
+@keyframes aurora-drift {
+  0%, 100% {
+    transform: translate3d(-1.5%, -1%, 0) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate3d(1.5%, 1.5%, 0) scale(1.07);
+    opacity: 1;
+  }
+}
+.aurora-drift {
+  animation: aurora-drift 16s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Breathing gold aura for featured panels. */
+@keyframes glow-breathe {
+  0%, 100% {
+    box-shadow: 0 0 22px -14px rgba(251, 191, 36, 0.22), inset 0 0 0 1px rgba(251, 191, 36, 0.10);
+  }
+  50% {
+    box-shadow: 0 0 40px -12px rgba(251, 191, 36, 0.38), inset 0 0 0 1px rgba(251, 191, 36, 0.20);
+  }
+}
+.animate-glow {
+  animation: glow-breathe 5.2s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------------------------
+ * Living surfaces — every panel breathes.
+ * ------------------------------------------------------------------------- */
+
+/* Rotating gold border beam — a comet of light circling featured panels. */
+@property --beam-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.panel-beam {
+  position: relative;
+}
+.panel-beam::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--beam-angle),
+    transparent 0deg,
+    rgba(251, 191, 36, 0.05) 36deg,
+    rgba(251, 191, 36, 0.75) 74deg,
+    #fde68a 90deg,
+    rgba(251, 191, 36, 0.75) 106deg,
+    rgba(251, 191, 36, 0.05) 144deg,
+    transparent 180deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation: beam-spin 7s linear infinite;
+  pointer-events: none;
+}
+@keyframes beam-spin {
+  to {
+    --beam-angle: 360deg;
+  }
+}
+
+/* Flow line — gold dashes streaming left to right (connectors, dividers). */
+.flow-line {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(251, 191, 36, 0.6) 0 10px,
+    transparent 10px 22px
+  );
+  background-size: 22px 2px;
+  background-repeat: repeat-x;
+  animation: flow-dash 1.05s linear infinite;
+}
+@keyframes flow-dash {
+  to {
+    background-position-x: 22px;
+  }
+}
+
+/* Sweep — a thin light bar gliding across a panel forever. */
+.sweep-line {
+  animation: scan-sweep 5.2s ease-in-out infinite;
+}
+
+/* Grow — bars that fill to their width when they enter the scene. */
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.grow-bar {
+  transform-origin: left center;
+  animation: grow-x 1.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Scanning heartbeat — the loader line in the scanner. */
+@keyframes scan-sweep {
+  0% {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(320%);
+    opacity: 0;
+  }
+}
+
+/* Gold data tables — headers, hover and hairlines. */
+.gold-table th {
+  color: rgba(252, 211, 77, 0.72);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.gold-table tbody tr {
+  transition: background-color 0.18s ease;
+}
+.gold-table tbody tr:hover {
+  background: rgba(251, 191, 36, 0.05);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+  .pulse-dot {
+    animation: none;
+  }
+  .aurora-drift,
+  .animate-glow {
+    animation: none;
+  }
+  .btn-shimmer::after {
+    animation: none;
+    opacity: 0;
+  }
+  .panel-beam::before {
+    animation: none;
+    background: linear-gradient(
+      130deg,
+      rgba(251, 191, 36, 0.55),
+      rgba(251, 191, 36, 0.12) 42%,
+      rgba(251, 191, 36, 0.12) 58%,
+      rgba(251, 191, 36, 0.55)
+    );
+  }
+  .flow-line {
+    animation: none;
+  }
+  .sweep-line {
+    animation: none;
+    opacity: 0;
+  }
+  .grow-bar {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
