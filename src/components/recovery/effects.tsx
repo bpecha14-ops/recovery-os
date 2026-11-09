@@ -39,8 +39,11 @@ export function CountUp({
   const reduce = useReducedMotion();
   // Keep the latest formatter without re-triggering the raf cycle —
   // inline arrow props would otherwise reset the count on every render.
+  // Synced in an effect (React docs "latest ref" pattern), never during render.
   const formatRef = useRef(format);
-  formatRef.current = format;
+  useEffect(() => {
+    formatRef.current = format;
+  }, [format]);
 
   useEffect(() => {
     const el = ref.current;
@@ -103,8 +106,9 @@ export function AnimatedMoney({ value, format, className }: AnimatedMoneyProps) 
   const text = useTransform(spring, (v) => format(Math.max(0, v)));
 
   useEffect(() => {
-    spring.set(reduce ? value : value);
-  }, [value, spring, reduce]);
+    // Reduced motion renders the static value directly above.
+    spring.set(value);
+  }, [value, spring]);
 
   if (reduce) {
     return <span className={className}>{format(value)}</span>;
@@ -217,14 +221,32 @@ export function Reveal({ children, className, delay = 0, y = 22 }: RevealProps) 
 /* ------------------------------------------------------------------ */
 
 export function LiveClock({ className }: { className?: string }) {
-  const [now, setNow] = useState(() => new Date());
+  // Null until mounted: SSR HTML stays a stable placeholder, so the server
+  // and client never disagree about the current second (hydration-safe).
+  const [now, setNow] = useState<Date | null>(null);
   const reduce = useReducedMotion();
 
   useEffect(() => {
-    if (reduce) return;
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
+    const tick = () => setNow(new Date());
+    // First tick via rAF: sets the clock on the first frame after mount —
+    // hydration-safe (never rendered on the server) without a synchronous
+    // setState cascade in the effect body.
+    const raf = requestAnimationFrame(tick);
+    if (reduce) return () => cancelAnimationFrame(raf);
+    const id = setInterval(tick, 1000);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearInterval(id);
+    };
   }, [reduce]);
+
+  if (!now) {
+    return (
+      <span className={`tabular ${className ?? ""}`}>
+        --:--:--&nbsp;UTC
+      </span>
+    );
+  }
 
   const time = now.toLocaleTimeString("en-GB", {
     hour12: false,
@@ -252,14 +274,31 @@ export function Countdown({
   className?: string;
   compact?: boolean;
 }) {
-  const [now, setNow] = useState(() => Date.now());
+  const [now, setNow] = useState<number | null>(null);
   const reduce = useReducedMotion();
 
+  // Null until mounted: the ticking seconds must never render on the server,
+  // otherwise hydration always mismatches (server second vs client second).
   useEffect(() => {
-    if (reduce) return;
-    const id = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(id);
+    const tick = () => setNow(Date.now());
+    // First tick via rAF — hydration-safe, no synchronous setState in the
+    // effect body.
+    const raf = requestAnimationFrame(tick);
+    if (reduce) return () => cancelAnimationFrame(raf);
+    const id = setInterval(tick, 1000);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearInterval(id);
+    };
   }, [reduce]);
+
+  if (now === null) {
+    return (
+      <span className={`tabular ${className ?? ""}`}>
+        {compact ? "–d --:--:--" : "–d&nbsp;--h&nbsp;--m&nbsp;--s"}
+      </span>
+    );
+  }
 
   const deadline = new Date(`${to}T23:59:59Z`).getTime();
   const diff = Math.max(0, deadline - now);

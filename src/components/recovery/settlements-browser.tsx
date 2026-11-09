@@ -92,7 +92,13 @@ function buildRows(now: Date): Row[] {
 export function SettlementsBrowser() {
   const [filter, setFilter] = useState<Filter>("all");
   // Day counts depend on the visitor's clock; computed once per session.
-  const [rows] = useState<Row[]>(() => buildRows(new Date()));
+  // Pinned to the start of the current UTC day so SSR and hydration always
+  // derive identical day labels (no hydration mismatch except across
+  // UTC midnight, which self-heals on the next tick).
+  const [rows] = useState<Row[]>(() => {
+    const dayStartMs = Math.floor(Date.now() / 86_400_000) * 86_400_000;
+    return buildRows(new Date(dayStartMs));
+  });
 
   const visible = useMemo(
     () => (filter === "all" ? rows : rows.filter((r) => r.status === filter)),
