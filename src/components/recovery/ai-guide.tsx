@@ -1,15 +1,17 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { X, VolumeX, MessageCircle, Sparkles } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import { useReducedMotionSafe } from "@/lib/use-reduced-motion-safe";
 
 /**
- * Scout — the roaming AI guide: a golden owl detective with a monocle and a
- * magnifying glass. Scout watches which section the visitor is in, moves
- * along the bottom edge, and drops contextual tips. Clicking Scout opens the
- * Goldie chat (via a custom event) with the section context.
+ * Goldie — the live AI: a golden coin that roams the page. Goldie watches
+ * which section the visitor is in, walks along the bottom edge, and drops
+ * contextual tips. The avatar mirrors the AI chat button one-to-one (round
+ * golden ring, coin face, glow, hover scale). Clicking Goldie opens the
+ * chat (via a custom event) with the section context.
  */
 
 interface SectionSpot {
@@ -32,153 +34,8 @@ const SECTION_SPOTS: SectionSpot[] = [
 
 const SECTION_IDS = SECTION_SPOTS.map((s) => s.id);
 
-/** The owl detective himself — inline SVG so he stays crisp at any size. */
-function ScoutOwl() {
-  return (
-    <svg
-      viewBox="0 0 96 96"
-      className="h-full w-full"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <defs>
-        <radialGradient id="scout-bg" cx="50%" cy="36%" r="78%">
-          <stop offset="0%" stopColor="#1a1408" />
-          <stop offset="100%" stopColor="#060607" />
-        </radialGradient>
-        <linearGradient id="scout-body" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#fde047" />
-          <stop offset="52%" stopColor="#f0a52d" />
-          <stop offset="100%" stopColor="#b45309" />
-        </linearGradient>
-        <linearGradient id="scout-lens" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#2e2410" />
-          <stop offset="100%" stopColor="#07070a" />
-        </linearGradient>
-      </defs>
-
-      {/* night backdrop */}
-      <circle cx="48" cy="48" r="48" fill="url(#scout-bg)" />
-
-      {/* found-money sparkle */}
-      <path
-        d="M76 15 l1.7 4.3 4.3 1.7 -4.3 1.7 -1.7 4.3 -1.7-4.3 -4.3-1.7 4.3-1.7 Z"
-        fill="#fde68a"
-        opacity="0.85"
-      />
-      <circle cx="70" cy="29" r="1.1" fill="#fde68a" opacity="0.5" />
-
-      {/* ear tufts */}
-      <path d="M27 31 L19 11 L39 22 Z" fill="url(#scout-body)" />
-      <path d="M69 31 L77 11 L57 22 Z" fill="url(#scout-body)" />
-
-      {/* head */}
-      <ellipse cx="48" cy="52" rx="30" ry="27" fill="url(#scout-body)" />
-
-      {/* facial disc */}
-      <g opacity="0.32" fill="#7c3f06">
-        <circle cx="37" cy="46" r="14" />
-        <circle cx="59" cy="46" r="14" />
-      </g>
-
-      {/* left wing hint */}
-      <path
-        d="M22 58 q3 12 14 17"
-        stroke="#92400e"
-        strokeWidth="1.5"
-        fill="none"
-        opacity="0.45"
-        strokeLinecap="round"
-      />
-
-      {/* eyes (they blink via CSS) */}
-      <g className="scout-eye">
-        <circle cx="37" cy="46" r="9" fill="#fef9ea" />
-        <circle cx="37" cy="46" r="4" fill="#221503" />
-        <circle cx="38.6" cy="44.4" r="1.3" fill="#fde68a" />
-      </g>
-      <g className="scout-eye scout-eye-late">
-        <circle cx="59" cy="46" r="9" fill="#fef9ea" />
-        <circle cx="59" cy="46" r="4" fill="#221503" />
-        <circle cx="60.6" cy="44.4" r="1.3" fill="#fde68a" />
-      </g>
-
-      {/* monocle over the right eye + chain */}
-      <circle
-        cx="59"
-        cy="46"
-        r="11.5"
-        fill="none"
-        stroke="#fcd34d"
-        strokeWidth="2.4"
-      />
-      <path
-        d="M59 57.5 C58 62 55 64 51.5 67"
-        fill="none"
-        stroke="#fcd34d"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-
-      {/* beak */}
-      <path
-        d="M48 53 L44.6 59 L48 62.5 L51.4 59 Z"
-        fill="#f59e0b"
-        stroke="#7c2d12"
-        strokeWidth="0.7"
-      />
-
-      {/* chest feather hint */}
-      <path
-        d="M40 71 q8 5 16 0"
-        stroke="#92400e"
-        strokeWidth="1.4"
-        fill="none"
-        opacity="0.5"
-        strokeLinecap="round"
-      />
-
-      {/* magnifying glass — the tool of the trade */}
-      <line
-        x1="74"
-        y1="74"
-        x2="80.5"
-        y2="80.5"
-        stroke="#b45309"
-        strokeWidth="5"
-        strokeLinecap="round"
-      />
-      <line
-        x1="74"
-        y1="74"
-        x2="80.5"
-        y2="80.5"
-        stroke="#fcd34d"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-      <circle
-        cx="67"
-        cy="67"
-        r="10.5"
-        fill="url(#scout-lens)"
-        stroke="#fbbf24"
-        strokeWidth="2.6"
-      />
-      <path
-        className="scout-glint"
-        d="M63 63 L68.5 68.5"
-        stroke="#fff7d6"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <circle cx="64" cy="71.5" r="1.1" fill="#fde68a" opacity="0.45" />
-    </svg>
-  );
-}
-
 export function AiGuide() {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReducedMotionSafe();
   const { t, tArr } = useI18n();
   const [activeId, setActiveId] = useState<string | null>(null);
   const [tip, setTip] = useState<string | null>(null);
@@ -188,6 +45,16 @@ export function AiGuide() {
   const tipCountRef = useRef<Record<string, number>>({});
   const firstRunRef = useRef(true);
   const activeIdRef = useRef<string | null>(null);
+
+  // Latest-ref pattern: the welcome timer is scheduled once at mount, but the
+  // locale settles right after mount (localStorage / browser language), so it
+  // must read the CURRENT translations — not the first (English) render's.
+  const tRef = useRef(t);
+  const tArrRef = useRef(tArr);
+  useEffect(() => {
+    tRef.current = t;
+    tArrRef.current = tArr;
+  });
 
   useEffect(() => {
     activeIdRef.current = activeId;
@@ -234,12 +101,11 @@ export function AiGuide() {
         dismissedRef.current.size === 0 &&
         activeIdRef.current === null
       ) {
-        setTip(t("guide.welcome"));
+        setTip(tRef.current("guide.welcome"));
       }
     }, 4500);
     timersRef.current.push(timer);
     return clearTimers;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // When the active section changes: show its tip (unless muted/dismissed).
@@ -256,7 +122,7 @@ export function AiGuide() {
         setTip(null);
         return;
       }
-      const tips = tArr<string>(`guide.tips.${section.id}`);
+      const tips = tArrRef.current<string>(`guide.tips.${section.id}`);
       if (tips.length === 0) {
         setTip(null);
         return;
@@ -269,7 +135,6 @@ export function AiGuide() {
     }, 700);
     timersRef.current.push(show);
     return clearTimers;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeId, muted]);
 
   useEffect(() => clearTimers, []);
@@ -395,16 +260,24 @@ export function AiGuide() {
         >
           <span
             aria-hidden="true"
-            className={`absolute -inset-1.5 rounded-full bg-amber-400/25 blur-md transition-opacity ${
+            className={`absolute -inset-1.5 rounded-full bg-amber-400/25 blur-md transition-opacity duration-300 ${
               tip ? "opacity-100 animate-glow" : "opacity-60 group-hover:opacity-100"
             }`}
           />
+          {/* The coin — same build as the corner AI button: round golden
+              ring, coin face, glow, hover scale. */}
           <span
-            className={`relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-2 bg-zinc-950 shadow-[0_0_22px_-6px_rgba(251,191,36,0.5)] transition-transform duration-200 group-hover:scale-110 sm:h-14 sm:w-14 ${
-              tip ? "border-amber-300" : "border-amber-300/60"
+            className={`relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 bg-zinc-950 shadow-[0_0_28px_-6px_rgba(251,191,36,0.55)] transition-transform duration-200 group-hover:scale-105 sm:h-16 sm:w-16 ${
+              tip ? "border-amber-300" : "border-amber-300/70"
             }`}
           >
-            <ScoutOwl />
+            <img
+              src="/ai-goldie.png"
+              alt=""
+              aria-hidden="true"
+              className="h-full w-full object-cover"
+              draggable={false}
+            />
           </span>
           <span className="pointer-events-none absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-zinc-950 bg-amber-400 text-zinc-950">
             <MessageCircle className="h-3 w-3" aria-hidden="true" />

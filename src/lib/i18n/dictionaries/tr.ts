@@ -584,11 +584,11 @@ const tr: Dictionary = {
   },
   guide: {
     welcome:
-      "Hoş geldiniz! Ben Scout — sitede gezinip siz kaydırdıkça ipuçları bırakıyorum. AI asistanımız Goldie ile konuşmak için bana dilediğiniz an tıklayın.",
+      "Hoş geldiniz! Ben Goldie — sitede gezinip siz kaydırdıkça ipuçları bırakıyorum. AI asistanımızla konuşmak için bana dilediğiniz an tıklayın.",
     dismiss: "İpucunu kapat",
     mute: "Bu ziyaret için ipuçlarını kapat",
     unmute: "İpuçları kapalı — açın",
-    avatarLabel: "Scout, site rehberi — Goldie ile konuşmak için tıklayın",
+    avatarLabel: "Goldie, site rehberi — AI ile konuşmak için tıklayın",
     askGoldie: "Goldie'ye bu bölümü sorun",
     tips: {
       how: [
@@ -624,7 +624,7 @@ const tr: Dictionary = {
         "SSS gizliliği, hak sahipliğini ve dosyaladıktan sonrasını kapsar. İyi harcanmış iki dakika.",
       ],
       waitlist: [
-        "Son durak! Lansman listesine katılın — ya da meslektaşım Goldie'ye aklınızdaki her şeyi sorun. O, köşedeki altın para.",
+        "Son durak! Lansman listesine katılın — ya da AI asistanımıza aklınızdaki her şeyi sorun: buradan bana ya da köşedeki kıvılcım düğmesine tıklayın.",
         "Gidiyor musunuz? Kontrol listesini yanınıza alın — lansman listesi, ülkeleriniz için yeni kayıt uyarıları alır.",
       ],
     },

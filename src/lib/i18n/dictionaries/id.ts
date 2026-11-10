@@ -605,11 +605,11 @@ const id: Dictionary = {
   },
   guide: {
     welcome:
-      "Selamat datang! Saya Scout — saya menjelajahi situs ini dan memberi tips saat Anda menggulir. Klik saya kapan saja untuk mengobrol dengan Goldie, asisten AI kami.",
+      "Selamat datang! Saya Goldie — saya menjelajahi situs ini dan memberi tips saat Anda menggulir. Klik saya kapan saja untuk mengobrol dengan asisten AI kami.",
     dismiss: "Tutup tips",
     mute: "Bisukan tips untuk kunjungan ini",
     unmute: "Tips nonaktif — nyalakan",
-    avatarLabel: "Scout, pemandu situs — klik untuk mengobrol dengan Goldie",
+    avatarLabel: "Goldie, pemandu situs — klik untuk mengobrol dengan AI",
     askGoldie: "Tanyakan ke Goldie tentang bagian ini",
     tips: {
       how: [
@@ -645,7 +645,7 @@ const id: Dictionary = {
         "FAQ membahas privasi, kelayakan, dan apa yang terjadi setelah Anda mengajukan. Dua menit yang layak diluangkan.",
       ],
       waitlist: [
-        "Pemberhentian terakhir! Bergabunglah dengan daftar peluncuran — atau tanyakan apa saja ke kolega saya, Goldie. Dia adalah koin di sudut itu.",
+        "Pemberhentian terakhir! Bergabunglah dengan daftar peluncuran — atau tanyakan apa saja ke asisten AI kami: klik saya di sini atau tombol percik di sudut.",
         "Mau pergi? Bawa daftar periksanya — daftar peluncuran mendapat pemberitahuan registri baru untuk negara Anda.",
       ],
     },

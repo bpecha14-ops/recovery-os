@@ -595,11 +595,11 @@ const pl: Dictionary = {
   },
   guide: {
     welcome:
-      "Witaj! Jestem Scout — krążę po tej stronie i zostawiam wskazówki w miarę przewijania. Kliknij mnie w dowolnej chwili, żeby porozmawiać z Goldie, naszą asystentką AI.",
+      "Witaj! Jestem Goldie — krążę po tej stronie i zostawiam wskazówki w miarę przewijania. Kliknij mnie w dowolnej chwili, żeby porozmawiać z naszym asystentem AI.",
     dismiss: "Ukryj wskazówkę",
     mute: "Wyłącz wskazówki na czas tej wizyty",
     unmute: "Wskazówki wyłączone — włącz",
-    avatarLabel: "Scout, przewodniczka po stronie — kliknij, aby porozmawiać z Goldie",
+    avatarLabel: "Goldie, przewodniczka po stronie — kliknij, aby porozmawiać z AI",
     askGoldie: "Zapytaj Goldie o tę sekcję",
     tips: {
       how: [
@@ -635,7 +635,7 @@ const pl: Dictionary = {
         "FAQ obejmuje prywatność, uprawnienia i to, co dzieje się po zgłoszeniu. Dwie dobrze spędzone minuty.",
       ],
       waitlist: [
-        "Ostatni przystanek! Dołącz do listy startowej — albo po prostu zapytaj o cokolwiek moją koleżankę Goldie. Ona jest tą monetą w rogu.",
+        "Ostatni przystanek! Dołącz do listy startowej — albo po prostu zapytaj o cokolwiek naszego asystenta AI: kliknij mnie tutaj albo przycisk z iskrą w rogu.",
         "Wychodzisz? Zabierz listę kontrolną ze sobą — lista startowa dostaje alerty o nowych rejestrach dla Twoich krajów.",
       ],
     },

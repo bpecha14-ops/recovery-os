@@ -1,16 +1,52 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Send, X, Sparkles, RotateCcw } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import { useReducedMotionSafe } from "@/lib/use-reduced-motion-safe";
 
 export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
+}
+
+/** The corner trigger: a clean gold “spark” glyph — the universal AI mark.
+ *  Goldie (the golden coin) roams the page as the live guide; this button
+ *  stays a quiet, abstract launcher for the same chat. */
+function AiGlyph({ className = "" }: { className?: string }) {
+  const uid = useId().replace(/[^a-zA-Z0-9-]/g, "");
+  const grad = `ai-glyph-${uid}`;
+  return (
+    <svg
+      viewBox="0 0 48 48"
+      className={className}
+      aria-hidden="true"
+      focusable="false"
+    >
+      <defs>
+        <linearGradient id={grad} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#fef3c7" />
+          <stop offset="52%" stopColor="#fbbf24" />
+          <stop offset="100%" stopColor="#b45309" />
+        </linearGradient>
+      </defs>
+      {/* main four-point spark */}
+      <path
+        d="M24 4 C25.7 14.3 33.7 22.3 44 24 C33.7 25.7 25.7 33.7 24 44 C22.3 33.7 14.3 25.7 4 24 C14.3 22.3 22.3 14.3 24 4 Z"
+        fill={`url(#${grad})`}
+      />
+      {/* companion spark */}
+      <path
+        d="M37.5 7 C38.2 10.6 40.4 12.8 44 13.5 C40.4 14.2 38.2 16.4 37.5 20 C36.8 16.4 34.6 14.2 31 13.5 C34.6 12.8 36.8 10.6 37.5 7 Z"
+        fill="#fde68a"
+        opacity="0.92"
+      />
+    </svg>
+  );
 }
 
 export function AiAssistant() {
@@ -28,7 +64,7 @@ export function AiAssistant() {
   const sectionRef = useRef<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReducedMotionSafe();
 
   // If the language changes while the chat is still untouched, re-localize
   // the greeting so it always matches the interface language.
@@ -150,14 +186,8 @@ export function AiAssistant() {
           aria-hidden="true"
           className="absolute -inset-1.5 rounded-full bg-amber-400/25 blur-md transition-opacity duration-300 group-hover:opacity-100 animate-glow"
         />
-        <span className="relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 border-amber-300/70 bg-zinc-950 shadow-[0_0_28px_-6px_rgba(251,191,36,0.55)] transition-transform duration-200 group-hover:scale-105 sm:h-16 sm:w-16">
-          { }
-          <img
-            src="/ai-goldie.png"
-            alt="Goldie — RecoveryOS AI assistant"
-            className="h-full w-full object-cover"
-            draggable={false}
-          />
+        <span className="relative flex h-14 w-14 items-center justify-center rounded-full border-2 border-amber-300/70 bg-zinc-950 shadow-[0_0_28px_-6px_rgba(251,191,36,0.55)] transition-transform duration-200 group-hover:scale-105 sm:h-16 sm:w-16">
+          <AiGlyph className="h-7 w-7 drop-shadow-[0_0_10px_rgba(251,191,36,0.45)] sm:h-8 sm:w-8" />
         </span>
         {unread && !open && (
           <span

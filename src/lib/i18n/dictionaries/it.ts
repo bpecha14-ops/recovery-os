@@ -602,11 +602,11 @@ const it: Dictionary = {
   },
   guide: {
     welcome:
-      "Benvenuti! Sono Scout — giro per questo sito e lascio consigli mentre scorre. Mi clicchi quando vuole per parlare con Goldie, la nostra assistente AI.",
+      "Benvenuti! Sono Goldie — giro per questo sito e lascio consigli mentre scorre. Mi clicchi quando vuole per parlare con il nostro assistente AI.",
     dismiss: "Chiudi il consiglio",
     mute: "Silenzia i consigli per questa visita",
     unmute: "Consigli disattivati — attiva",
-    avatarLabel: "Scout, la guida del sito — clicca per parlare con Goldie",
+    avatarLabel: "Goldie, la guida del sito — clicca per parlare con l'AI",
     askGoldie: "Chieda a Goldie di questa sezione",
     tips: {
       how: [
@@ -642,7 +642,7 @@ const it: Dictionary = {
         "Le FAQ coprono privacy, idoneità e cosa succede dopo il deposito. Due minuti ben spesi.",
       ],
       waitlist: [
-        "Ultima fermata! Entri nella lista di lancio — o chieda qualsiasi cosa alla mia collega Goldie. È lei la moneta nell'angolo.",
+        "Ultima fermata! Entri nella lista di lancio — o chieda qualsiasi cosa al nostro assistente AI: mi clicchi qui oppure prema il pulsante a scintilla nell'angolo.",
         "Se ne va? Porti con sé la checklist — la lista di lancio riceve avvisi sui nuovi registri per i suoi paesi.",
       ],
     },

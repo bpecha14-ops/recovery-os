@@ -597,11 +597,11 @@ const pt: Dictionary = {
   },
   guide: {
     welcome:
-      "Boas-vindas! Eu sou a Scout — percorro este site e deixo dicas enquanto você rola a página. Clique em mim a qualquer momento para conversar com a Goldie, nossa assistente de IA.",
+      "Boas-vindas! Eu sou a Goldie — percorro este site e deixo dicas enquanto você rola a página. Clique em mim a qualquer momento para conversar com o nosso assistente de IA.",
     dismiss: "Descartar dica",
     mute: "Silenciar dicas nesta visita",
     unmute: "Dicas desligadas — ligar",
-    avatarLabel: "Scout, a guia do site — clique para conversar com a Goldie",
+    avatarLabel: "Goldie, a guia do site — clique para conversar com a IA",
     askGoldie: "Pergunte à Goldie sobre esta seção",
     tips: {
       how: [
@@ -637,7 +637,7 @@ const pt: Dictionary = {
         "O FAQ cobre privacidade, elegibilidade e o que acontece depois de você protocolar. Dois minutos bem gastos.",
       ],
       waitlist: [
-        "Última parada! Entre na lista de lançamento — ou pergunte qualquer coisa para a minha colega Goldie. Ela é a moedinha do canto.",
+        "Última parada! Entre na lista de lançamento — ou pergunte qualquer coisa para o nosso assistente de IA: clique em mim aqui ou no botão de faísca no canto.",
         "Já vai? Leve o checklist com você — a lista de lançamento recebe alertas de novos registros para os seus países.",
       ],
     },

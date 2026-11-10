@@ -1,10 +1,10 @@
 export default {
   welcome:
-    "Welcome! I'm Scout — I roam this site and drop tips as you scroll. Click me anytime to chat with Goldie, our AI assistant.",
+    "Welcome! I'm Goldie — I roam this site and drop tips as you scroll. Click me anytime to chat with our AI assistant.",
   dismiss: "Dismiss tip",
   mute: "Mute tips for this visit",
   unmute: "Tips off — turn on",
-  avatarLabel: "Scout, the site guide — click to chat with Goldie",
+  avatarLabel: "Goldie, the site guide — click to chat with the AI",
   askGoldie: "Ask Goldie about this section",
   tips: {
     how: [
@@ -40,7 +40,7 @@ export default {
       "The FAQ covers privacy, eligibility and what happens after you file. Two minutes well spent.",
     ],
     waitlist: [
-      "Last stop! Join the launch list — or just ask my colleague Goldie anything. She is the coin in the corner.",
+      "Last stop! Join the launch list — or just ask our AI assistant anything: click me here or the spark button in the corner.",
       "Leaving? Take the checklist with you — the launch list gets new-registry alerts for your countries.",
     ],
   },

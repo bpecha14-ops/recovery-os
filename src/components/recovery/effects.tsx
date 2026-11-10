@@ -3,7 +3,7 @@
 // RecoveryOS — shared visual effects ("Golden Stream" design system).
 // Physics-based motion DNA from Linear / Lusion, applied with restraint.
 
-import { AnimatePresence, motion, useReducedMotion, useSpring, useTransform } from "framer-motion";
+import { AnimatePresence, motion, useSpring, useTransform } from "framer-motion";
 import {
   useEffect,
   useRef,
@@ -11,6 +11,7 @@ import {
   type ReactNode,
   type CSSProperties,
 } from "react";
+import { useReducedMotionSafe } from "@/lib/use-reduced-motion-safe";
 
 /* ------------------------------------------------------------------ */
 /* CountUp — money figures that count up when scrolled into view.     */
@@ -36,7 +37,7 @@ export function CountUp({
   const ref = useRef<HTMLSpanElement>(null);
   const [started, setStarted] = useState(false);
   const [display, setDisplay] = useState(() => format(0));
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotionSafe();
   // Keep the latest formatter without re-triggering the raf cycle —
   // inline arrow props would otherwise reset the count on every render.
   // Synced in an effect (React docs "latest ref" pattern), never during render.
@@ -101,7 +102,7 @@ interface AnimatedMoneyProps {
 }
 
 export function AnimatedMoney({ value, format, className }: AnimatedMoneyProps) {
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotionSafe();
   const spring = useSpring(value, { stiffness: 130, damping: 22 });
   const text = useTransform(spring, (v) => format(Math.max(0, v)));
 
@@ -197,7 +198,7 @@ interface RevealProps {
 }
 
 export function Reveal({ children, className, delay = 0, y = 22 }: RevealProps) {
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotionSafe();
   return (
     <motion.div
       className={className}
@@ -224,7 +225,7 @@ export function LiveClock({ className }: { className?: string }) {
   // Null until mounted: SSR HTML stays a stable placeholder, so the server
   // and client never disagree about the current second (hydration-safe).
   const [now, setNow] = useState<Date | null>(null);
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotionSafe();
 
   useEffect(() => {
     const tick = () => setNow(new Date());
@@ -275,7 +276,7 @@ export function Countdown({
   compact?: boolean;
 }) {
   const [now, setNow] = useState<number | null>(null);
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotionSafe();
 
   // Null until mounted: the ticking seconds must never render on the server,
   // otherwise hydration always mismatches (server second vs client second).
@@ -336,7 +337,7 @@ export function TypeCycle({
   interval?: number;
 }) {
   const [i, setI] = useState(0);
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotionSafe();
 
   useEffect(() => {
     if (reduce) return;
@@ -395,7 +396,7 @@ export function GoldenStream({
   density?: number;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotionSafe();
 
   useEffect(() => {
     if (reduce) return;

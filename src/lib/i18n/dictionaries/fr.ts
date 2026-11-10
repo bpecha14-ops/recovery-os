@@ -592,11 +592,11 @@ const fr: Dictionary = {
   },
   guide: {
     welcome:
-      "Bienvenue ! Je suis Scout — je parcours ce site et glisse des astuces au fil de votre lecture. Cliquez sur moi à tout moment pour discuter avec Goldie, notre assistante IA.",
+      "Bienvenue ! Je suis Goldie — je parcours ce site et glisse des astuces au fil de votre lecture. Cliquez sur moi à tout moment pour discuter avec notre assistant IA.",
     dismiss: "Masquer l’astuce",
     mute: "Couper les astuces pour cette visite",
     unmute: "Astuces coupées — activer",
-    avatarLabel: "Scout, le guide du site — cliquez pour discuter avec Goldie",
+    avatarLabel: "Goldie, le guide du site — cliquez pour discuter avec l'IA",
     askGoldie: "Interroger Goldie sur cette section",
     tips: {
       how: [
@@ -632,7 +632,7 @@ const fr: Dictionary = {
         "La FAQ couvre la confidentialité, l’éligibilité et la suite après le dépôt. Deux minutes bien employées.",
       ],
       waitlist: [
-        "Dernière étape ! Rejoignez la liste de lancement — ou demandez simplement ce que vous voulez à ma collègue Goldie. C’est elle, la pièce dorée dans le coin.",
+        "Dernière étape ! Rejoignez la liste de lancement — ou demandez simplement ce que vous voulez à notre assistant IA : cliquez sur moi ici ou sur le bouton étincelle dans le coin.",
         "Vous partez ? Emportez la liste de contrôle — la liste de lancement reçoit des alertes de nouveaux registres pour vos pays.",
       ],
     },

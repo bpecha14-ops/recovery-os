@@ -590,11 +590,11 @@ const nl: Dictionary = {
   },
   guide: {
     welcome:
-      "Welkom! Ik ben Scout — ik zwerf rond op deze site en geef tips terwijl u scrolt. Klik wanneer u maar wilt op mij om te chatten met Goldie, onze AI-assistent.",
+      "Welkom! Ik ben Goldie — ik zwerf rond op deze site en geef tips terwijl u scrolt. Klik wanneer u maar wilt op mij om te chatten met onze AI-assistent.",
     dismiss: "Tip sluiten",
     mute: "Tips uitschakelen voor dit bezoek",
     unmute: "Tips uit — inschakelen",
-    avatarLabel: "Scout, de gids van deze site — klik om met Goldie te chatten",
+    avatarLabel: "Goldie, de gids van deze site — klik om met de AI te chatten",
     askGoldie: "Vraag Goldie naar deze sectie",
     tips: {
       how: [
@@ -630,7 +630,7 @@ const nl: Dictionary = {
         "De FAQ behandelt privacy, de voorwaarden om te claimen en wat er na het indienen gebeurt. Twee minuten goed besteed.",
       ],
       waitlist: [
-        "Laatste stop! Sluit u aan bij de launchlijst — of vraag mijn collega Goldie gewoon alles. Zij is de munt in de hoek.",
+        "Laatste stop! Sluit u aan bij de launchlijst — of vraag onze AI-assistent gewoon alles: klik op mij hier of op de vonkknop in de hoek.",
         "Gaat u weg? Neem de checklist mee — via de launchlijst ontvangt u meldingen bij nieuwe registers voor uw landen.",
       ],
     },

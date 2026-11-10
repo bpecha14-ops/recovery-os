@@ -582,11 +582,11 @@ const vi: Dictionary = {
   },
   guide: {
     welcome:
-      "Chào mừng! Tôi là Scout — tôi đi khắp trang này và thả mẹo khi bạn cuộn trang. Bấm vào tôi bất cứ lúc nào để trò chuyện với Goldie, trợ lý AI của chúng tôi.",
+      "Chào mừng! Tôi là Goldie — tôi đi khắp trang này và thả mẹo khi bạn cuộn trang. Bấm vào tôi bất cứ lúc nào để trò chuyện với trợ lý AI của chúng tôi.",
     dismiss: "Bỏ qua mẹo",
     mute: "Tắt mẹo trong phiên này",
     unmute: "Mẹo đang tắt — bật lại",
-    avatarLabel: "Scout, hướng dẫn viên của trang — bấm để trò chuyện với Goldie",
+    avatarLabel: "Goldie, hướng dẫn viên của trang — bấm để trò chuyện với AI",
     askGoldie: "Hỏi Goldie về phần này",
     tips: {
       how: [
@@ -622,7 +622,7 @@ const vi: Dictionary = {
         "Phần Hỏi đáp nói về quyền riêng tư, điều kiện tham gia và điều gì xảy ra sau khi bạn nộp. Hai phút đáng giá.",
       ],
       waitlist: [
-        "Trạm cuối! Tham gia danh sách ra mắt — hoặc cứ hỏi đồng nghiệp Goldie của tôi bất cứ điều gì. Cô ấy là đồng xu ở góc trang.",
+        "Trạm cuối! Tham gia danh sách ra mắt — hoặc cứ hỏi trợ lý AI của chúng tôi bất cứ điều gì: bấm vào tôi ở đây hoặc nút hình tia lửa ở góc trang.",
         "Rời đi? Mang theo danh sách kiểm tra — danh sách ra mắt sẽ nhận cảnh báo cơ sở dữ liệu mới cho các quốc gia của bạn.",
       ],
     },
