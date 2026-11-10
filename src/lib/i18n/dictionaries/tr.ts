@@ -25,9 +25,9 @@ const tr: Dictionary = {
   },
   hero: {
     pill: "Yüce Mahkeme IEEPA gümrük vergilerini 6–3 ile iptal etti",
-    titleA: "Dünya, hakkı olan",
+    titleA: "Dünya, hakkı olan ",
     titleGold: "parayı",
-    titleB: "unutmuş durumda.",
+    titleB: " unutmuş durumda.",
     subtitle:
       "RecoveryOS, yeryüzündeki tüm resmî sahipsiz para veritabanlarını haritalar — işiniz için ve kendi adınız için — sonra talepleri dosyalar ve izler, ta ki ödemeler hesabınıza ulaşıncaya kadar.",
     ctaScan: "Ücretsiz taramayı başlat",

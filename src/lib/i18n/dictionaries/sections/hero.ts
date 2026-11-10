@@ -1,8 +1,8 @@
 export default {
   pill: "The Supreme Court struck the IEEPA tariffs down 6–3",
-  titleA: "The world is owed",
+  titleA: "The world is owed ",
   titleGold: "money",
-  titleB: "it forgot about.",
+  titleB: " it forgot about.",
   subtitle:
     "RecoveryOS maps every official unclaimed-money database on Earth — for your business and for your own name — then files and tracks claims until checks arrive in your account.",
   ctaScan: "Run a free scan",

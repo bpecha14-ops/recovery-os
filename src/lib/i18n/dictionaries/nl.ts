@@ -25,9 +25,9 @@ const nl: Dictionary = {
   },
   hero: {
     pill: "Het Hooggerechtshof vernietigde de IEEPA-invoerrechten met 6–3",
-    titleA: "De wereld heeft",
+    titleA: "De wereld heeft ",
     titleGold: "geld",
-    titleB: "te goed dat ze allang kwijt is.",
+    titleB: " te goed dat ze allang kwijt is.",
     subtitle:
       "RecoveryOS brengt elke officiële database met ongeclaimd geld ter wereld in kaart — voor uw bedrijf en voor uw eigen naam — en dient vervolgens claims in en volgt ze tot het geld op uw rekening binnenkomt.",
     ctaScan: "Voer een gratis scan uit",

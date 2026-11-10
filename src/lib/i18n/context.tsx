@@ -80,7 +80,12 @@ export function I18nProvider({ children }: { children: ReactNode }) {
         }
       }
     }
-    if (next && next !== DEFAULT_LOCALE) setLocaleState(next);
+    if (next && next !== DEFAULT_LOCALE) {
+      // Deferred one tick: avoids a synchronous setState-inside-effect
+      // cascade while the first English frame is still on screen.
+      const id = window.setTimeout(() => setLocaleState(next!), 0);
+      return () => window.clearTimeout(id);
+    }
   }, []);
 
   // Keep <html lang> and text direction in sync (Arabic & Hebrew are RTL).

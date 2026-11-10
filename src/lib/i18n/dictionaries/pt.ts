@@ -25,9 +25,9 @@ const pt: Dictionary = {
   },
   hero: {
     pill: "A Suprema Corte derrubou as tarifas IEEPA por 6–3",
-    titleA: "O mundo tem direito a",
+    titleA: "O mundo tem direito a ",
     titleGold: "dinheiro",
-    titleB: "que já esqueceu.",
+    titleB: " que já esqueceu.",
     subtitle:
       "A RecoveryOS mapeia todos os bancos de dados oficiais de dinheiro não reivindicado do planeta — para a sua empresa e para o seu próprio nome — e depois protocola e acompanha as reivindicações até os cheques chegarem à sua conta.",
     ctaScan: "Executar uma varredura gratuita",

@@ -25,9 +25,9 @@ const pl: Dictionary = {
   },
   hero: {
     pill: "Sąd Najwyższy USA uchylił cła IEEPA stosunkiem 6–3",
-    titleA: "Światowi należą się",
+    titleA: "Światowi należą się ",
     titleGold: "pieniądze",
-    titleB: "o których zapomniał.",
+    titleB: " o których zapomniał.",
     subtitle:
       "RecoveryOS mapuje wszystkie oficjalne bazy nieodebranych pieniędzy na świecie — dla Twojej firmy i na Twoje własne nazwisko — a następnie składa i śledzi roszczenia, dopóki czeki nie wpłyną na Twoje konto.",
     ctaScan: "Uruchom bezpłatny skan",

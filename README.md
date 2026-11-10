@@ -19,6 +19,17 @@ to a government-backed service, never to a paid middleman.
   links to the court-appointed administrators.
 - **IEEPA calculator** — estimate tariff-refund exposure with statutory
   interest for importers.
+- **AI duo** — Goldie, a golden-coin chat assistant in the bottom-right corner
+  that answers questions about unclaimed money in any language (backend uses
+  the ZAI SDK; the chat stores nothing), and Scout, a golden owl detective who
+  roams the site, watches which section you are reading and drops contextual
+  tips. Clicking Scout opens the chat with a pre-filled question.
+- **20 languages** — the whole UI is translated: English, Spanish, Portuguese,
+  French, German, Italian, Dutch, Polish, Ukrainian, Russian, Turkish, Arabic,
+  Hebrew, Hindi, Chinese, Japanese, Korean, Vietnamese, Indonesian and Thai.
+  The choice persists in `localStorage`, auto-detected from the browser on
+  first visit; Arabic and Hebrew flip the page to RTL. AI replies follow the
+  selected interface language.
 
 ## Quick start
 

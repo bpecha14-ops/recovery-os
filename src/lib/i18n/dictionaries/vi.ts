@@ -25,9 +25,9 @@ const vi: Dictionary = {
   },
   hero: {
     pill: "Tối cao Pháp viện Hoa Kỳ bác bỏ thuế IEEPA với tỷ số 6–3",
-    titleA: "Thế giới này đang có",
+    titleA: "Thế giới này đang có ",
     titleGold: "khoản tiền",
-    titleB: "bị lãng quên.",
+    titleB: " bị lãng quên.",
     subtitle:
       "RecoveryOS lập bản đồ mọi cơ sở dữ liệu tiền không người nhận chính thức trên thế giới — cho doanh nghiệp của bạn và cho chính cái tên bạn — rồi làm hồ sơ và theo dõi các khoản cho đến khi tiền về tài khoản.",
     ctaScan: "Chạy quét miễn phí",

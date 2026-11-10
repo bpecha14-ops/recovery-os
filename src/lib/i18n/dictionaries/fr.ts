@@ -25,9 +25,9 @@ const fr: Dictionary = {
   },
   hero: {
     pill: "La Cour suprême a annulé les droits de douane IEEPA par 6–3",
-    titleA: "Le monde entier a oublié",
+    titleA: "Le monde entier a oublié ",
     titleGold: "l’argent",
-    titleB: "qu’on lui doit.",
+    titleB: " qu’on lui doit.",
     subtitle:
       "RecoveryOS cartographie toutes les bases de données officielles d’avoirs non réclamés de la planète — pour votre entreprise comme pour votre propre nom — puis dépose et suit les réclamations jusqu’à l’arrivée des chèques sur votre compte.",
     ctaScan: "Lancer un scan gratuit",

@@ -25,9 +25,9 @@ const es: Dictionary = {
   },
   hero: {
     pill: "La Corte Suprema anuló los aranceles IEEPA por 6–3",
-    titleA: "Al mundo le deben",
+    titleA: "Al mundo le deben ",
     titleGold: "dinero",
-    titleB: "que olvidó.",
+    titleB: " que olvidó.",
     subtitle:
       "RecoveryOS mapea todas las bases de datos oficiales de dinero no reclamado del planeta — para su empresa y para su propio nombre — y luego presenta y da seguimiento a los reclamos hasta que los cheques lleguen a su cuenta.",
     ctaScan: "Ejecutar un escaneo gratuito",

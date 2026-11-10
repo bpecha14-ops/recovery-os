@@ -25,9 +25,9 @@ const de: Dictionary = {
   },
   hero: {
     pill: "Der Supreme Court hat die IEEPA-Zölle mit 6:3 gekippt",
-    titleA: "Der Welt steht",
+    titleA: "Der Welt steht ",
     titleGold: "Geld",
-    titleB: "zu, das sie vergessen hat.",
+    titleB: " zu, das sie vergessen hat.",
     subtitle:
       "RecoveryOS kartiert jede offizielle Datenbank für unbeanspruchtes Geld weltweit — für Ihr Unternehmen und für Ihren eigenen Namen — reicht Ansprüche ein und verfolgt sie, bis die Schecks auf Ihrem Konto eingehen.",
     ctaScan: "Kostenlosen Scan starten",

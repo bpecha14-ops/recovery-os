@@ -39,12 +39,16 @@ function checkStructure(
     if (locNode.trim().length === 0) {
       issues.push(`${path}: empty translation`);
     }
-    const edge = (s: string) =>
-      `${s.startsWith(" ") ? "lead " : ""}${s.endsWith(" ") ? "trail " : ""}`.trim();
-    if (edge(enNode) !== edge(locNode)) {
-      issues.push(
-        `${path}: whitespace edge differs (en: "${edge(enNode) || "none"}" vs locale: "${edge(locNode) || "none"}")`
-      );
+    // Space-based scripts vs CJK: hero title edges are locale-specific.
+    const EDGE_WHITELIST = new Set(["hero.titleA", "hero.titleB"]);
+    if (!EDGE_WHITELIST.has(path)) {
+      const edge = (s: string) =>
+        `${s.startsWith(" ") ? "lead " : ""}${s.endsWith(" ") ? "trail " : ""}`.trim();
+      if (edge(enNode) !== edge(locNode)) {
+        issues.push(
+          `${path}: whitespace edge differs (en: "${edge(enNode) || "none"}" vs locale: "${edge(locNode) || "none"}")`
+        );
+      }
     }
     return;
   }

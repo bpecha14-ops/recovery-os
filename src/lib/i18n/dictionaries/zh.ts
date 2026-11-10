@@ -27,7 +27,7 @@ const zh: Dictionary = {
     pill: "美国最高法院以 6–3 裁定 IEEPA 关税无效",
     titleA: "全世界都有一笔被遗忘的",
     titleGold: "资金",
-    titleB: "在等待物归原主。",
+    titleB: "正在等待物归原主。",
     subtitle:
       "RecoveryOS 为地球上的每一座官方无主资金数据库绘制了地图——既为你的企业，也为你的个人姓名——随后代为准备、提交并追踪每一笔申领，直到款项汇入你的账户。",
     ctaScan: "开始免费扫描",

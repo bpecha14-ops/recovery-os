@@ -67,8 +67,9 @@ export function Hero() {
           transition={{ ...spring, delay: 0.14 }}
           className="mx-auto mt-8 max-w-4xl text-balance text-center text-5xl font-bold leading-[1.02] tracking-tighter text-white sm:text-7xl lg:text-[5.25rem]"
         >
-          {t("hero.titleA")} <span className="text-gradient-gold">{t("hero.titleGold")}{" "}
-          </span>{t("hero.titleB")}
+          {t("hero.titleA")}
+          <span className="text-gradient-gold">{t("hero.titleGold")}</span>
+          {t("hero.titleB")}
         </motion.h1>
 
         <motion.p

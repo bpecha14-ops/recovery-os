@@ -25,9 +25,9 @@ const it: Dictionary = {
   },
   hero: {
     pill: "La Corte Suprema ha respinto i dazi IEEPA per 6–3",
-    titleA: "Il mondo ha diritto a",
+    titleA: "Il mondo ha diritto a ",
     titleGold: "denaro",
-    titleB: "che ha dimenticato.",
+    titleB: " che ha dimenticato.",
     subtitle:
       "RecoveryOS mappa ogni database ufficiale di denaro non reclamato al mondo — per la sua azienda e per il suo nome — poi prepara e segue le richieste finché gli assegni non arrivano sul suo conto.",
     ctaScan: "Esegui una scansione gratuita",
