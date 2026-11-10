@@ -41,6 +41,7 @@ import {
   type Region,
   type SourceType,
 } from "@/lib/world-registry";
+import { useI18n } from "@/lib/i18n/context";
 import { Reveal, Spotlight, CountUp, LiveClock, Marquee, TypeCycle, GoldenStream } from "./effects";
 
 const TYPE_ICONS: Record<SourceType, typeof Landmark> = {
@@ -54,23 +55,7 @@ const TYPE_ICONS: Record<SourceType, typeof Landmark> = {
   court: Gavel,
 };
 
-const PRINCIPLES = [
-  {
-    icon: HandHeart,
-    title: "Free forever — DIY-first",
-    text: "We tell you exactly how to file yourself, in minutes. No middleman required, ever. No paid tiers for people, period.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Official links only",
-    text: "Every entry points to the government database, central bank or court-appointed administrator. No lookalikes.",
-  },
-  {
-    icon: RefreshCw,
-    title: "Living data",
-    text: "New registries go live every quarter. The library tracks them continuously so your checklist never goes stale.",
-  },
-];
+const PRINCIPLE_ICONS = [HandHeart, ShieldCheck, RefreshCw];
 
 interface ScanResult {
   countries: string[];
@@ -78,20 +63,13 @@ interface ScanResult {
   totalSources: number;
 }
 
-const MONEY_WORDS = [
-  "dormant accounts",
-  "lost pensions",
-  "unclaimed dividends",
-  "ownerless estates",
-  "forgotten deposits",
-  "uncashed checks",
-];
-
-const COUNTRY_TICKER = WORLD_COUNTRIES.map(
-  (c) => `${c.flag} ${c.name}${c.status === "live" ? " — live" : " — in the lab"}`
-);
-
 export function Library() {
+  const { t, tArr } = useI18n();
+
+  const moneyWords = tArr<string>("library.moneyWords");
+  const statItems = tArr<{ label: string }>("library.stats");
+  const principles = tArr<{ title: string; text: string }>("library.principles");
+
   // --- free global search state ---
   const [fullName, setFullName] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
@@ -126,6 +104,15 @@ export function Library() {
     );
   }, [pickerQuery]);
 
+  const countryTicker = useMemo(
+    () =>
+      WORLD_COUNTRIES.map(
+        (c) =>
+          `${c.flag} ${c.name}${c.status === "live" ? t("library.tickerLive") : t("library.tickerInLab")}`
+      ),
+    [t]
+  );
+
   const toggleCountry = (code: string) => {
     setResult(null);
     setSelected((prev) =>
@@ -136,11 +123,11 @@ export function Library() {
   const runSearch = async () => {
     setError(null);
     if (fullName.trim().length < 2) {
-      setError("Tell us the name to search for.");
+      setError(t("library.errorNameRequired"));
       return;
     }
     if (selected.length === 0) {
-      setError("Pick at least one country you've lived, worked or banked in.");
+      setError(t("library.errorNoCountries"));
       return;
     }
     setLoading(true);
@@ -154,12 +141,12 @@ export function Library() {
       });
       const json = await res.json();
       if (!res.ok) {
-        setError(json.error ?? "Search failed. Try again.");
+        setError(json.error ?? t("library.errorSearchFailed"));
         return;
       }
       setResult(json as ScanResult);
     } catch {
-      setError("Network error — try again.");
+      setError(t("library.errorNetwork"));
     } finally {
       setLoading(false);
     }
@@ -191,20 +178,18 @@ export function Library() {
         <Reveal className="max-w-3xl">
           <p className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.2em] text-amber-400/90">
             <span className="hairline-gold w-8" aria-hidden="true" />
-            The World Library
+            {t("library.eyebrow")}
           </p>
           <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-5xl sm:leading-[1.05]">
-            Every official unclaimed-money database on Earth.{" "}
-            <span className="text-gradient-gold">Free forever.</span>
+            {t("library.heading")}{" "}
+            <span className="text-gradient-gold">{t("library.headingGold")}</span>
           </h2>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-zinc-400">
-            Not just America, and not just businesses. Money sits forgotten under
-            bureaucracy in every major economy —{" "}
+            {t("library.leadBefore")}{" "}
             <span className="font-medium text-amber-200">
-              <TypeCycle words={MONEY_WORDS} />
+              <TypeCycle words={moneyWords} />
             </span>
-            . The World Library indexes the official door to each one, for
-            anyone, for $0.
+            {t("library.leadAfter")}
           </p>
         </Reveal>
 
@@ -215,29 +200,25 @@ export function Library() {
               {
                 value: WORLD_COUNTRIES.length,
                 format: (n: number) => Math.round(n).toString(),
-                label: "markets indexed",
                 live: true,
               },
               {
                 value: liveCount,
                 format: (n: number) => Math.round(n).toString(),
-                label: "registries live today",
                 live: true,
               },
               {
                 value: WORLD_SOURCE_COUNT,
                 format: (n: number) => Math.round(n).toString(),
-                label: "official sources verified",
                 live: false,
               },
               {
                 value: WORLD_VERIFIED_USD_B,
                 format: (n: number) => `$${Math.round(n)}B+`,
-                label: "verified waiting to be claimed",
                 live: false,
               },
             ].map((s, i) => (
-              <div key={s.label} className="relative bg-[#0a0a0c] p-5">
+              <div key={statItems[i]?.label ?? i} className="relative bg-[#0a0a0c] p-5">
                 <div className="tabular text-3xl font-bold tracking-tight text-gradient-gold">
                   <CountUp to={s.value} format={s.format} delay={0.15 + i * 0.1} />
                 </div>
@@ -248,7 +229,7 @@ export function Library() {
                       aria-hidden="true"
                     />
                   )}
-                  {s.label}
+                  {statItems[i]?.label}
                 </div>
               </div>
             ))}
@@ -258,10 +239,10 @@ export function Library() {
         {/* The world, rolling — flags never sleep */}
         <Reveal delay={0.12} className="mt-5">
           <Marquee
-            items={COUNTRY_TICKER.map((t) => (
-              <span key={t} className="flex items-center gap-2.5 text-xs tracking-wide text-amber-200/50">
+            items={countryTicker.map((item) => (
+              <span key={item} className="flex items-center gap-2.5 text-xs tracking-wide text-amber-200/50">
                 <span className="h-1 w-1 rounded-full bg-amber-400/70" aria-hidden="true" />
-                {t}
+                {item}
               </span>
             ))}
             itemClassName="pr-10"
@@ -286,8 +267,8 @@ export function Library() {
             <div className="relative">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <h3 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
-                  Find the money bureaucracy forgot —{" "}
-                  <span className="text-gradient-gold">under your own name.</span>
+                  {t("library.searchTitle")}{" "}
+                  <span className="text-gradient-gold">{t("library.searchTitleGold")}</span>
                 </h3>
                 <span className="inline-flex shrink-0 items-center gap-2 rounded-full border border-amber-400/25 bg-black px-3 py-1 text-[11px] font-medium text-amber-200/80">
                   <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-amber-400" aria-hidden="true" />
@@ -295,19 +276,18 @@ export function Library() {
                 </span>
               </div>
               <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-400">
-                One name, your countries. We&apos;ll build your personal checklist of
-                official databases to search — every entry free, every link official.
+                {t("library.searchLead")}
               </p>
 
               <div className="mt-6">
                 <label htmlFor="lib-name" className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-                  Name to search — stays in your browser, never sent anywhere
+                  {t("library.nameLabel")}
                 </label>
                 <Input
                   id="lib-name"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder="e.g. Maria Gonzalez"
+                  placeholder={t("library.namePlaceholder")}
                   className="mt-2 h-11 border-amber-400/20 bg-[#050506] text-white placeholder:text-zinc-600 focus-visible:ring-amber-400"
                 />
               </div>
@@ -316,10 +296,10 @@ export function Library() {
               <div className="mt-5">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <label className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-                    Countries you&apos;ve lived, worked or banked in
+                    {t("library.countriesLabel")}
                   </label>
                   <span className="tabular text-xs text-zinc-500">
-                    {selected.length}/8 selected
+                    {t("library.selectedCount", { count: selected.length })}
                   </span>
                 </div>
                 <div className="mt-2 well-black rounded-xl p-4">
@@ -328,7 +308,7 @@ export function Library() {
                     <Input
                       value={pickerQuery}
                       onChange={(e) => setPickerQuery(e.target.value)}
-                      placeholder={`Search ${WORLD_COUNTRIES.length} markets — USA, UK, Kenya, Malaysia…`}
+                      placeholder={t("library.pickerPlaceholder", { count: WORLD_COUNTRIES.length })}
                       className="h-10 border-amber-400/15 bg-[#050506] pl-9 text-sm text-white placeholder:text-zinc-600 focus-visible:ring-amber-400"
                     />
                   </div>
@@ -354,7 +334,7 @@ export function Library() {
                     })}
                     {pickerCountries.length === 0 && (
                       <p className="px-1 py-1.5 text-xs text-zinc-600">
-                        No market matches “{pickerQuery}” — try the full name, e.g. “Japan”.
+                        {t("library.pickerNoMatch", { query: pickerQuery })}
                       </p>
                     )}
                   </div>
@@ -379,12 +359,10 @@ export function Library() {
                   ) : (
                     <Search className="mr-2 h-4 w-4" aria-hidden="true" />
                   )}
-                  Build my free checklist
+                  {t("library.buildChecklist")}
                 </Button>
                 <p className="max-w-sm text-xs leading-relaxed text-zinc-500">
-                  Free forever, no tiers. We keep your search on file so we can alert
-                  you when new registries go live for your countries — that&apos;s the
-                  entire model. Delete anytime.
+                  {t("library.searchPrivacy")}
                 </p>
               </div>
 
@@ -395,23 +373,23 @@ export function Library() {
                     <div>
                       <p className="flex items-center gap-2 text-sm font-semibold text-amber-300">
                         <Check className="h-4 w-4" aria-hidden="true" />
-                        Checklist ready for {result.countries.length}{" "}
-                        {result.countries.length === 1 ? "country" : "countries"}
+                        {result.countries.length === 1
+                          ? t("library.checklistReadyOne", { count: result.countries.length })
+                          : t("library.checklistReadyMany", { count: result.countries.length })}
                       </p>
                       <p className="mt-1 text-2xl font-bold tracking-tight text-white">
                         <span className="tabular">{result.totalSources}</span>{" "}
-                        <span className="text-gradient-gold">official databases</span>{" "}
-                        to search
+                        <span className="text-gradient-gold">{t("library.officialDatabases")}</span>{" "}
+                        {t("library.toSearch")}
                       </p>
                       <p className="mt-1 text-xs text-zinc-500">
-                        Nothing was saved — only you can see this checklist.
-                        Work through the list — most entries take under 10 minutes.
+                        {t("library.resultPrivacy")}
                       </p>
                     </div>
                     <button
                       onClick={() => setResult(null)}
                       className="rounded-md p-1 text-amber-200/50 transition-colors hover:bg-amber-400/10 hover:text-amber-200"
-                      aria-label="Close results"
+                      aria-label={t("library.closeResults")}
                     >
                       <X className="h-4 w-4" aria-hidden="true" />
                     </button>
@@ -424,7 +402,7 @@ export function Library() {
                           <span aria-hidden="true">{sources[0].flag}</span>
                           {countryName}
                           <span className="text-xs font-normal text-zinc-500">
-                            · {sources.length} databases
+                            · {t("library.databasesCount", { count: sources.length })}
                           </span>
                         </p>
                         <ul className="mt-2 divide-y divide-white/[0.05]">
@@ -451,7 +429,7 @@ export function Library() {
                                   rel="noopener noreferrer"
                                   className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-amber-400/25 bg-amber-400/[0.07] px-3 py-1.5 text-xs font-medium text-amber-200 transition-colors hover:bg-amber-400/[0.14]"
                                 >
-                                  Open official search
+                                  {t("library.openOfficialSearch")}
                                   <ExternalLink className="h-3 w-3" aria-hidden="true" />
                                 </a>
                               ) : (
@@ -459,7 +437,7 @@ export function Library() {
                                   href={s.url}
                                   className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-amber-400/25 bg-amber-400/[0.07] px-3 py-1.5 text-xs font-medium text-amber-200 transition-colors hover:bg-amber-400/[0.14]"
                                 >
-                                  Open tracker
+                                  {t("library.openTracker")}
                                   <ArrowRight className="h-3 w-3" aria-hidden="true" />
                                 </a>
                               )}
@@ -480,7 +458,7 @@ export function Library() {
           <div
             className="inline-flex flex-wrap rounded-full border border-amber-400/[0.18] bg-black p-1"
             role="tablist"
-            aria-label="World regions"
+            aria-label={t("library.regionsAriaLabel")}
           >
             {REGIONS.map((r) => {
               const count =
@@ -534,20 +512,25 @@ export function Library() {
                         <h3 className="text-lg font-semibold text-white">{c.name}</h3>
                         <p className="text-[11px] uppercase tracking-wide text-zinc-500">
                           {c.sources.length > 0
-                            ? `${c.sources.length} official ${c.sources.length === 1 ? "source" : "sources"}`
-                            : "In the lab"}
+                            ? t(
+                                c.sources.length === 1
+                                  ? "library.sourceCountOne"
+                                  : "library.sourceCountMany",
+                                { count: c.sources.length }
+                              )
+                            : t("library.inTheLab")}
                         </p>
                       </div>
                     </div>
                     {c.status === "live" ? (
                       <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/25 bg-emerald-400/[0.08] px-2.5 py-1 text-[11px] font-medium text-emerald-300">
                         <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden="true" />
-                        Live
+                        {t("library.badgeLive")}
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/[0.16] bg-amber-400/[0.05] px-2.5 py-1 text-[11px] font-medium text-amber-200/60">
                         <FlaskConical className="h-3 w-3" aria-hidden="true" />
-                        Researching
+                        {t("library.badgeResearching")}
                       </span>
                     )}
                   </div>
@@ -569,7 +552,7 @@ export function Library() {
                         onClick={() => setOpenCountry(c)}
                         className="inline-flex items-center gap-1.5 text-sm font-medium text-amber-300 transition-colors hover:text-amber-200"
                       >
-                        View the sources
+                        {t("library.viewSources")}
                         <ArrowRight
                           className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"
                           aria-hidden="true"
@@ -577,7 +560,7 @@ export function Library() {
                       </button>
                     ) : (
                       <p className="text-xs text-zinc-600">
-                        Launches here as we verify the claim paths.
+                        {t("library.launchesHere")}
                       </p>
                     )}
                   </div>
@@ -606,17 +589,14 @@ export function Library() {
               <div className="max-w-2xl">
                 <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-amber-300/90">
                   <Search className="h-4 w-4" aria-hidden="true" />
-                  Found $40 for yourself?
+                  {t("library.referralEyebrow")}
                 </p>
                 <h3 className="mt-3 text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                  Your business is owed{" "}
-                  <span className="text-gradient-gold">100× more.</span>
+                  {t("library.referralTitle")}{" "}
+                  <span className="text-gradient-gold">{t("library.referralTitleGold")}</span>
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-zinc-400 sm:text-base">
-                  The same bureaucracy, at company scale: tariff refunds on every
-                  import, class actions on every purchase order, drawback on every
-                  re-export. Point the scanner at your company&apos;s books and see
-                  the real number.
+                  {t("library.referralText")}
                 </p>
               </div>
               <a href="#scanner" className="w-full shrink-0 lg:w-auto">
@@ -624,7 +604,7 @@ export function Library() {
                   size="lg"
                   className="h-12 w-full bg-gradient-to-b from-amber-200 via-amber-400 to-amber-500 px-7 text-base font-semibold text-zinc-950 shadow-[0_0_40px_-10px_rgba(251,191,36,0.6)] transition-all hover:brightness-110 lg:w-auto"
                 >
-                  Run the business scan
+                  {t("library.runBusinessScan")}
                   <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
                 </Button>
               </a>
@@ -634,26 +614,29 @@ export function Library() {
 
         {/* Principles strip */}
         <div className="mt-14 grid gap-6 border-t border-white/[0.06] pt-10 md:grid-cols-3">
-          {PRINCIPLES.map((p, i) => (
-            <Reveal key={p.title} delay={i * 0.08} className="flex gap-4">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-amber-400/20 bg-amber-400/[0.07]">
-                <p.icon className="h-4.5 w-4.5 text-amber-300" aria-hidden="true" />
-              </span>
-              <div>
-                <h4 className="text-sm font-semibold text-white">{p.title}</h4>
-                <p className="mt-1.5 text-sm leading-relaxed text-zinc-500">{p.text}</p>
-              </div>
-            </Reveal>
-          ))}
+          {principles.map((p, i) => {
+            const Icon = PRINCIPLE_ICONS[i] ?? PRINCIPLE_ICONS[0];
+            return (
+              <Reveal key={p.title} delay={i * 0.08} className="flex gap-4">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-amber-400/20 bg-amber-400/[0.07]">
+                  <Icon className="h-4.5 w-4.5 text-amber-300" aria-hidden="true" />
+                </span>
+                <div>
+                  <h4 className="text-sm font-semibold text-white">{p.title}</h4>
+                  <p className="mt-1.5 text-sm leading-relaxed text-zinc-500">{p.text}</p>
+                </div>
+              </Reveal>
+            );
+          })}
         </div>
 
         <Reveal delay={0.1}>
           <p className="mt-10 flex items-start gap-2 text-xs leading-relaxed text-zinc-600">
             <BookOpen className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-400/60" aria-hidden="true" />
-            Figures compiled from official program disclosures and major press as of
-            late 2026 — Bank of Canada, UK Pension Policy Institute, ASIC Moneysmart,
-            Ciclade/CDC, RBI UDGAM, IEPFA, Banco Central (SVR), ASISA/FSCA, KIFIN,
-            NTMA, IRD. Always verify on the official site before acting.
+            {t("library.footnoteIntro")}{" "}
+            Bank of Canada, UK Pension Policy Institute, ASIC Moneysmart, Ciclade/CDC,
+            RBI UDGAM, IEPFA, Banco Central (SVR), ASISA/FSCA, KIFIN, NTMA, IRD.{" "}
+            {t("library.footnoteOutro")}
           </p>
         </Reveal>
       </div>
@@ -671,7 +654,7 @@ export function Library() {
                   <span>
                     {openCountry.name}
                     <span className="ml-2 text-sm font-normal text-zinc-500">
-                      {openCountry.sources.length} official sources
+                      {t("library.officialSourcesCount", { count: openCountry.sources.length })}
                     </span>
                   </span>
                 </DialogTitle>
@@ -717,7 +700,7 @@ export function Library() {
                             rel="noopener noreferrer"
                             className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-amber-400/25 bg-amber-400/[0.07] px-3 py-1.5 text-xs font-medium text-amber-200 transition-colors hover:bg-amber-400/[0.14]"
                           >
-                            Official site
+                            {t("library.officialSite")}
                             <ExternalLink className="h-3 w-3" aria-hidden="true" />
                           </a>
                         )}
@@ -740,7 +723,7 @@ export function Library() {
                 className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-b from-amber-200 via-amber-400 to-amber-500 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition-all hover:brightness-110"
               >
                 <Check className="h-4 w-4" aria-hidden="true" />
-                Add {openCountry.name} to my free search
+                {t("library.addToSearch", { country: openCountry.name })}
               </button>
             </>
           )}

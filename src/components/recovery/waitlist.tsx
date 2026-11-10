@@ -15,18 +15,20 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, CheckCircle2 } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 import { Reveal, CountUp, GoldenStream } from "./effects";
 
-const CHANNEL_OPTIONS = [
-  { id: "settlements", label: "Class action settlements" },
-  { id: "ieepa", label: "IEEPA tariff refunds" },
-  { id: "drawback", label: "Duty drawback" },
-  { id: "freight", label: "Freight & parcel audits" },
-];
+// Stable ids and values submitted to the API — display labels come from the dictionary.
+const CHANNEL_IDS = ["settlements", "ieepa", "drawback", "freight"];
 
-const VOLUMES = ["Under $10K", "$10–50K", "$50–250K", "$250K–1M", "Over $1M"];
+const VOLUME_VALUES = ["Under $10K", "$10–50K", "$50–250K", "$250K–1M", "Over $1M"];
 
 export function Waitlist() {
+  const { t, tArr } = useI18n();
+  const perks = tArr<string>("waitlist.perks");
+  const volumeLabels = tArr<string>("waitlist.volumeOptions");
+  const channelLabels = tArr<string>("waitlist.channelOptions");
+
   const [email, setEmail] = useState("");
   const [company, setCompany] = useState("");
   const [volume, setVolume] = useState<string>("");
@@ -38,7 +40,10 @@ export function Waitlist() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email.includes("@")) {
-      toast({ title: "Enter a valid email", description: "One address is enough." });
+      toast({
+        title: t("waitlist.invalidEmailTitle"),
+        description: t("waitlist.invalidEmailDescription"),
+      });
       return;
     }
     setLoading(true);
@@ -57,13 +62,13 @@ export function Waitlist() {
       if (!res.ok) throw new Error("failed");
       setDone(true);
       toast({
-        title: "You're on the list",
-        description: "Launch spots go in order of signup. Watch your inbox.",
+        title: t("waitlist.joinedToastTitle"),
+        description: t("waitlist.joinedToastDescription"),
       });
     } catch {
       toast({
-        title: "Something went wrong",
-        description: "Please try again in a moment.",
+        title: t("waitlist.errorToastTitle"),
+        description: t("waitlist.errorToastDescription"),
       });
     } finally {
       setLoading(false);
@@ -106,25 +111,23 @@ export function Waitlist() {
                 />
                 <div className="relative">
                   <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-300/90">
-                    Launch list
+                    {t("waitlist.eyebrow")}
                   </p>
                   <h2 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
-                    Found money should find{" "}
-                    <span className="text-gradient-gold">you first.</span>
+                    {t("waitlist.headingA")}{" "}
+                    <span className="text-gradient-gold">{t("waitlist.headingGold")}</span>
                   </h2>
                   <p className="mt-4 text-sm leading-relaxed text-zinc-400">
-                    Launch spots include 12 months of monitoring free,
-                    founding-member success fee pricing (8%), and a first-pass
-                    scan of your 2024–2026 purchases against every open fund.
+                    {t("waitlist.lead")}
                   </p>
                   <ul className="mt-6 space-y-2.5 text-sm text-zinc-300">
                     <li className="flex items-center gap-2.5">
                       <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-amber-400" aria-hidden="true" />
-                      No card, no commitment
+                      {perks[0] ?? ""}
                     </li>
                     <li className="flex items-center gap-2.5">
                       <span className="h-1.5 w-1.5 rounded-full bg-amber-400" aria-hidden="true" />
-                      Cancel anytime once live
+                      {perks[1] ?? ""}
                     </li>
                   </ul>
 
@@ -132,7 +135,7 @@ export function Waitlist() {
                   <div className="mt-7 rounded-xl border border-amber-400/[0.16] bg-[#050506] p-4">
                     <div className="flex items-baseline justify-between gap-2">
                       <p className="text-xs font-medium uppercase tracking-wide text-amber-300/70">
-                        Launch spots claimed
+                        {t("waitlist.spotsClaimed")}
                       </p>
                       <p className="tabular text-sm font-bold text-gradient-gold">
                         <CountUp to={21} duration={1.4} /> / 50
@@ -145,7 +148,7 @@ export function Waitlist() {
                       />
                     </div>
                     <p className="mt-2 text-[11px] leading-relaxed text-zinc-500">
-                      Spots go in order of signup — the bar only moves one way.
+                      {t("waitlist.spotsNote")}
                     </p>
                   </div>
                 </div>
@@ -156,67 +159,64 @@ export function Waitlist() {
                   <div className="flex h-full flex-col items-center justify-center text-center">
                     <CheckCircle2 className="h-12 w-12 text-amber-400" aria-hidden="true" />
                     <h3 className="mt-4 text-xl font-semibold text-white">
-                      You're in. Welcome aboard.
+                      {t("waitlist.successTitle")}
                     </h3>
                     <p className="mt-2 max-w-sm text-sm leading-relaxed text-zinc-400">
-                      We'll send your launch onboarding and the document
-                      checklist for the funds closest to closing. If you
-                      imported anything under the 2025 tariffs, reply with a
-                      rough duty figure and we'll start the IEEPA estimate.
+                      {t("waitlist.successText")}
                     </p>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-5">
                     <div className="grid gap-5 sm:grid-cols-2">
                       <div className="space-y-2">
-                        <Label htmlFor="wl-email" className="text-zinc-300">Work email *</Label>
+                        <Label htmlFor="wl-email" className="text-zinc-300">{t("waitlist.emailLabel")}</Label>
                         <Input
                           id="wl-email"
                           type="email"
-                          placeholder="cfo@company.com"
+                          placeholder={t("waitlist.emailPlaceholder")}
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           required
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="wl-company" className="text-zinc-300">Company</Label>
+                        <Label htmlFor="wl-company" className="text-zinc-300">{t("waitlist.companyLabel")}</Label>
                         <Input
                           id="wl-company"
-                          placeholder="Company name"
+                          placeholder={t("waitlist.companyPlaceholder")}
                           value={company}
                           onChange={(e) => setCompany(e.target.value)}
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="wl-volume" className="text-zinc-300">Monthly purchase volume</Label>
+                      <Label htmlFor="wl-volume" className="text-zinc-300">{t("waitlist.volumeLabel")}</Label>
                       <Select value={volume} onValueChange={setVolume}>
                         <SelectTrigger id="wl-volume" className="w-full">
-                          <SelectValue placeholder="Select a range" />
+                          <SelectValue placeholder={t("waitlist.volumePlaceholder")} />
                         </SelectTrigger>
                         <SelectContent>
-                          {VOLUMES.map((v) => (
+                          {VOLUME_VALUES.map((v, i) => (
                             <SelectItem key={v} value={v}>
-                              {v}
+                              {volumeLabels[i] ?? v}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-zinc-300">Which recoveries interest you?</Label>
+                      <Label className="text-zinc-300">{t("waitlist.channelsLabel")}</Label>
                       <div className="grid gap-2 sm:grid-cols-2">
-                        {CHANNEL_OPTIONS.map((c) => (
+                        {CHANNEL_IDS.map((id, i) => (
                           <label
-                            key={c.id}
+                            key={id}
                             className="flex cursor-pointer items-center gap-2 rounded-lg border border-amber-400/[0.16] bg-[#050506] px-3 py-2.5 text-sm text-zinc-300 transition-colors hover:border-amber-400/40 hover:bg-amber-400/[0.05] has-[:checked]:border-amber-400/60 has-[:checked]:bg-amber-400/10"
                           >
                             <Checkbox
-                              checked={channels.includes(c.id)}
-                              onCheckedChange={() => toggleChannel(c.id)}
+                              checked={channels.includes(id)}
+                              onCheckedChange={() => toggleChannel(id)}
                             />
-                            {c.label}
+                            {channelLabels[i] ?? ""}
                           </label>
                         ))}
                       </div>
@@ -228,10 +228,10 @@ export function Waitlist() {
                       className="btn-shimmer w-full bg-gradient-to-b from-amber-200 via-amber-400 to-amber-500 font-semibold text-zinc-950 shadow-[0_0_36px_-10px_rgba(251,191,36,0.6)] transition-all hover:brightness-110"
                     >
                       {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />}
-                      {loading ? "Saving…" : "Claim my launch spot"}
+                      {loading ? t("waitlist.savingLabel") : t("waitlist.submitLabel")}
                     </Button>
                     <p className="text-center text-xs text-zinc-600">
-                      We email about your money, nothing else. One click to leave.
+                      {t("waitlist.privacyNote")}
                     </p>
                   </form>
                 )}

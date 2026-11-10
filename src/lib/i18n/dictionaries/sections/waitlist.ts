@@ -1,0 +1,37 @@
+export default {
+  eyebrow: "Launch list",
+  headingA: "Found money should find",
+  headingGold: "you first.",
+  lead:
+    "Launch spots include 12 months of monitoring free, founding-member success fee pricing (8%), and a first-pass scan of your 2024–2026 purchases against every open fund.",
+  perks: ["No card, no commitment", "Cancel anytime once live"],
+  spotsClaimed: "Launch spots claimed",
+  spotsNote: "Spots go in order of signup — the bar only moves one way.",
+  successTitle: "You're in. Welcome aboard.",
+  successText:
+    "We'll send your launch onboarding and the document checklist for the funds closest to closing. If you imported anything under the 2025 tariffs, reply with a rough duty figure and we'll start the IEEPA estimate.",
+  emailLabel: "Work email *",
+  emailPlaceholder: "cfo@company.com",
+  companyLabel: "Company",
+  companyPlaceholder: "Company name",
+  volumeLabel: "Monthly purchase volume",
+  volumePlaceholder: "Select a range",
+  volumeOptions: ["Under $10K", "$10–50K", "$50–250K", "$250K–1M", "Over $1M"],
+  channelsLabel: "Which recoveries interest you?",
+  channelOptions: [
+    "Class action settlements",
+    "IEEPA tariff refunds",
+    "Duty drawback",
+    "Freight & parcel audits",
+  ],
+  submitLabel: "Claim my launch spot",
+  savingLabel: "Saving…",
+  privacyNote: "We email about your money, nothing else. One click to leave.",
+  invalidEmailTitle: "Enter a valid email",
+  invalidEmailDescription: "One address is enough.",
+  joinedToastTitle: "You're on the list",
+  joinedToastDescription:
+    "Launch spots go in order of signup. Watch your inbox.",
+  errorToastTitle: "Something went wrong",
+  errorToastDescription: "Please try again in a moment.",
+};

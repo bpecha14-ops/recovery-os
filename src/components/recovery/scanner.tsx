@@ -18,6 +18,7 @@ import {
   type ScanResults,
 } from "@/lib/scan-engine";
 import { fmtUSD, fmtDate, STATUS_META } from "@/lib/recovery-data";
+import { useI18n } from "@/lib/i18n/context";
 import {
   UploadCloud,
   FileWarning,
@@ -39,6 +40,7 @@ export function Scanner() {
   const [claimFor, setClaimFor] = useState<string | null>(null);
   const [claimOpen, setClaimOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { t } = useI18n();
   const { toast } = useToast();
 
   const preview = useMemo(() => {
@@ -51,8 +53,8 @@ export function Scanner() {
     if (!file) return;
     if (file.size > 5_000_000) {
       toast({
-        title: "File too large",
-        description: "Keep exports under 5 MB (~100k rows).",
+        title: t("scanner.toasts.fileTooLargeTitle"),
+        description: t("scanner.toasts.fileTooLargeBody"),
       });
       return;
     }
@@ -69,8 +71,8 @@ export function Scanner() {
     setResults(null);
     setError(null);
     toast({
-      title: "Sample data loaded",
-      description: "14 rows from a fictional mid-size food distributor & importer.",
+      title: t("scanner.toasts.sampleLoadedTitle"),
+      description: t("scanner.toasts.sampleLoadedBody"),
     });
   }
 
@@ -83,9 +85,7 @@ export function Scanner() {
     try {
       const data = runScan(csvText);
       if (data.usableRows === 0) {
-        setError(
-          "No usable rows found. Expected columns like Date, Description, Amount (CSV or TSV, exported from QuickBooks, Stripe or your bank)."
-        );
+        setError(t("scanner.errors.noUsableRows"));
         return;
       }
       setResults(data);
@@ -132,17 +132,15 @@ export function Scanner() {
         <div className="mx-auto max-w-2xl text-center">
           <p className="flex items-center justify-center gap-3 text-sm font-semibold uppercase tracking-[0.2em] text-amber-400/90">
             <span className="hairline-gold w-8" aria-hidden="true" />
-            Free scanner
+            {t("scanner.eyebrow")}
             <span className="hairline-gold w-8" aria-hidden="true" />
           </p>
           <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-5xl sm:leading-[1.05]">
-            Point us at your purchases.{" "}
-            <span className="text-gradient-gold">We'll find the money.</span>
+            {t("scanner.headingA")}{" "}
+            <span className="text-gradient-gold">{t("scanner.headingGold")}</span>
           </h2>
           <p className="mt-5 text-lg leading-relaxed text-zinc-400">
-            No account, no upload to third parties — paste an export from
-            QuickBooks, Stripe or your bank and the engine matches every line
-            against live recovery channels.
+            {t("scanner.lead")}
           </p>
         </div>
 
@@ -156,22 +154,22 @@ export function Scanner() {
               <div className="space-y-6">
                 <Tabs defaultValue="upload">
                   <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="upload">Upload CSV</TabsTrigger>
-                    <TabsTrigger value="paste">Paste data</TabsTrigger>
+                    <TabsTrigger value="upload">{t("scanner.tabs.upload")}</TabsTrigger>
+                    <TabsTrigger value="paste">{t("scanner.tabs.paste")}</TabsTrigger>
                   </TabsList>
                   <TabsContent value="upload" className="mt-4">
                     <button
                       type="button"
                       onClick={() => inputRef.current?.click()}
                       className="group flex w-full flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-amber-400/[0.28] bg-black px-6 py-12 text-amber-200/50 transition-all hover:border-amber-400/55 hover:bg-amber-400/[0.04] hover:text-amber-300"
-                      aria-label="Choose a purchases CSV file"
+                      aria-label={t("scanner.upload.chooseAriaLabel")}
                     >
                       <UploadCloud className="h-8 w-8 transition-transform duration-300 group-hover:-translate-y-0.5" aria-hidden="true" />
                       <span className="text-sm font-medium">
-                        {fileName ?? "Click to choose a CSV / TSV file"}
+                        {fileName ?? t("scanner.upload.choose")}
                       </span>
                       <span className="text-xs text-zinc-600">
-                        Expected columns: Date, Description, Amount
+                        {t("scanner.upload.expectedColumns")}
                       </span>
                     </button>
                     <Input
@@ -186,11 +184,11 @@ export function Scanner() {
                   <TabsContent value="paste" className="mt-4">
                     <div className="space-y-2">
                       <Label htmlFor="csv-paste" className="sr-only">
-                        Paste purchase rows
+                        {t("scanner.paste.label")}
                       </Label>
                       <Textarea
                         id="csv-paste"
-                        placeholder={"Date,Description,Amount\n2025-04-18,IEEPA tariff — China parts,28500\n2016-09-02,Bacon slab — Smithfield,4120.50"}
+                        placeholder={t("scanner.paste.placeholder")}
                         rows={7}
                         value={csvText}
                         onChange={(e) => {
@@ -200,8 +198,7 @@ export function Scanner() {
                         className="font-mono text-xs"
                       />
                       <p className="text-xs text-zinc-500">
-                        CSV or TSV, one purchase per line. QuickBooks, Stripe,
-                        Xero and most bank exports work as-is.
+                        {t("scanner.paste.hint")}
                       </p>
                     </div>
                   </TabsContent>
@@ -215,10 +212,10 @@ export function Scanner() {
                     className="text-amber-300 hover:bg-amber-400/10 hover:text-amber-200"
                   >
                     <Sparkles className="mr-1.5 h-4 w-4" aria-hidden="true" />
-                    No data handy? Load a realistic sample
+                    {t("scanner.loadSample")}
                   </Button>
                   <span className="text-xs text-zinc-600">
-                    We store aggregate scan stats only — never your rows.
+                    {t("scanner.privacyNote")}
                   </span>
                 </div>
 
@@ -227,13 +224,15 @@ export function Scanner() {
                     <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-sm">
                       <span className="text-zinc-400">
                         <strong className="tabular text-amber-200">{preview.rows.length}</strong>{" "}
-                        usable rows
+                        {t("scanner.preview.usableRowsLabel")}
                       </span>
                       {preview.skipped > 0 && (
-                        <span className="text-zinc-500">{preview.skipped} skipped</span>
+                        <span className="text-zinc-500">
+                          {t("scanner.preview.skipped", { count: preview.skipped })}
+                        </span>
                       )}
                       <span className="text-zinc-400">
-                        Total spend:{" "}
+                        {t("scanner.preview.totalSpendLabel")}{" "}
                         <strong className="tabular text-amber-200">
                           {fmtUSD(preview.rows.reduce((a, r) => a + r.amount, 0))}
                         </strong>
@@ -249,9 +248,9 @@ export function Scanner() {
                       <table className="gold-table w-full text-left text-xs">
                         <thead className="sticky top-0 bg-black text-[11px] uppercase tracking-wide">
                           <tr>
-                            <th className="px-3 py-2">Date</th>
-                            <th className="px-3 py-2">Description</th>
-                            <th className="px-3 py-2 text-right">Amount</th>
+                            <th className="px-3 py-2">{t("scanner.preview.colDate")}</th>
+                            <th className="px-3 py-2">{t("scanner.preview.colDescription")}</th>
+                            <th className="px-3 py-2 text-right">{t("scanner.preview.colAmount")}</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -273,7 +272,7 @@ export function Scanner() {
                     </div>
                     {preview.rows.length > 50 && (
                       <p className="mt-2 text-xs text-zinc-600">
-                        …and {preview.rows.length - 50} more rows will be scanned.
+                        {t("scanner.preview.moreRows", { count: preview.rows.length - 50 })}
                       </p>
                     )}
                     <div className="mt-4 flex flex-col gap-2 sm:flex-row">
@@ -288,7 +287,7 @@ export function Scanner() {
                         ) : (
                           <Play className="mr-2 h-4 w-4" aria-hidden="true" />
                         )}
-                        {loading ? "Scanning channels…" : "Run the scan"}
+                        {loading ? t("scanner.actions.scanning") : t("scanner.actions.run")}
                       </Button>
                       <Button
                         variant="outline"
@@ -297,11 +296,11 @@ export function Scanner() {
                         className="border-amber-400/25 bg-transparent text-zinc-300 hover:bg-amber-400/[0.06] hover:text-white"
                       >
                         <RotateCcw className="mr-2 h-4 w-4" aria-hidden="true" />
-                        Clear
+                        {t("scanner.actions.clear")}
                       </Button>
                     </div>
                     {loading && (
-                      <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-amber-400/[0.08]" role="status" aria-label="Scanning">
+                      <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-amber-400/[0.08]" role="status" aria-label={t("scanner.actions.scanningAriaLabel")}>
                         <div
                           className="h-full w-1/3 rounded-full bg-gradient-to-r from-transparent via-amber-400 to-transparent"
                           style={{ animation: "scan-sweep 1.1s ease-in-out infinite" }}
@@ -336,32 +335,37 @@ export function Scanner() {
                   />
                   <div className="relative">
                     <p className="text-sm font-medium uppercase tracking-[0.18em] text-amber-300/90">
-                      Scan complete — {results.usableRows} rows analyzed
+                      {t("scanner.results.complete", { count: results.usableRows })}
                     </p>
                     <p className="tabular text-gradient-gold mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
-                      Found:{" "}
+                      {t("scanner.results.foundLabel")}{" "}
                       <CountUp to={totalFoundLow} format={(n) => fmtUSD(n)} duration={1.4} />
                       {" \u2013 "}
                       <CountUp to={totalFoundHigh} format={(n) => fmtUSD(n)} duration={1.8} delay={0.15} />
                     </p>
                     <p className="mt-3 text-sm leading-relaxed text-zinc-400">
-                      Across {results.matches.length} matched channel
-                      {results.matches.length === 1 ? "" : "s"}. Conservative
-                      ranges — final payout depends on your evidence and total
-                      claims submitted to each fund.
+                      {t(
+                        results.matches.length === 1
+                          ? "scanner.results.matchedChannelsOne"
+                          : "scanner.results.matchedChannelsMany",
+                        { count: results.matches.length }
+                      )}{" "}
+                      {t("scanner.results.conservativeNote")}
                     </p>
                     {results.ieepaLow > 0 && (
                       <p className="mt-3 rounded-lg border border-emerald-400/25 bg-emerald-400/10 px-3 py-2 text-sm text-emerald-300">
-                        Includes IEEPA tariff refunds of {fmtUSD(results.ieepaLow)}–
-                        {fmtUSD(results.ieepaHigh)} (duties back + statutory
-                        interest, before filing costs).
+                        {t("scanner.results.ieepaIncluded", {
+                          low: fmtUSD(results.ieepaLow),
+                          high: fmtUSD(results.ieepaHigh),
+                        })}
                       </p>
                     )}
                     {results.missedTotalHigh > 0 && (
                       <p className="mt-3 rounded-lg border border-amber-400/25 bg-amber-400/10 px-3 py-2 text-sm text-amber-200/90">
-                        You also missed {fmtUSD(results.missedTotalLow)}–
-                        {fmtUSD(results.missedTotalHigh)} in claims that already
-                        closed. Monitoring makes sure that never happens again.
+                        {t("scanner.results.missedClosed", {
+                          low: fmtUSD(results.missedTotalLow),
+                          high: fmtUSD(results.missedTotalHigh),
+                        })}
                       </p>
                     )}
                     <div className="mt-5 flex flex-wrap gap-3">
@@ -372,14 +376,14 @@ export function Scanner() {
                           setClaimOpen(true);
                         }}
                       >
-                        Claim with RecoveryOS
+                        {t("scanner.results.claimCta")}
                       </Button>
                       <Button
                         variant="outline"
                         className="border-amber-400/25 bg-transparent text-zinc-300 hover:bg-amber-400/[0.06] hover:text-white"
                         onClick={reset}
                       >
-                        Scan another file
+                        {t("scanner.results.scanAnother")}
                       </Button>
                     </div>
                   </div>
@@ -405,12 +409,14 @@ export function Scanner() {
                             {m.daysLeft !== null && m.daysLeft >= 0 && (
                               <Badge variant="outline" className="border-amber-400/30 bg-amber-400/10 font-normal text-amber-300">
                                 <Hourglass className="mr-1 h-3 w-3" aria-hidden="true" />
-                                {m.daysLeft === 0 ? "Final day" : `${m.daysLeft} days left`}
+                                {m.daysLeft === 0
+                                  ? t("scanner.match.finalDay")
+                                  : t("scanner.match.daysLeft", { count: m.daysLeft })}
                               </Badge>
                             )}
                             {m.fundSize && (
                               <Badge variant="outline" className="border-amber-400/25 bg-amber-400/[0.07] font-normal text-amber-300">
-                                Fund: {m.fundSize}
+                                {t("scanner.match.fundBadge", { size: m.fundSize })}
                               </Badge>
                             )}
                           </div>
@@ -428,7 +434,7 @@ export function Scanner() {
                           <div className="mt-4 grid gap-4 sm:grid-cols-2">
                             <div className="well-black rounded-lg p-3">
                               <p className="text-xs font-medium uppercase tracking-wide text-amber-300/70">
-                                Matched purchases ({m.matched.length})
+                                {t("scanner.match.matchedPurchases", { count: m.matched.length })}
                               </p>
                               <ul className="mt-2 space-y-1 text-sm">
                                 {m.matched.slice(0, 3).map((line, i) => (
@@ -446,18 +452,18 @@ export function Scanner() {
                                 ))}
                                 {m.matched.length > 3 && (
                                   <li className="text-xs text-zinc-600">
-                                    + {m.matched.length - 3} more lines
+                                    {t("scanner.match.moreLines", { count: m.matched.length - 3 })}
                                   </li>
                                 )}
                               </ul>
                               <p className="tabular mt-2 text-xs text-zinc-500">
-                                Matched volume:{" "}
+                                {t("scanner.match.matchedVolumeLabel")}{" "}
                                 <strong className="text-zinc-200">{fmtUSD(m.matchedTotal)}</strong>
                               </p>
                             </div>
                             <div className="rounded-lg border border-emerald-400/20 bg-emerald-400/[0.06] p-3">
                               <p className="text-xs font-medium uppercase tracking-wide text-emerald-400">
-                                Estimated recovery
+                                {t("scanner.match.estimatedRecovery")}
                               </p>
                               <p className="tabular mt-2 text-2xl font-bold text-emerald-300">
                                 <CountUp to={m.estimateLow} format={(n) => fmtUSD(n)} duration={1.2} delay={0.2 + idx * 0.06} />
@@ -470,13 +476,13 @@ export function Scanner() {
 
                           {m.eligibleNote && (
                             <p className="mt-3 text-sm text-zinc-400">
-                              <span className="font-medium text-zinc-200">Who can claim: </span>
+                              <span className="font-medium text-zinc-200">{t("scanner.match.whoCanClaimLabel")}</span>
                               {m.eligibleNote}
                             </p>
                           )}
                           {m.evidenceNote && (
                             <p className="mt-1 text-sm text-zinc-400">
-                              <span className="font-medium text-zinc-200">Evidence: </span>
+                              <span className="font-medium text-zinc-200">{t("scanner.match.evidenceLabel")}</span>
                               {m.evidenceNote}
                             </p>
                           )}
@@ -497,7 +503,9 @@ export function Scanner() {
                                 setClaimOpen(true);
                               }}
                             >
-                              {m.status === "closed" ? "Closed — join watchlist" : "Claim with RecoveryOS"}
+                              {m.status === "closed"
+                                ? t("scanner.match.closedCta")
+                                : t("scanner.match.claimCta")}
                             </Button>
                             {m.adminUrl && (
                               <a href={m.adminUrl} target="_blank" rel="noopener noreferrer">
@@ -506,7 +514,7 @@ export function Scanner() {
                                   variant="outline"
                                   className="border-amber-400/25 bg-transparent text-zinc-300 hover:bg-amber-400/[0.06] hover:text-white"
                                 >
-                                  Official site
+                                  {t("scanner.match.officialSite")}
                                   <ExternalLink className="ml-1.5 h-3.5 w-3.5" aria-hidden="true" />
                                 </Button>
                               </a>
@@ -520,10 +528,7 @@ export function Scanner() {
                 </div>
 
                 <p className="text-xs leading-relaxed text-zinc-600">
-                  Estimates are modeling aids, not guarantees or legal advice.
-                  Payouts depend on claim quality, evidence and the total claims
-                  each fund receives. You can always file directly with the
-                  official administrator — links provided on every fund.
+                  {t("scanner.disclaimer")}
                 </p>
               </div>
             )}

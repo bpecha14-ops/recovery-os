@@ -1,24 +1,11 @@
 "use client";
 
 import { Coins } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 import { Marquee, LiveClock, GoldenStream } from "./effects";
 
-const PRODUCT_LINKS = [
-  { href: "#how", label: "How it works" },
-  { href: "#library", label: "World Library" },
-  { href: "#scanner", label: "Free scanner" },
-  { href: "#settlements", label: "Open claims" },
-  { href: "#ieepa", label: "IEEPA calculator" },
-  { href: "#pricing", label: "Pricing" },
-];
-
-const CHANNEL_LINKS = [
-  { href: "#channels", label: "All channels" },
-  { href: "#settlements", label: "Class actions" },
-  { href: "#ieepa", label: "Tariff refunds" },
-  { href: "#channels", label: "Duty drawback" },
-  { href: "#waitlist", label: "Launch list" },
-];
+const PRODUCT_HREFS = ["#how", "#library", "#scanner", "#settlements", "#ieepa", "#pricing"];
+const CHANNEL_HREFS = ["#channels", "#settlements", "#ieepa", "#channels", "#waitlist"];
 
 // The living footer ticker — every official registry in the library, rolling.
 const REGISTRY_TICKER = [
@@ -74,6 +61,9 @@ const REGISTRY_TICKER = [
 ];
 
 export function Footer() {
+  const { t, tArr } = useI18n();
+  const productLabels = tArr<string>("footer.product");
+  const channelLabels = tArr<string>("footer.channelsNav");
   return (
     <footer className="relative mt-auto overflow-hidden border-t border-amber-400/[0.10] bg-zinc-950 text-zinc-400">
       <GoldenStream density={0.4} />
@@ -118,37 +108,34 @@ export function Footer() {
               </span>
             </div>
             <p className="mt-4 max-w-sm text-sm leading-relaxed">
-              The recoveries department for small business — and a free Living
-              Library of forgotten money for everyone else. We map every
-              channel where money gets stuck: class actions, tariff refunds,
-              drawback, unclaimed property. You only pay when checks arrive.
+              {t("footer.about")}
             </p>
           </div>
-          <nav aria-label="Product">
-            <h3 className="text-sm font-semibold text-amber-300/90">Product</h3>
+          <nav aria-label={t("footer.ariaProduct")}>
+            <h3 className="text-sm font-semibold text-amber-300/90">{t("footer.productTitle")}</h3>
             <ul className="mt-4 space-y-2 text-sm">
-              {PRODUCT_LINKS.map((l) => (
-                <li key={l.label}>
+              {PRODUCT_HREFS.map((href, i) => (
+                <li key={href + i}>
                   <a
-                    href={l.href}
+                    href={href}
                     className="transition-colors hover:text-amber-300"
                   >
-                    {l.label}
+                    {productLabels[i] ?? href}
                   </a>
                 </li>
               ))}
             </ul>
           </nav>
-          <nav aria-label="Channels">
-            <h3 className="text-sm font-semibold text-amber-300/90">Channels</h3>
+          <nav aria-label={t("footer.ariaChannels")}>
+            <h3 className="text-sm font-semibold text-amber-300/90">{t("footer.channelsTitle")}</h3>
             <ul className="mt-4 space-y-2 text-sm">
-              {CHANNEL_LINKS.map((l) => (
-                <li key={l.label}>
+              {CHANNEL_HREFS.map((href, i) => (
+                <li key={href + i}>
                   <a
-                    href={l.href}
+                    href={href}
                     className="transition-colors hover:text-amber-300"
                   >
-                    {l.label}
+                    {channelLabels[i] ?? href}
                   </a>
                 </li>
               ))}
@@ -157,26 +144,10 @@ export function Footer() {
         </div>
 
         <div className="mt-10 space-y-3 border-t border-white/[0.06] pt-6 text-xs leading-relaxed text-zinc-600">
-          <p>
-            RecoveryOS is not a law firm, an accountant, or a licensed customs
-            broker, and nothing on this site is legal, tax, or financial advice.
-            The Living Library links to official government databases and
-            court-appointed administrators — individuals can always file
-            directly, for free. Recovery estimates are modeling aids based on
-            public filings and historical payout ratios; actual recoveries
-            depend on your evidence, eligibility, and the total claims each
-            fund receives.
-          </p>
-          <p>
-            Settlement fund facts, class windows, and deadlines are compiled from
-            public court filings and official administrator notices as of late
-            October 2026 and may change without notice. Always verify deadlines
-            with the official settlement administrator before relying on them.
-            Claims are always filed by you or through properly licensed partners,
-            and funds flow directly to your account.
-          </p>
+          <p>{t("footer.legal1")}</p>
+          <p>{t("footer.legal2")}</p>
           <p className="pt-2">
-            © 2026 RecoveryOS. All rights reserved.
+            {t("footer.copyright")}
           </p>
         </div>
       </div>

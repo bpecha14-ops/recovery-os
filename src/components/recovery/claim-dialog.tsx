@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/lib/i18n/context";
 import { Loader2 } from "lucide-react";
 
 interface ClaimDialogProps {
@@ -27,14 +28,16 @@ export function ClaimDialog({ open, onOpenChange, context, source }: ClaimDialog
   const [company, setCompany] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const { t, tArr } = useI18n();
+  const nextSteps = tArr<string>("claim.nextSteps");
   const { toast } = useToast();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email.includes("@")) {
       toast({
-        title: "Enter a valid email",
-        description: "We need one address to send your claim pack to.",
+        title: t("claim.invalidEmailTitle"),
+        description: t("claim.invalidEmailBody"),
       });
       return;
     }
@@ -48,14 +51,13 @@ export function ClaimDialog({ open, onOpenChange, context, source }: ClaimDialog
       if (!res.ok) throw new Error("request failed");
       setDone(true);
       toast({
-        title: "You're in the queue",
-        description:
-          "We'll reach out with your claim pack and the exact documents needed.",
+        title: t("claim.queuedTitle"),
+        description: t("claim.queuedBody"),
       });
     } catch {
       toast({
-        title: "Something went wrong",
-        description: "Please try again in a moment.",
+        title: t("claim.errorTitle"),
+        description: t("claim.errorBody"),
       });
     } finally {
       setLoading(false);
@@ -77,44 +79,44 @@ export function ClaimDialog({ open, onOpenChange, context, source }: ClaimDialog
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {done ? "Claim pack requested" : "Claim with RecoveryOS"}
+            {done ? t("claim.titleDone") : t("claim.title")}
           </DialogTitle>
           <DialogDescription>
             {done
-              ? "Check your inbox — we only ask for the documents the administrator actually requires."
+              ? t("claim.descriptionDone")
               : context
-                ? `We'll prepare the paperwork for ${context} and confirm every deadline with the official administrator. You pay only when funds arrive.`
-                : "We'll prepare the paperwork, confirm deadlines with the official administrator, and file until funds arrive. You pay only when money lands in your account."}
+                ? t("claim.descriptionContext", { context })
+                : t("claim.descriptionDefault")}
           </DialogDescription>
         </DialogHeader>
 
         {done ? (
           <div className="rounded-lg border border-emerald-400/25 bg-emerald-400/[0.07] p-4 text-sm text-emerald-200/90">
-            <p className="font-medium text-emerald-300">Next steps</p>
+            <p className="font-medium text-emerald-300">{t("claim.nextStepsTitle")}</p>
             <ul className="mt-2 list-disc space-y-1 pl-4">
-              <li>Send us your purchase evidence (invoices / exports).</li>
-              <li>We validate the claim and quote the success fee in writing.</li>
-              <li>Funds always flow directly to your business account.</li>
+              {nextSteps.map((step, i) => (
+                <li key={i}>{step}</li>
+              ))}
             </ul>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="claim-email">Work email</Label>
+              <Label htmlFor="claim-email">{t("claim.emailLabel")}</Label>
               <Input
                 id="claim-email"
                 type="email"
-                placeholder="cfo@company.com"
+                placeholder={t("claim.emailPlaceholder")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="claim-company">Company</Label>
+              <Label htmlFor="claim-company">{t("claim.companyLabel")}</Label>
               <Input
                 id="claim-company"
-                placeholder="Company name"
+                placeholder={t("claim.companyPlaceholder")}
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
               />
@@ -126,12 +128,11 @@ export function ClaimDialog({ open, onOpenChange, context, source }: ClaimDialog
                 className="btn-shimmer w-full bg-gradient-to-b from-amber-200 via-amber-400 to-amber-500 font-semibold text-zinc-950 shadow-[0_0_32px_-10px_rgba(251,191,36,0.6)] transition-all hover:brightness-110"
               >
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {loading ? "Saving…" : "Get my claim pack"}
+                {loading ? t("claim.submitting") : t("claim.submit")}
               </Button>
             </DialogFooter>
             <p className="text-center text-xs text-muted-foreground">
-              No recovery, no fee. You can always file yourself via the official
-              administrator — we link to every fund.
+              {t("claim.footerNote")}
             </p>
           </form>
         )}

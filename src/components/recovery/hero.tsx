@@ -5,53 +5,23 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, ShieldCheck, Trash2, Scale, Sparkles } from "lucide-react";
 import { IEEPA_INFO } from "@/lib/recovery-data";
 import { WORLD_COUNTRIES, WORLD_VERIFIED_USD_B } from "@/lib/world-registry";
+import { useI18n } from "@/lib/i18n/context";
 import { CountUp, GoldenStream, Marquee } from "./effects";
 
-const STATS = [
-  {
-    value: 166,
-    display: (n: number) => `$${Math.round(n)}B`,
-    label: "IEEPA refunds pending after the Supreme Court ruling",
-    accent: true,
-  },
-  {
-    value: WORLD_VERIFIED_USD_B,
-    display: (n: number) => `$${Math.round(n)}B+`,
-    label: `verified unclaimed money across the ${WORLD_COUNTRIES.length} world markets we index`,
-    accent: false,
-  },
-  {
-    value: 15,
-    display: (n: number) => `~$${Math.round(n)}B/yr`,
-    label: "duty drawback unclaimed, per CBP estimates",
-    accent: false,
-  },
-  {
-    value: 75300,
-    display: (n: number) => n.toLocaleString("en-US"),
-    label: "CAPE refund filings in the first 6 days — the gold rush is real",
-    accent: false,
-  },
-];
+const STAT_KEYS = ["hero.stat1", "hero.stat2", "hero.stat3", "hero.stat4"];
 
-const TICKER = [
-  "IEEPA Tariff Refunds — $166B",
-  "UK Lost Pensions — £31.1B",
-  "France Ciclade — €7.87B",
-  "India UDGAM — ₹67,000 crore",
-  "Korea Dormant — ₩14T",
-  "Brazil SVR — R$5.65B",
-  "South Africa — R88.5B",
-  "Pork Antitrust Fund — $117M",
-  "Duty Drawback — $15B/yr",
-  "Turkey Antitrust — $71.5M+",
-  "Australia Lost Money — A$3B",
-  "Canada Dormant — CA$1.6B",
+const STAT_FORMATS = [
+  (n: number) => `$${Math.round(n)}B`,
+  (n: number) => `$${Math.round(n)}B+`,
+  (n: number) => `~$${Math.round(n)}B/yr`,
+  (n: number) => n.toLocaleString("en-US"),
 ];
 
 const spring = { type: "spring" as const, stiffness: 92, damping: 18 };
 
 export function Hero() {
+  const { t, tArr } = useI18n();
+  const tickerItems = tArr<string>("hero.ticker");
   return (
     <section className="relative overflow-hidden bg-zinc-950 pb-20 pt-28 text-white sm:pb-28 sm:pt-36">
       {/* Layered depth: aurora glows → engineering grid → particle stream */}
@@ -83,7 +53,7 @@ export function Hero() {
             className="group inline-flex items-center gap-2.5 rounded-full border border-amber-400/25 bg-amber-400/[0.07] py-1.5 pl-3 pr-4 text-sm text-amber-200/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-colors hover:border-amber-400/45 hover:bg-amber-400/[0.12]"
           >
             <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-amber-300" aria-hidden="true" />
-            The Supreme Court struck the IEEPA tariffs down 6–3
+            {t("hero.pill")}
             <span className="font-semibold text-amber-300/90 transition-transform group-hover:translate-x-0.5" aria-hidden="true">
               →
             </span>
@@ -97,8 +67,8 @@ export function Hero() {
           transition={{ ...spring, delay: 0.14 }}
           className="mx-auto mt-8 max-w-4xl text-balance text-center text-5xl font-bold leading-[1.02] tracking-tighter text-white sm:text-7xl lg:text-[5.25rem]"
         >
-          The world is owed <span className="text-gradient-gold">money</span>{" "}
-          it forgot about.
+          {t("hero.titleA")} <span className="text-gradient-gold">{t("hero.titleGold")}{" "}
+          </span>{t("hero.titleB")}
         </motion.h1>
 
         <motion.p
@@ -107,9 +77,7 @@ export function Hero() {
           transition={{ ...spring, delay: 0.24 }}
           className="mx-auto mt-6 max-w-2xl text-center text-lg leading-relaxed text-zinc-400 sm:text-xl"
         >
-          RecoveryOS maps every official unclaimed-money database on Earth —
-          for your business and for your own name — then files and tracks
-          claims until checks arrive in your account.
+          {t("hero.subtitle")}
         </motion.p>
 
         <motion.div
@@ -128,7 +96,7 @@ export function Hero() {
                 className="absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/40 to-transparent"
                 style={{ animation: "shimmer-x 3.2s ease-in-out infinite" }}
               />
-              <span className="relative">Run a free scan</span>
+              <span className="relative">{t("common.runFreeScan")}</span>
               <ArrowRight className="relative ml-2 h-4 w-4" aria-hidden="true" />
             </Button>
           </a>
@@ -138,7 +106,7 @@ export function Hero() {
               variant="outline"
               className="h-12 w-full border-amber-400/35 bg-black px-7 text-base text-amber-200 transition-all hover:border-amber-400/70 hover:bg-amber-400/10 hover:text-amber-100 hover:shadow-[0_0_32px_-12px_rgba(251,191,36,0.5)] sm:w-auto"
             >
-              Explore the world library — free
+              {t("hero.ctaLibrary")}
             </Button>
           </a>
         </motion.div>
@@ -151,15 +119,15 @@ export function Hero() {
         >
           <span className="inline-flex items-center gap-1.5">
             <ShieldCheck className="h-4 w-4 text-amber-400/90" aria-hidden="true" />
-            No recovery, no fee
+            {t("hero.trustNoFee")}
           </span>
           <span className="inline-flex items-center gap-1.5">
             <Scale className="h-4 w-4 text-amber-400/90" aria-hidden="true" />
-            Every official administrator linked
+            {t("hero.trustOfficial")}
           </span>
           <span className="inline-flex items-center gap-1.5">
             <Trash2 className="h-4 w-4 text-amber-400/90" aria-hidden="true" />
-            Purchase data deleted on request
+            {t("hero.trustDelete")}
           </span>
         </motion.div>
 
@@ -185,18 +153,16 @@ export function Hero() {
           />
           <Sparkles className="relative mt-0.5 h-4 w-4 shrink-0 text-amber-300" aria-hidden="true" />
           <p className="relative">
-            <span className="font-semibold text-amber-200">Closing this week:</span>{" "}
-            Pork fund ($117M) — Oct 29 · Turkey funds ($71.5M+) — Oct 30. Interest on
-            pending IEEPA refunds accrues at about {IEEPA_INFO.interestPerMonth}/month
-            — deadlines are why businesses lose recoverable money every year.
+            <span className="font-semibold text-amber-200">{t("hero.deadlineLead")}</span>{" "}
+            {t("hero.deadlineBody", { interest: IEEPA_INFO.interestPerMonth })}
           </p>
         </motion.div>
 
         {/* Stat band — money counts up, tabular figures */}
         <div className="mt-16 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-amber-400/[0.14] bg-amber-400/[0.10] lg:grid-cols-4">
-          {STATS.map((s, i) => (
+          {STAT_KEYS.map((key, i) => (
             <motion.div
-              key={s.label}
+              key={key}
               initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
@@ -205,13 +171,19 @@ export function Hero() {
             >
               <div
                 className={`tabular text-3xl font-bold tracking-tight sm:text-4xl ${
-                  s.accent ? "text-gradient-gold" : "text-white"
+                  i === 0 ? "text-gradient-gold" : "text-white"
                 }`}
               >
-                <CountUp to={s.value} format={s.display} delay={0.2 + i * 0.1} />
+                <CountUp
+                  to={i === 0 ? 166 : i === 1 ? WORLD_VERIFIED_USD_B : i === 2 ? 15 : 75300}
+                  format={STAT_FORMATS[i]}
+                  delay={0.2 + i * 0.1}
+                />
               </div>
               <div className="mt-2 text-xs leading-relaxed text-zinc-500 sm:text-sm">
-                {s.label}
+                {i === 1
+                  ? t(key, { markets: String(WORLD_COUNTRIES.length) })
+                  : t(key)}
               </div>
             </motion.div>
           ))}
@@ -226,10 +198,10 @@ export function Hero() {
           className="mt-14"
         >
           <Marquee
-            items={TICKER.map((t) => (
-              <span key={t} className="flex items-center gap-3 text-sm text-zinc-500">
+            items={tickerItems.map((item, i) => (
+              <span key={`${i}-${item}`} className="flex items-center gap-3 text-sm text-zinc-500">
                 <span className="h-1 w-1 rounded-full bg-amber-400/70" aria-hidden="true" />
-                {t}
+                {item}
               </span>
             ))}
             itemClassName="pr-10"

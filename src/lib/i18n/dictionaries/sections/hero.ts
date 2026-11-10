@@ -1,0 +1,35 @@
+export default {
+  pill: "The Supreme Court struck the IEEPA tariffs down 6–3",
+  titleA: "The world is owed",
+  titleGold: "money",
+  titleB: "it forgot about.",
+  subtitle:
+    "RecoveryOS maps every official unclaimed-money database on Earth — for your business and for your own name — then files and tracks claims until checks arrive in your account.",
+  ctaScan: "Run a free scan",
+  ctaLibrary: "Explore the world library — free",
+  trustNoFee: "No recovery, no fee",
+  trustOfficial: "Every official administrator linked",
+  trustDelete: "Purchase data deleted on request",
+  deadlineLead: "Closing this week:",
+  deadlineBody:
+    "Pork fund ($117M) — Oct 29 · Turkey funds ($71.5M+) — Oct 30. Interest on pending IEEPA refunds accrues at about {interest}/month — deadlines are why businesses lose recoverable money every year.",
+  stat1: "IEEPA refunds pending after the Supreme Court ruling",
+  stat2:
+    "verified unclaimed money across the {markets} world markets we index",
+  stat3: "duty drawback unclaimed, per CBP estimates",
+  stat4: "CAPE refund filings in the first 6 days — the gold rush is real",
+  ticker: [
+    "IEEPA Tariff Refunds — $166B",
+    "UK Lost Pensions — £31.1B",
+    "France Ciclade — €7.87B",
+    "India UDGAM — ₹67,000 crore",
+    "Korea Dormant — ₩14T",
+    "Brazil SVR — R$5.65B",
+    "South Africa — R88.5B",
+    "Pork Antitrust Fund — $117M",
+    "Duty Drawback — $15B/yr",
+    "Turkey Antitrust — $71.5M+",
+    "Australia Lost Money — A$3B",
+    "Canada Dormant — CA$1.6B",
+  ],
+};

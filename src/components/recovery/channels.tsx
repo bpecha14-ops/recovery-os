@@ -11,6 +11,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { CHANNELS } from "@/lib/recovery-data";
+import { useI18n } from "@/lib/i18n/context";
 import { Reveal, Spotlight, CountUp, Marquee, GoldenStream } from "./effects";
 
 const ICONS = {
@@ -32,19 +33,17 @@ const SPANS: Record<string, string> = {
   unclaimed: "lg:col-span-6",
 };
 
-// The living status strip — channel facts, rolling.
-const CHANNEL_TICKER = [
-  "SCOTUS 6–3 — IEEPA tariffs unlawful",
-  "CAPE: 75,300 filings in the first 6 days",
-  "Interest accrues ≈ $650M/month on pending refunds",
-  "Drawback: up to 99% of duties reclaimable",
-  "Class action claim rates: usually under 10%",
-  "1 in 10 Americans is on an unclaimed-money list",
-  "Pork fund $117M — deadline tracked",
-  "Turkey funds $71.5M+ — deadline tracked",
-];
-
 export function Channels() {
+  const { t, tArr } = useI18n();
+  const items = tArr<{
+    title: string;
+    stat: string;
+    statLabel: string;
+    description: string;
+    statusNote: string;
+  }>("channels.items");
+  const ticker = tArr<string>("channels.ticker");
+
   return (
     <section id="channels" className="relative scroll-mt-20 overflow-hidden bg-zinc-950 py-20 sm:py-28">
       <GoldenStream density={0.5} />
@@ -60,21 +59,20 @@ export function Channels() {
         <Reveal className="max-w-3xl">
           <p className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.2em] text-amber-400/90">
             <span className="hairline-gold w-8" aria-hidden="true" />
-            Channels
+            {t("channels.eyebrow")}
           </p>
           <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-5xl sm:leading-[1.05]">
-            One engine, every channel where{" "}
-            <span className="text-gradient-gold">business money gets stuck.</span>
+            {t("channels.headingA")}{" "}
+            <span className="text-gradient-gold">{t("channels.headingGold")}</span>
           </h2>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-zinc-400">
-            Each channel is boring on its own — a few percent here, a missed fund
-            there. Stack them against the same purchase data and they compound
-            into a recurring recovery stream.
+            {t("channels.lead")}
           </p>
         </Reveal>
 
         <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-6">
           {CHANNELS.map((c, i) => {
+            const text = items[i];
             const Icon = ICONS[c.id as keyof typeof ICONS];
             const live = c.status === "live";
             const featured = c.id === "ieepa";
@@ -123,18 +121,18 @@ export function Channels() {
                         {live && (
                           <span className="pulse-dot mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-amber-400" aria-hidden="true" />
                         )}
-                        {c.statusNote}
+                        {text?.statusNote ?? c.statusNote}
                       </Badge>
                     </div>
                     <h3 className="mt-5 text-lg font-semibold text-white">
-                      {c.title}
+                      {text?.title ?? c.title}
                     </h3>
                     <div className="mt-2.5 flex items-baseline gap-2">
                       <span className="tabular text-3xl font-bold tracking-tight text-gradient-gold">
                         {c.statValue !== undefined && c.statFormat ? (
                           <CountUp to={c.statValue} format={c.statFormat} duration={1.6} delay={0.15} />
                         ) : (
-                          c.stat
+                          (text?.stat ?? c.stat)
                         )}
                       </span>
                       <ArrowUpRight
@@ -143,10 +141,10 @@ export function Channels() {
                       />
                     </div>
                     <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-                      {c.statLabel}
+                      {text?.statLabel ?? c.statLabel}
                     </p>
                     <p className="mt-3 text-sm leading-relaxed text-zinc-400">
-                      {c.description}
+                      {text?.description ?? c.description}
                     </p>
                   </div>
                 </Spotlight>
@@ -158,10 +156,10 @@ export function Channels() {
         {/* Channel pulse — facts rolling under the bento */}
         <Reveal delay={0.15} className="mt-10">
           <Marquee
-            items={CHANNEL_TICKER.map((t) => (
-              <span key={t} className="flex items-center gap-2.5 text-xs tracking-wide text-amber-200/50">
+            items={ticker.map((item) => (
+              <span key={item} className="flex items-center gap-2.5 text-xs tracking-wide text-amber-200/50">
                 <span className="pulse-dot h-1 w-1 rounded-full bg-amber-400/70" aria-hidden="true" />
-                {t}
+                {item}
               </span>
             ))}
             itemClassName="pr-10"

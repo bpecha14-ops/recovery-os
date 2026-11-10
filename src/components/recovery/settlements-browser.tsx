@@ -12,17 +12,14 @@ import {
   fmtDate,
   type ClaimStatus,
 } from "@/lib/recovery-data";
+import { useI18n } from "@/lib/i18n/context";
 import { Reveal, Spotlight, Countdown, Marquee, GoldenStream } from "./effects";
 
 type Filter = "all" | ClaimStatus;
 
-const FILTERS: { id: Filter; label: string }[] = [
-  { id: "all", label: "All funds" },
-  { id: "closing-soon", label: "Closing soon" },
-  { id: "open", label: "Open" },
-  { id: "verify", label: "Verify window" },
-  { id: "closed", label: "Closed (missed)" },
-];
+// Semantic filter ids — display labels come from the i18n dictionary,
+// aligned by index (see `settlements.filters` in the dictionaries).
+const FILTER_IDS: Filter[] = ["all", "closing-soon", "open", "verify", "closed"];
 
 const ORDER: Record<ClaimStatus, number> = {
   "closing-soon": 0,
@@ -38,9 +35,7 @@ interface Row {
   fundSize: string;
   eligibleNote: string;
   window: string;
-  deadlineLabel: string;
   deadlineIso: string | null;
-  daysLabel: string;
   status: ClaimStatus;
   daysLeft: number | null;
   summary: string;
@@ -50,38 +45,21 @@ interface Row {
 }
 
 function buildRows(now: Date): Row[] {
-  return SETTLEMENTS.map((s) => {
-    const status = claimStatus(s.claimDeadline, now);
-    const days = daysUntil(s.claimDeadline, now);
-    const deadlineLabel = s.claimDeadline
-      ? fmtDate(s.claimDeadline)
-      : "Claims window — verify with administrator";
-    const daysLabel =
-      days === null
-        ? "monitor"
-        : days < 0
-          ? `${Math.abs(days)} days past`
-          : days === 0
-            ? "last day"
-            : `${days} days left`;
-    return {
-      id: s.id,
-      name: s.name,
-      caseRef: s.caseRef,
-      fundSize: s.fundSize,
-      eligibleNote: s.eligibleNote,
-      window: `${fmtDate(s.windowStart)} – ${fmtDate(s.windowEnd)}`,
-      deadlineLabel,
-      deadlineIso: s.claimDeadline,
-      daysLabel,
-      status,
-      daysLeft: days,
-      summary: s.summary,
-      adminUrl: s.adminUrl,
-      adminName: s.adminName,
-      verifyNote: s.verifyNote,
-    };
-  }).sort((a, b) => {
+  return SETTLEMENTS.map((s) => ({
+    id: s.id,
+    name: s.name,
+    caseRef: s.caseRef,
+    fundSize: s.fundSize,
+    eligibleNote: s.eligibleNote,
+    window: `${fmtDate(s.windowStart)} – ${fmtDate(s.windowEnd)}`,
+    deadlineIso: s.claimDeadline,
+    status: claimStatus(s.claimDeadline, now),
+    daysLeft: daysUntil(s.claimDeadline, now),
+    summary: s.summary,
+    adminUrl: s.adminUrl,
+    adminName: s.adminName,
+    verifyNote: s.verifyNote,
+  })).sort((a, b) => {
     const byStatus = ORDER[a.status] - ORDER[b.status];
     if (byStatus !== 0) return byStatus;
     if (a.daysLeft !== null && b.daysLeft !== null) return a.daysLeft - b.daysLeft;
@@ -90,6 +68,7 @@ function buildRows(now: Date): Row[] {
 }
 
 export function SettlementsBrowser() {
+  const { t, tArr } = useI18n();
   const [filter, setFilter] = useState<Filter>("all");
   // Day counts depend on the visitor's clock; computed once per session.
   // Pinned to the start of the current UTC day so SSR and hydration always
@@ -99,6 +78,28 @@ export function SettlementsBrowser() {
     const dayStartMs = Math.floor(Date.now() / 86_400_000) * 86_400_000;
     return buildRows(new Date(dayStartMs));
   });
+
+  const filters = tArr<{ label: string }>("settlements.filters");
+
+  // Status badge text — styling still comes from STATUS_META in the data layer.
+  const statusLabels: Record<ClaimStatus, string> = {
+    open: t("settlements.statusOpen"),
+    "closing-soon": t("settlements.statusClosingSoon"),
+    closed: t("settlements.statusClosed"),
+    verify: t("settlements.statusVerify"),
+  };
+
+  // Locale-reactive display labels; raw dates and day counts live in `rows`.
+  const deadlineLabel = (r: Row) =>
+    r.deadlineIso ? fmtDate(r.deadlineIso) : t("settlements.deadlineVerify");
+
+  const daysLabel = (r: Row) => {
+    const days = r.daysLeft;
+    if (days === null) return t("settlements.daysMonitor");
+    if (days < 0) return t("settlements.daysPast", { days: Math.abs(days) });
+    if (days === 0) return t("settlements.lastDay");
+    return t("settlements.daysLeftCount", { days });
+  };
 
   const visible = useMemo(
     () => (filter === "all" ? rows : rows.filter((r) => r.status === filter)),
@@ -113,31 +114,29 @@ export function SettlementsBrowser() {
           <Reveal className="max-w-2xl">
             <p className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.2em] text-amber-400/90">
               <span className="hairline-gold w-8" aria-hidden="true" />
-              Live claim tracker
+              {t("settlements.eyebrow")}
             </p>
             <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-5xl sm:leading-[1.05]">
-              Open funds, real deadlines.
+              {t("settlements.heading")}
             </h2>
             <p className="mt-5 text-lg leading-relaxed text-zinc-400">
-              Every fund below is a publicly filed case with an official
-              administrator. We track them so your business never finds out
-              about free money a week after it expired.
+              {t("settlements.lead")}
             </p>
           </Reveal>
-          <div className="flex flex-wrap gap-2" role="tablist" aria-label="Filter funds">
-            {FILTERS.map((f) => (
+          <div className="flex flex-wrap gap-2" role="tablist" aria-label={t("settlements.filterAria")}>
+            {FILTER_IDS.map((id, i) => (
               <button
-                key={f.id}
+                key={id}
                 role="tab"
-                aria-selected={filter === f.id}
-                onClick={() => setFilter(f.id)}
+                aria-selected={filter === id}
+                onClick={() => setFilter(id)}
                 className={`rounded-full border px-3.5 py-1.5 text-sm transition-colors ${
-                  filter === f.id
+                  filter === id
                     ? "border-amber-400/60 bg-gradient-to-b from-amber-300 to-amber-500 font-semibold text-zinc-950"
                     : "border-amber-400/[0.14] bg-black text-amber-200/50 hover:border-amber-400/35 hover:text-amber-200"
                 }`}
               >
-                {f.label}
+                {filters[i]?.label ?? id}
               </button>
             ))}
           </div>
@@ -152,7 +151,7 @@ export function SettlementsBrowser() {
               <span key={r.id} className="flex items-center gap-2.5 text-xs tracking-wide text-amber-200/60">
                 <Hourglass className="h-3 w-3 text-amber-400/80" aria-hidden="true" />
                 <span className="font-medium text-amber-200/80">{r.name}</span>
-                <span className="text-zinc-500">· {r.deadlineLabel} ·</span>
+                <span className="text-zinc-500">· {deadlineLabel(r)} ·</span>
                 <Countdown to={r.deadlineIso!} compact className="text-amber-300/90" />
               </span>
             ))}
@@ -178,13 +177,13 @@ export function SettlementsBrowser() {
                     <div className="flex flex-wrap items-center gap-2">
                       <Badge variant="outline" className={meta.className}>
                         <span className={`pulse-dot mr-1.5 inline-block h-1.5 w-1.5 rounded-full ${meta.dotClass}`} aria-hidden="true" />
-                        {meta.label}
+                        {statusLabels[r.status]}
                       </Badge>
                       <Badge variant="outline" className="border-amber-400/20 bg-amber-400/[0.06] font-normal text-amber-200/80">
-                        {r.daysLabel}
+                        {daysLabel(r)}
                       </Badge>
                       <Badge variant="outline" className="border-amber-400/25 bg-amber-400/[0.07] font-normal text-amber-300">
-                        Fund: {r.fundSize}
+                        {t("settlements.fundBadge", { fund: r.fundSize })}
                       </Badge>
                     </div>
 
@@ -195,17 +194,17 @@ export function SettlementsBrowser() {
 
                     <dl className="mt-3 space-y-1.5 text-sm">
                       <div className="flex flex-wrap gap-x-2">
-                        <dt className="font-medium text-zinc-300">Purchases:</dt>
+                        <dt className="font-medium text-zinc-300">{t("settlements.purchasesLabel")}</dt>
                         <dd className="text-zinc-400">{r.window}</dd>
                       </div>
                       <div className="flex flex-wrap gap-x-2">
-                        <dt className="font-medium text-zinc-300">Deadline:</dt>
+                        <dt className="font-medium text-zinc-300">{t("settlements.deadlineTerm")}</dt>
                         <dd className={r.status === "closing-soon" ? "font-semibold text-amber-300" : "text-zinc-400"}>
-                          {r.deadlineLabel}
+                          {deadlineLabel(r)}
                         </dd>
                       </div>
                       <div>
-                        <dt className="font-medium text-zinc-300">Who can claim:</dt>
+                        <dt className="font-medium text-zinc-300">{t("settlements.eligibleLabel")}</dt>
                         <dd className="text-zinc-400">{r.eligibleNote}</dd>
                       </div>
                     </dl>
@@ -228,7 +227,7 @@ export function SettlementsBrowser() {
                           className="bg-gradient-to-b from-amber-200 via-amber-400 to-amber-500 font-semibold text-zinc-950 transition-all hover:brightness-110"
                         >
                           <ScanSearch className="mr-1.5 h-4 w-4" aria-hidden="true" />
-                          Test in scanner
+                          {t("settlements.testInScanner")}
                         </Button>
                       </a>
                       <a href={r.adminUrl} target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none">
@@ -237,7 +236,7 @@ export function SettlementsBrowser() {
                           variant="outline"
                           className="w-full border-amber-400/25 bg-transparent text-amber-200/80 hover:bg-amber-400/[0.06] hover:text-amber-100"
                         >
-                          Official site
+                          {t("settlements.officialSite")}
                           <ExternalLink className="ml-1.5 h-3.5 w-3.5" aria-hidden="true" />
                         </Button>
                       </a>
@@ -253,10 +252,7 @@ export function SettlementsBrowser() {
         </div>
 
         <p className="mt-8 text-xs leading-relaxed text-zinc-600">
-          Fund facts, class windows and deadlines are compiled from public filings
-          and administrator notices as of late October 2026. Deadlines change —
-          always confirm on the official settlement site before relying on any
-          date, or let our monitoring watchlist do it continuously.
+          {t("settlements.disclaimer")}
         </p>
       </div>
     </section>
