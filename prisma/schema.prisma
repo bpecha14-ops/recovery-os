@@ -23,27 +23,15 @@ model WaitlistEntry {
   createdAt DateTime @default(now())
 }
 
+// Anonymous scanner counters — integers only: no file contents,
+// no identifiers, no amounts. The CSV itself is parsed in the browser
+// and never reaches the server.
 model ScanRun {
   id           String   @id @default(cuid())
   rowsParsed   Int
   matchesFound Int
-  estimateLow  Float
-  estimateHigh Float
-  email        String?
   createdAt    DateTime @default(now())
 }
-
-// The World Library — free people search (name → countries → official checklist).
-// This is the data asset: every free scan is stored with the matched sources.
-model PeopleScan {
-  id        String   @id @default(cuid())
-  fullName  String
-  email     String?
-  countries String   // JSON array of ISO country codes
-  matchIds  String    // JSON array of matched source ids
-  matches   Int      // number of official databases on the checklist
-  referrer  String?
-  createdAt DateTime @default(now())
-}
-// NOTE: scaffold models User/Post were removed from the schema — they were
-// never used by the app. Run `npx prisma db push` to sync the database.
+// NOTE: the LibrarySearch/PeopleScan model was removed — the World Library
+// search is now privacy-first: names stay in the browser, and the API stores
+// nothing. Run `npx prisma db push` to sync the database.

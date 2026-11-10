@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ShieldCheck, Trash2, Scale, Sparkles } from "lucide-react";
 import { IEEPA_INFO } from "@/lib/recovery-data";
+import { WORLD_COUNTRIES, WORLD_VERIFIED_USD_B } from "@/lib/world-registry";
 import { CountUp, GoldenStream, Marquee } from "./effects";
 
 const STATS = [
@@ -14,9 +15,9 @@ const STATS = [
     accent: true,
   },
   {
-    value: 182,
+    value: WORLD_VERIFIED_USD_B,
     display: (n: number) => `$${Math.round(n)}B+`,
-    label: "verified unclaimed money across the 20 world markets we index",
+    label: `verified unclaimed money across the ${WORLD_COUNTRIES.length} world markets we index`,
     accent: false,
   },
   {

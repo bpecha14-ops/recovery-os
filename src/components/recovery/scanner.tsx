@@ -13,6 +13,7 @@ import { ClaimDialog } from "./claim-dialog";
 import { Reveal, CountUp, GoldenStream } from "./effects";
 import {
   parsePurchases,
+  runScan,
   SAMPLE_CSV,
   type ScanResults,
 } from "@/lib/scan-engine";
@@ -73,24 +74,31 @@ export function Scanner() {
     });
   }
 
-  async function runScan() {
+  // Runs entirely in the browser: the export never leaves this page.
+  // Only two anonymous counters (rows parsed, matches found) are posted.
+  function handleScan() {
     if (!csvText.trim()) return;
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/scan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ csv: csvText }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error ?? "Scan failed. Please try again.");
+      const data = runScan(csvText);
+      if (data.usableRows === 0) {
+        setError(
+          "No usable rows found. Expected columns like Date, Description, Amount (CSV or TSV, exported from QuickBooks, Stripe or your bank)."
+        );
         return;
       }
-      setResults(data as ScanResults);
-    } catch {
-      setError("Network error — please try again.");
+      setResults(data);
+      void fetch("/api/scan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          rowsParsed: data.rowsParsed,
+          matchesFound: data.matches.length,
+        }),
+      }).catch(() => {
+        /* counters are best-effort; ignore network failures */
+      });
     } finally {
       setLoading(false);
     }
@@ -270,7 +278,7 @@ export function Scanner() {
                     )}
                     <div className="mt-4 flex flex-col gap-2 sm:flex-row">
                       <Button
-                        onClick={runScan}
+                        onClick={handleScan}
                         disabled={loading || preview.rows.length === 0}
                         size="lg"
                         className="btn-shimmer bg-gradient-to-b from-amber-200 via-amber-400 to-amber-500 font-semibold text-zinc-950 shadow-[0_0_32px_-10px_rgba(251,191,36,0.6)] transition-all hover:brightness-110"

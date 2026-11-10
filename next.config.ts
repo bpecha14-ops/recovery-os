@@ -6,8 +6,15 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
+  // Next.js 16 compares the request's bare hostname (no protocol) against
+  // these entries, so they must be hostnames/wildcards — never full URLs.
+  // `*.space-z.ai` covers every preview subdomain across sessions.
   allowedDevOrigins: [
-    "https://preview-chat-6c63c6c2-eb47-46ff-ab96-4fc6bcab19bb.space-z.ai",
+    "*.space-z.ai",
+    "space-z.ai",
+    "localhost",
+    "*.localhost",
+    "127.0.0.1",
   ],
 };
 

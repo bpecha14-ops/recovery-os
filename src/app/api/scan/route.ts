@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { runScan } from "@/lib/scan-engine";
 import { db } from "@/lib/db";
 
+/**
+ * Anonymous usage counter for the scanner.
+ * The CSV itself is parsed in the browser and never sent here —
+ * this endpoint only receives two integers (rows parsed, matches found),
+ * with no file content, no identifiers and no amounts.
+ */
 const BodySchema = z.object({
-  csv: z.string().min(5).max(2_000_000),
+  rowsParsed: z.number().int().min(0).max(10_000_000),
+  matchesFound: z.number().int().min(0).max(10_000_000),
 });
 
 export async function POST(req: NextRequest) {
@@ -13,42 +19,22 @@ export async function POST(req: NextRequest) {
     const parsed = BodySchema.safeParse(json);
     if (!parsed.success) {
       return NextResponse.json(
-        { error: "Invalid request. Send { csv: string } with your purchase export." },
+        { error: "Invalid counters. Send { rowsParsed, matchesFound }." },
         { status: 400 }
       );
     }
 
-    const results = runScan(parsed.data.csv);
-
-    if (results.usableRows === 0) {
-      return NextResponse.json(
-        {
-          error:
-            "No usable rows found. Expected columns like Date, Description, Amount (CSV or TSV, exported from QuickBooks, Stripe or your bank).",
-        },
-        { status: 422 }
-      );
-    }
-
-    // Persist an anonymized aggregate for the founder dashboard (no row data).
     try {
-      await db.scanRun.create({
-        data: {
-          rowsParsed: results.rowsParsed,
-          matchesFound: results.matches.length,
-          estimateLow: results.openTotalLow + results.ieepaLow,
-          estimateHigh: results.openTotalHigh + results.ieepaHigh,
-        },
-      });
+      await db.scanRun.create({ data: parsed.data });
     } catch (dbErr) {
-      console.error("scanRun persist failed (non-fatal):", dbErr);
+      console.error("scan counter persist failed (non-fatal):", dbErr);
     }
 
-    return NextResponse.json(results);
+    return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error("scan failed:", err);
+    console.error("scan counter failed:", err);
     return NextResponse.json(
-      { error: "Scan failed. Please try again in a moment." },
+      { error: "Counter failed. Please try again in a moment." },
       { status: 500 }
     );
   }

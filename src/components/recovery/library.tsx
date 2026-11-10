@@ -94,7 +94,6 @@ const COUNTRY_TICKER = WORLD_COUNTRIES.map(
 export function Library() {
   // --- free global search state ---
   const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -146,15 +145,12 @@ export function Library() {
     }
     setLoading(true);
     try {
-      const res = await fetch("/api/people-scan", {
+      // Only the country codes are sent — the name stays in your browser
+      // and nothing about the search is stored on our side.
+      const res = await fetch("/api/library-search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fullName: fullName.trim(),
-          email: email.trim(),
-          countries: selected,
-          referrer: typeof window !== "undefined" ? window.location.pathname : undefined,
-        }),
+        body: JSON.stringify({ countries: selected }),
       });
       const json = await res.json();
       if (!res.ok) {
@@ -303,32 +299,17 @@ export function Library() {
                 official databases to search — every entry free, every link official.
               </p>
 
-              <div className="mt-6 grid gap-4 lg:grid-cols-2">
-                <div>
-                  <label htmlFor="lib-name" className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-                    Name to search
-                  </label>
-                  <Input
-                    id="lib-name"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder="e.g. Maria Gonzalez"
-                    className="mt-2 h-11 border-amber-400/20 bg-[#050506] text-white placeholder:text-zinc-600 focus-visible:ring-amber-400"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="lib-email" className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-                    Email — optional, for new-registry alerts
-                  </label>
-                  <Input
-                    id="lib-email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
-                    className="mt-2 h-11 border-amber-400/20 bg-[#050506] text-white placeholder:text-zinc-600 focus-visible:ring-amber-400"
-                  />
-                </div>
+              <div className="mt-6">
+                <label htmlFor="lib-name" className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+                  Name to search — stays in your browser, never sent anywhere
+                </label>
+                <Input
+                  id="lib-name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="e.g. Maria Gonzalez"
+                  className="mt-2 h-11 border-amber-400/20 bg-[#050506] text-white placeholder:text-zinc-600 focus-visible:ring-amber-400"
+                />
               </div>
 
               {/* Country picker */}
@@ -347,7 +328,7 @@ export function Library() {
                     <Input
                       value={pickerQuery}
                       onChange={(e) => setPickerQuery(e.target.value)}
-                      placeholder="Search 20 markets — USA, UK, India, Brazil…"
+                      placeholder={`Search ${WORLD_COUNTRIES.length} markets — USA, UK, Kenya, Malaysia…`}
                       className="h-10 border-amber-400/15 bg-[#050506] pl-9 text-sm text-white placeholder:text-zinc-600 focus-visible:ring-amber-400"
                     />
                   </div>
@@ -423,7 +404,7 @@ export function Library() {
                         to search
                       </p>
                       <p className="mt-1 text-xs text-zinc-500">
-                        Search saved{email.trim() ? " — we'll email you when new registries go live" : ""}.
+                        Nothing was saved — only you can see this checklist.
                         Work through the list — most entries take under 10 minutes.
                       </p>
                     </div>

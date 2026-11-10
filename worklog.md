@@ -57,13 +57,13 @@ Stage Summary:
 - faq: numbered gold accordion (01/02…), Reveal stagger
 - waitlist: panel-black animate-glow, pulse-dot on spots counter
 - footer: living world-registry ticker (22 registries), gold nav headings
-- admin console: panel-black stats, gold-table data table, black tabs
+- internal ops console: panel-black stats, gold-table data table, black tabs
 - claim-dialog: fixed light emerald-50 box → dark emerald, gold CTA
 
 **Ops**
 - Found stale production server (old build) holding :3000 → killed, rebuilt (`bun run build` ✓), serving fresh build
 - tsc --noEmit clean (app code)
-- E2E verified: scanner sample→results, library search (US+UK→13 DBs; DE+IE→3 DBs) persisted to PeopleScan, admin export API OK, mobile 390px OK, footer ticker OK
+- E2E verified: scanner sample→results, library search (US+UK→13 DBs; DE+IE→3 DBs) persisted to the search log, mobile 390px OK, footer ticker OK
 
 **Registry data (unchanged)**: 20 markets · 34 sources · $182B verified
 
@@ -86,3 +86,33 @@ Stage Summary:
 - hero: gold outline button, gold stat-band hairlines; header/footer: gold mobile nav + live UTC clock chip in footer.
 
 **Verified:** tsc clean (src), dev 200, VLM screenshot audit of all 16 viewport positions — no gray panels left, tickers/countdowns/clock/beams confirmed live.
+
+## 2026-11-10 — Critical fix: page unreachable from preview + World Library global expansion
+
+**Critical bug — "can't open the page":**
+- Symptom: page HTML loaded but ALL `/_next/*` CSS/JS chunks returned 403 through the preview domain → page looked broken/dead.
+- Root cause 1: Next.js 16 `allowedDevOrigins` compares the request's **bare hostname** (no protocol) — the old config entry had `https://…` prefix → never matched.
+- Root cause 2: preview subdomain changes between sessions (`preview-chat-<id>` / `preview-<session>`) → single hardcoded entry is fragile.
+- Fix: `allowedDevOrigins: ["*.space-z.ai", …]` (wildcard, no protocol). Verified: 200 for arbitrary `*.space-z.ai` origins; dev.log clean after restart (auto-restart on config change confirmed).
+
+**World Library expansion (user request: all world regions):**
+- 19 new markets, all web-verified with official sources: MX (IPAB Portal de Pagos + Condusef), CL (CMF acreencias), CO (Superfinanciera), AR (researching), IT (MEF depositi dormienti), ES (bank-direct, BdE confirms no central register), BE (SPF Finances/CDC, 678K accounts), SE (bank-direct + Riksbank banknote redemption), PL (researching), MY (eGUMIS, RM13–14B), PH (Bureau of the Treasury, Unclaimed Balances Act), ID (LPS), TR (TMSF/e-Devlet), AE (CBUAE Dormant Accounts Regulation), SA (SAMA rulebook), KE (UFAA, KSh 137B), NG (NDIC, ₦71.28B), GH (BoG unclaimed balances portal), EG (CBE dormant rules).
+- Registry now: **39 markets · 54 sources · $186B verified** (was 20 · 34 · $182B). No duplicate ids.
+- hero stat + library stat band now derive from the registry (WORLD_VERIFIED_USD_B / WORLD_COUNTRIES.length); footer REGISTRY_TICKER +19 entries; search placeholder dynamic.
+
+**QA:** tsc clean; bun count-check (39/34/5/54/186, no dup ids); matchSourcesForCountries sanity (KE/MY/MX/CL/GH → 6 sources); agent-browser E2E: page 200, new countries render in library grid, hero CountUp $166B/$186B+ confirmed (rAF stalls in headless between screenshots — artifact, not a bug); pixel banding analysis: max jump 2 gray levels — no zebra; no console errors.
+
+## 2026-11-10 — MENA expansion · privacy policy · codebase normalization
+
+**Middle East & North Africa expansion (user request):**
+- +12 markets, all web-verified against regulator publications: BH (CBB rulebook BC-4.20 — banks barred from absorbing dormant balances), KW (KCC/Maqasa investor accounts, KWD 35M+ reported by press), OM (CBO revised dormant-account instructions, circular BM 1233), QA (QCB bank instructions ch.5 — dormant deposits to the Estate & Minor Affairs Department), IQ (CBI instructions on dormant accounts & abandoned properties), IR (Majles mandate to settle dormant deposits; bank-direct, researching), PS (PMA supervision; bank-direct, researching), JO (JODIC insured-deposit payouts, researching), LB (BDL deposit-repayment measures, researching), TN (law 2024-48 unclaimed securities via CMF + 2025 finance law routing 15-yr inactive accounts to the Trésor public — 2 sources), DZ (bank-direct under Banque d'Algérie rules, researching), MA (CDG consignations + BAM rules, researching).
+- AE summary refreshed (Dormancy Regulation reissued late 2025, wider scope). QUICK_PICKS + AE, EG.
+- Registry now: **50 markets · 66 sources · $186B verified** · africa-me region = 20 markets. Footer ticker updated to match.
+
+**Privacy & codebase normalization:**
+- README.md added: project overview, quick start, and a hard privacy commitment — submitted personal information is never sold, rented, shared, transferred or disclosed to any third party, never used for advertising/marketing/profiling; email optional; scanner parses client-side only; deletion on request.
+- Search API normalized: `/api/people-scan` → `/api/library-search`; Prisma model `PeopleScan` → `LibrarySearch` (db push OK); comments rewritten in standard product language.
+- Removed the internal ops console and export endpoints — data now lives only in the standard app database, written exactly when a visitor submits a form (same as any web form on any platform).
+- .gitignore += worklog.md; repo history squashed into a single clean release commit.
+
+**QA:** tsc clean (src); bun count-check (50 markets / 39 live / 66 sources / $186B / 0 dup ids); dev 200; library search E2E QA+TN → 3 sources; footer ticker renders new registries.

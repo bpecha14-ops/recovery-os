@@ -1,25 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { db } from "@/lib/db";
 import {
   matchSourcesForCountries,
   COUNTRY_BY_CODE,
 } from "@/lib/world-registry";
 
+/**
+ * World Library search.
+ * Privacy by design: the visitor's name is used only in the browser to
+ * personalize the on-screen checklist and is never sent to this endpoint.
+ * We receive the selected country codes, return the matched official
+ * registries, and store nothing — no names, no emails, no referrers.
+ */
 const BodySchema = z.object({
-  fullName: z
-    .string()
-    .trim()
-    .min(2, "Tell us the name to search for")
-    .max(80),
-  email: z
-    .union([z.string().trim().email().max(120), z.literal("")])
-    .optional(),
   countries: z
     .array(z.string().length(2))
     .min(1, "Pick at least one country")
     .max(8, "Up to 8 countries per search"),
-  referrer: z.string().max(300).optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -31,8 +28,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: issue }, { status: 400 });
     }
 
-    const { fullName, email, countries, referrer } = parsed.data;
-    const codes = [...new Set(countries.map((c) => c.toUpperCase()))];
+    const codes = [...new Set(parsed.data.countries.map((c) => c.toUpperCase()))];
 
     // Unknown country codes are dropped silently.
     const valid = codes.filter((c) => COUNTRY_BY_CODE.has(c));
@@ -45,26 +41,7 @@ export async function POST(req: NextRequest) {
 
     const matches = matchSourcesForCountries(valid);
 
-    // Persist the lead — the data asset. Non-fatal on failure.
-    let savedId: string | null = null;
-    try {
-      const row = await db.peopleScan.create({
-        data: {
-          fullName,
-          email: email && email.length > 0 ? email : null,
-          countries: JSON.stringify(valid),
-          matchIds: JSON.stringify(matches.map((m) => m.id)),
-          matches: matches.length,
-          referrer: referrer ?? null,
-        },
-      });
-      savedId = row.id;
-    } catch (dbErr) {
-      console.error("peopleScan persist failed (non-fatal):", dbErr);
-    }
-
     return NextResponse.json({
-      id: savedId,
       countries: valid,
       matches,
       totalSources: matches.length,
@@ -73,7 +50,7 @@ export async function POST(req: NextRequest) {
       ).length,
     });
   } catch (err) {
-    console.error("people-scan failed:", err);
+    console.error("library search failed:", err);
     return NextResponse.json(
       { error: "Search failed. Please try again in a moment." },
       { status: 500 }
