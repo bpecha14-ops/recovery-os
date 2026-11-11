@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import type { PrismaClient } from "@prisma/client";
 
 /**
@@ -9,8 +11,9 @@ import type { PrismaClient } from "@prisma/client";
  * `prisma generate` — e.g. a clean CI/deploy runner). With this module the
  * client is only constructed on the first real request.
  *
- * - Falls back to a project-relative SQLite file when DATABASE_URL is unset,
- *   so a missing .env never crashes the app.
+ * - Falls back to an absolute project-relative SQLite path when DATABASE_URL
+ *   is unset, and creates the directory on demand, so a missing .env or a
+ *   fresh checkout without db/ never crashes the app.
  * - If the client was never generated, `getDb()` rejects and callers degrade
  *   gracefully (the site itself keeps working).
  */
@@ -18,11 +21,20 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-export async function getDb(): Promise<PrismaClient> {
-  if (!process.env.DATABASE_URL) {
-    process.env.DATABASE_URL = "file:./db/custom.db";
+function resolveDbUrl(): string {
+  if (process.env.DATABASE_URL) return process.env.DATABASE_URL;
+  const dbDir = path.join(process.cwd(), "db");
+  try {
+    fs.mkdirSync(dbDir, { recursive: true });
+  } catch {
+    /* read-only fs or no permissions — let Prisma surface the error */
   }
+  return `file:${path.join(dbDir, "custom.db")}`;
+}
+
+export async function getDb(): Promise<PrismaClient> {
   if (!globalForPrisma.prisma) {
+    process.env.DATABASE_URL = resolveDbUrl();
     const { PrismaClient: Client } = await import("@prisma/client");
     globalForPrisma.prisma = new Client({ log: ["query"] });
   }
