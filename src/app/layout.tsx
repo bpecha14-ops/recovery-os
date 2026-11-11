@@ -1,17 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+// Self-hosted fonts (geist npm package): zero network at build time —
+// next/font/google would fetch from Google during `next build`, which
+// fails in network-restricted deploy runners.
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "RecoveryOS — We find money your business forgot about",
@@ -46,7 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
+        className={`${GeistSans.variable} ${GeistMono.variable} antialiased bg-background text-foreground`}
       >
         {children}
         <Toaster />
