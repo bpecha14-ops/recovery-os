@@ -129,3 +129,20 @@ Stage Summary:
 **Proof:** git clone → bun install → capped build → standalone server: GET / 200, waitlist INSERT ok, library-search ok. Fonts served from /_next/static/media locally.
 
 **Note:** local main is 12 commits ahead of origin (github.com/bpecha14-ops/recovery-os, no push credentials in sandbox); bundle with full history saved to download/ for the owner to push.
+
+## 2026-11-11 — THE deploy blocker found: missing package-lock.json
+
+**Why every publish failed while local builds passed:** the repo shipped only
+`bun.lock`. A deploy runner invoking `npm ci` aborts immediately with EUSAGE
+("can only install with an existing package-lock.json"). All local
+reproductions used `bun install` / `npm install`, which create the lockfile
+on the fly — so the failure never reproduced in the sandbox.
+
+**Fix:** package-lock.json committed (npm resolution, build-verified),
+.env.example added (README references it), un-ignored in .gitignore.
+bun install continues to prefer bun.lock.
+
+**End-to-end deploy simulation (git clone → npm ci → build → run):**
+npm ci 843 pkgs OK · build ✓ · GET / 200 · waitlist INSERT OK ·
+library-search OK. Combined with earlier hardening (lazy Prisma, local
+fonts, 1024MB heap cap, English-only) every known failure vector is closed.
