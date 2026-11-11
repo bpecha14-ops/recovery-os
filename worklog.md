@@ -146,3 +146,23 @@ bun install continues to prefer bun.lock.
 npm ci 843 pkgs OK · build ✓ · GET / 200 · waitlist INSERT OK ·
 library-search OK. Combined with earlier hardening (lazy Prisma, local
 fonts, 1024MB heap cap, English-only) every known failure vector is closed.
+
+---
+Task ID: 5
+Agent: main (Z.ai)
+Task: CivicClaim OS — полная трансформация RecoveryOS в глобальный навигатор прав и денег (US/CA/EU/AU) + концепт-нота PDF
+
+Work Log:
+- Отчёт: CivicClaim_OS_Concept_Note_RU.pdf (download/, 14 стр., QA PASS) — Template 07 Crystal Blue, TOC с кликабельными ссылками, диаграмма невостребованных денег по 4 рынкам, 8 таблиц, источники [1-13]. Скрипты: scripts/civicclaim_report.py + civicclaim_cover.html + civicclaim_merge.py.
+- Данные: src/lib/programs-data.ts — 41 программа (US 15 / CA 9 / EU+UK 9 / AU 8), все с официальными sourceUrl/applyUrl, суммами, дедлайнами, документами, шагами, критериями eligibility, статусами verified/auto-extracted + дата проверки; DATA_SOURCES — 17 источников с режимами доступа (open-api / public-page / request-access).
+- Движок: src/lib/eligibility-engine.ts — детерминированный матчер по структурированным правилам (residency/age/income/household/employment/situations/housing), verdict match/near-miss, объяснимость per-criterion.
+- Модули (клиентские): coverage.tsx (рынки+статы), global-search.tsx (фильтры страна/категория/поиск, 41 карточка, бейджи верификации), eligibility-wizard.tsx (9 шагов с подсказками «зачем мы спрашиваем», анонимно, результаты с Why it matched / What is missing), claim-assistant.tsx (чек-листы с прогрессом в localStorage, документы, дедлайны, официальная ссылка подачи), data-engine.tsx (реестр источников, SLA свежести, CC BY 4.0), sponsorship.tsx (3 слоя: free/API/sponsor + метрики доноров), program-card.tsx, civic-modules.tsx (hand-off search/wizard → claim).
+- ИИ: /api/ai-chat — новый глобальный гид: каталог программ инжектится из PROGRAMS (не дрейфует от сайта), hand-holding протокол (1 уточняющий вопрос → 2-4 программы с sourceUrl и верификацией), guardrail против программ вне каталога, запрет юрсоветов/персданных.
+- Ребрендинг: layout.tsx metadata, header (CivicClaim OS + новый nav 8 пунктов), hero (новые статы $70B / A$21.2B / 25% EITC, CTA на #eligibility/#search), how (3 шага citizen-flow), footer (юридические дисклеймеры под навигатор информации), waitlist → partner & sponsor list, ai-guide SECTION_SPOTS (+coverage/search/eligibility/claim/engine/sponsor), словари: новая секция civic, обновлены hero/header/how/footer/waitlist/assistant/guide/common.
+- Багфиксы QA: label htmlFor для чекбоксов (wizard situations + claim steps), set-state-in-effect в claim-assistant (render-phase preselect + lazy hydration) и ai-assistant (render-phase re-localization), use-mobile → useSyncExternalStore, .vercel в eslint ignores, советы Goldie автоскрытие 14s→7s.
+- Верификация (agent-browser): / рендер ✓ (title CivicClaim OS), wizard сквозной прогон US/67/low/retired/senior/renter → 10 match + 5 near-miss ✓, hand-off в claim assistant ✓ (SNAP 5 шагов), чек шага → localStorage ✓, поиск 41 карточка ✓, Goldie чат: ответ с программами/суммами/статусами верификации ✓, мобайл 390px без overflow + меню ✓, scan/waitlist API → SQLite ✓, lint 0 ошибок, dev.log чист.
+
+Stage Summary:
+- Живой глобальный MVP: 41 официальная программа 4 рынков, анонимный eligibility-визард с объяснимостью, claim-ассистент с чек-листами, открытый реестр данных, ИИ-гид с инжектом базы.
+- Модель: гражданский слой бесплатен, институциональный API + спонсорский слои описаны на сайте; лиды не продаются.
+- Отчёт для спонсоров: download/CivicClaim_OS_Concept_Note_RU.pdf.

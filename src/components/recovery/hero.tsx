@@ -13,8 +13,8 @@ const STAT_KEYS = ["hero.stat1", "hero.stat2", "hero.stat3", "hero.stat4"];
 const STAT_FORMATS = [
   (n: number) => `$${Math.round(n)}B`,
   (n: number) => `$${Math.round(n)}B+`,
-  (n: number) => `~$${Math.round(n)}B/yr`,
-  (n: number) => n.toLocaleString("en-US"),
+  (n: number) => `A$${n.toFixed(1)}B`,
+  (n: number) => `${Math.round(n)}%`,
 ];
 
 const spring = { type: "spring" as const, stiffness: 92, damping: 18 };
@@ -49,7 +49,7 @@ export function Hero() {
           className="mx-auto w-fit"
         >
           <a
-            href="#ieepa"
+            href="#eligibility"
             className="group inline-flex items-center gap-2.5 rounded-full border border-amber-400/25 bg-amber-400/[0.07] py-1.5 pl-3 pr-4 text-sm text-amber-200/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-colors hover:border-amber-400/45 hover:bg-amber-400/[0.12]"
           >
             <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-amber-300" aria-hidden="true" />
@@ -87,7 +87,7 @@ export function Hero() {
           transition={{ ...spring, delay: 0.34 }}
           className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row"
         >
-          <a href="#scanner" className="w-full sm:w-auto">
+          <a href="#eligibility" className="w-full sm:w-auto">
             <Button
               size="lg"
               className="relative h-12 w-full overflow-hidden bg-gradient-to-b from-amber-200 via-amber-400 to-amber-500 px-7 text-base font-semibold text-zinc-950 shadow-[0_0_40px_-8px_rgba(251,191,36,0.55),inset_0_1px_0_rgba(255,255,255,0.45)] transition-all hover:brightness-110 hover:shadow-[0_0_54px_-8px_rgba(251,191,36,0.7),inset_0_1px_0_rgba(255,255,255,0.45)] sm:w-auto"
@@ -101,7 +101,7 @@ export function Hero() {
               <ArrowRight className="relative ml-2 h-4 w-4" aria-hidden="true" />
             </Button>
           </a>
-          <a href="#library" className="w-full sm:w-auto">
+          <a href="#search" className="w-full sm:w-auto">
             <Button
               size="lg"
               variant="outline"
@@ -176,7 +176,7 @@ export function Hero() {
                 }`}
               >
                 <CountUp
-                  to={i === 0 ? 166 : i === 1 ? WORLD_VERIFIED_USD_B : i === 2 ? 15 : 75300}
+                  to={i === 0 ? 70 : i === 1 ? WORLD_VERIFIED_USD_B : i === 2 ? 21.2 : 25}
                   format={STAT_FORMATS[i]}
                   delay={0.2 + i * 0.1}
                 />

@@ -21,15 +21,20 @@ interface SectionSpot {
 }
 
 const SECTION_SPOTS: SectionSpot[] = [
-  { id: "how", leftVw: 5 },
-  { id: "library", leftVw: 14 },
-  { id: "channels", leftVw: 24 },
-  { id: "scanner", leftVw: 34 },
-  { id: "settlements", leftVw: 44 },
-  { id: "ieepa", leftVw: 54 },
-  { id: "pricing", leftVw: 64 },
-  { id: "faq", leftVw: 74 },
-  { id: "waitlist", leftVw: 82 },
+  { id: "how", leftVw: 4 },
+  { id: "coverage", leftVw: 8 },
+  { id: "search", leftVw: 14 },
+  { id: "eligibility", leftVw: 22 },
+  { id: "claim", leftVw: 30 },
+  { id: "engine", leftVw: 38 },
+  { id: "library", leftVw: 46 },
+  { id: "channels", leftVw: 54 },
+  { id: "scanner", leftVw: 62 },
+  { id: "settlements", leftVw: 70 },
+  { id: "ieepa", leftVw: 78 },
+  { id: "sponsor", leftVw: 86 },
+  { id: "faq", leftVw: 91 },
+  { id: "waitlist", leftVw: 96 },
 ];
 
 const SECTION_IDS = SECTION_SPOTS.map((s) => s.id);
@@ -130,7 +135,7 @@ export function AiGuide() {
       const count = tipCountRef.current[section.id] ?? 0;
       tipCountRef.current[section.id] = count + 1;
       setTip(tips[count % tips.length]);
-      const hide = setTimeout(() => setTip(null), 14000);
+      const hide = setTimeout(() => setTip(null), 7000);
       timersRef.current.push(hide);
     }, 700);
     timersRef.current.push(show);

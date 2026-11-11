@@ -4,7 +4,7 @@ import { Coins } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { Marquee, LiveClock, GoldenStream } from "./effects";
 
-const PRODUCT_HREFS = ["#how", "#library", "#scanner", "#settlements", "#ieepa", "#pricing"];
+const PRODUCT_HREFS = ["#search", "#eligibility", "#claim", "#engine", "#library", "#sponsor"];
 const CHANNEL_HREFS = ["#channels", "#settlements", "#ieepa", "#channels", "#waitlist"];
 
 // The living footer ticker — every official registry in the library, rolling.
@@ -104,7 +104,7 @@ export function Footer() {
                 <Coins className="h-4 w-4 text-zinc-950" aria-hidden="true" />
               </span>
               <span className="text-lg font-semibold tracking-tight text-white">
-                RecoveryOS
+                CivicClaim <span className="text-amber-400">OS</span>
               </span>
             </div>
             <p className="mt-4 max-w-sm text-sm leading-relaxed">

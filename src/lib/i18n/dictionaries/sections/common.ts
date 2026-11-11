@@ -1,6 +1,6 @@
 export default {
   beta: "Beta",
-  runFreeScan: "Run a free scan",
+  runFreeScan: "Check what I'm owed",
   openMenu: "Open menu",
   language: "Language",
   closeMenu: "Close menu",

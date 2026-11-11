@@ -14,6 +14,7 @@ import footer from "./sections/footer";
 import claim from "./sections/claim";
 import assistant from "./sections/assistant";
 import guide from "./sections/guide";
+import civic from "./sections/civic";
 
 /**
  * The English dictionary is the source of truth: every other locale file
@@ -36,6 +37,7 @@ export const en = {
   claim,
   assistant,
   guide,
+  civic,
 };
 
 export type Dictionary = typeof en;

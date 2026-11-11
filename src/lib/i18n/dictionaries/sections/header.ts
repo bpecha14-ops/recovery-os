@@ -1,15 +1,15 @@
 export default {
   nav: [
     "How it works",
+    "Find programs",
+    "Am I eligible",
+    "Claim assistant",
+    "Open data",
     "World library",
-    "Channels",
-    "Free scanner",
-    "Open claims",
-    "Tariff refund",
-    "Pricing",
-    "FAQ",
+    "Business scanner",
+    "Sponsor",
   ],
   ariaMainNav: "Main navigation",
   ariaMobileNav: "Mobile navigation",
-  ariaHome: "RecoveryOS home",
+  ariaHome: "CivicClaim OS home",
 };

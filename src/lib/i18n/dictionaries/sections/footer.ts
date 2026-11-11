@@ -1,28 +1,28 @@
 export default {
   about:
-    "The recoveries department for small business — and a free Living Library of forgotten money for everyone else. We map every channel where money gets stuck: class actions, tariff refunds, drawback, unclaimed property. You only pay when checks arrive.",
-  productTitle: "Product",
-  channelsTitle: "Channels",
+    "The free global navigator of people's rights and money: official benefits, compensations, tax credits and unclaimed property across the US, Canada, Europe and Australia — with an anonymous eligibility check and a claim assistant for every program. For businesses, the RecoveryOS engine scans purchases against open settlements, tariff refunds and drawback. Individuals never pay; user requests are never sold.",
+  productTitle: "Citizen layer",
+  channelsTitle: "Business layer",
   product: [
-    "How it works",
+    "Find programs",
+    "Am I eligible?",
+    "Claim assistant",
+    "Open data engine",
     "World Library",
-    "Free scanner",
-    "Open claims",
-    "IEEPA calculator",
-    "Pricing",
+    "Sponsor model",
   ],
   channelsNav: [
     "All channels",
     "Class actions",
     "Tariff refunds",
     "Duty drawback",
-    "Launch list",
+    "Partner list",
   ],
   legal1:
-    "RecoveryOS is not a law firm, an accountant, or a licensed customs broker, and nothing on this site is legal, tax, or financial advice. The Living Library links to official government databases and court-appointed administrators — individuals can always file directly, for free. Recovery estimates are modeling aids based on public filings and historical payout ratios; actual recoveries depend on your evidence, eligibility, and the total claims each fund receives.",
+    "CivicClaim OS is an informational navigator, not a law firm, accountant, tax adviser or licensed broker, and nothing on this site is legal, tax or financial advice. Program rules, amounts and deadlines are compiled from official government sources with the verification date shown on each record; always confirm current terms on the official program page. Final eligibility decisions rest solely with the responsible government agency or administrator.",
   legal2:
-    "Settlement fund facts, class windows, and deadlines are compiled from public court filings and official administrator notices as of late October 2026 and may change without notice. Always verify deadlines with the official settlement administrator before relying on them. Claims are always filed by you or through properly licensed partners, and funds flow directly to your account.",
-  copyright: "© 2026 RecoveryOS. All rights reserved.",
-  ariaProduct: "Product",
-  ariaChannels: "Channels",
+    "The eligibility wizard is anonymous: answers are processed in your browser and are not stored on our servers. Settlement fund facts and deadlines in the business layer are compiled from public court filings and official administrator notices and may change without notice. Individuals can always file directly with official programs, for free.",
+  copyright: "© 2026 CivicClaim OS. All rights reserved.",
+  ariaProduct: "Citizen layer",
+  ariaChannels: "Business layer",
 };

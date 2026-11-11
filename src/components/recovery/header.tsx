@@ -10,13 +10,13 @@ import { LanguageSwitcher } from "./language-switcher";
 
 const NAV_HREFS = [
   "#how",
+  "#search",
+  "#eligibility",
+  "#claim",
+  "#engine",
   "#library",
-  "#channels",
   "#scanner",
-  "#settlements",
-  "#ieepa",
-  "#pricing",
-  "#faq",
+  "#sponsor",
 ];
 
 export function Header() {
@@ -40,7 +40,7 @@ export function Header() {
             <Coins className="h-4 w-4 text-zinc-950" aria-hidden="true" />
           </span>
           <span className="text-lg font-semibold tracking-tight text-white">
-            RecoveryOS
+            CivicClaim <span className="text-amber-400">OS</span>
           </span>
           <span className="hidden rounded-md border border-amber-400/25 bg-amber-400/[0.08] px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-amber-300/90 sm:inline-block">
             {t("common.beta")}
@@ -61,7 +61,7 @@ export function Header() {
 
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
-          <a href="#scanner" className="hidden sm:block">
+          <a href="#eligibility" className="hidden sm:block">
             <Button className="btn-shimmer h-9 bg-gradient-to-b from-amber-200 via-amber-400 to-amber-500 text-sm font-semibold text-zinc-950 shadow-[0_0_24px_-8px_rgba(251,191,36,0.7)] transition-all hover:brightness-110">
               {t("common.runFreeScan")}
               <ArrowRight className="ml-1.5 h-3.5 w-3.5" aria-hidden="true" />
@@ -82,7 +82,9 @@ export function Header() {
               side="right"
               className="w-72 border-amber-400/[0.16] bg-[#0a0a0c] text-zinc-100"
             >
-              <SheetTitle className="text-left text-white">RecoveryOS</SheetTitle>
+              <SheetTitle className="text-left text-white">
+                CivicClaim <span className="text-amber-400">OS</span>
+              </SheetTitle>
               <nav className="mt-6 flex flex-col gap-1" aria-label={t("header.ariaMobileNav")}>
                 {NAV_HREFS.map((href, i) => (
                   <a
@@ -94,7 +96,7 @@ export function Header() {
                     {navLabels[i] ?? href}
                   </a>
                 ))}
-                <a href="#scanner" onClick={() => setOpen(false)} className="mt-3">
+                <a href="#eligibility" onClick={() => setOpen(false)} className="mt-3">
                   <Button className="w-full bg-gradient-to-b from-amber-200 via-amber-400 to-amber-500 font-semibold text-zinc-950 hover:brightness-110">
                     {t("common.runFreeScan")}
                   </Button>

@@ -8,26 +8,29 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: "RecoveryOS — We find money your business forgot about",
+  title: "CivicClaim OS — the free global navigator of people's rights and money",
   description:
-    "RecoveryOS scans your purchases, tariffs and freight against every open refund channel — antitrust class settlements, IEEPA tariff refunds, duty drawback — then prepares and tracks claims until checks arrive. No recovery, no fee.",
+    "Find official benefits, compensations, tax credits, refunds and unclaimed money across the US, Canada, Europe and Australia. Anonymous eligibility check, claim assistant with checklists, open data engine — free forever for individuals.",
   keywords: [
+    "benefits finder",
+    "government programs eligibility",
+    "unclaimed money",
+    "tax credits",
+    "compensation claims",
     "class action claims for business",
     "IEEPA tariff refund",
-    "duty drawback",
-    "antitrust settlement claims",
-    "unclaimed money for business",
-    "recovery audit software",
+    "lost superannuation",
+    "civic tech open data",
   ],
-  authors: [{ name: "RecoveryOS" }],
+  authors: [{ name: "CivicClaim OS" }],
   icons: {
     icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
   },
   openGraph: {
-    title: "RecoveryOS — the recoveries department for small business",
+    title: "CivicClaim OS — the free global navigator of people's rights and money",
     description:
-      "Class action settlements. IEEPA tariff refunds. Duty drawback. We match your purchases against every open fund and file until checks arrive.",
-    siteName: "RecoveryOS",
+      "Official programs from the US, Canada, Europe and Australia: search, check eligibility anonymously, and file with a step-by-step claim assistant. Free for people; API and tools for organizations.",
+    siteName: "CivicClaim OS",
     type: "website",
   },
 };

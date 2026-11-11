@@ -67,14 +67,18 @@ export function AiAssistant() {
   const reduceMotion = useReducedMotionSafe();
 
   // If the language changes while the chat is still untouched, re-localize
-  // the greeting so it always matches the interface language.
-  useEffect(() => {
+  // the greeting so it always matches the interface language. Render-phase
+  // adjustment (the React-endorsed way to react to changed inputs) instead
+  // of a setState-in-effect.
+  const [greetingLocale, setGreetingLocale] = useState(locale);
+  if (locale !== greetingLocale) {
+    setGreetingLocale(locale);
     setMessages((prev) =>
       prev.length === 1 && prev[0].role === "assistant"
-        ? [{ role: "assistant", content: t("assistant.greeting") }]
+        ? [{ role: "assistant", content: greeting }]
         : prev
     );
-  }, [t]);
+  }
 
   // Scout (the roaming guide) asks us to open with a prefilled question.
   useEffect(() => {

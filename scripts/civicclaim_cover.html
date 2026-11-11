@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    @page { size: 794px 1123px; margin: 0; }
+    :root {
+      --c-bg: #0a1628;
+      --c-accent: #4da8da;
+      --c-text: #e8f0f8;
+      --c-muted: #7a9bb8;
+      --c-glow: #2d7ab3;
+    }
+    html, body {
+      margin: 0; padding: 0;
+      width: 794px; height: 1123px;
+      background: var(--c-bg);
+      color: var(--c-text);
+      font-family: 'Inter', 'Noto Sans SC', sans-serif;
+    }
+    @media screen {
+      html { height: auto; display: flex; justify-content: center; min-height: 100vh; background: var(--c-bg); }
+      body { transform-origin: top center; scale: min(1, calc(100vw / 794), calc(100vh / 1123)); margin: 0 auto; box-shadow: 0 0 60px rgba(0,0,0,0.3); }
+    }
+    .cover { width: 794px; height: 1123px; position: relative; box-sizing: border-box; }
+    /* Layer 1 — background glow, clipped */
+    .layer-bg { position: absolute; inset: 0; overflow: hidden; z-index: 1; }
+    .glow-a {
+      position: absolute; left: 0; top: 0; width: 420px; height: 420px;
+      background: radial-gradient(circle at 30% 30%, rgba(45, 122, 179, 0.16), rgba(45, 122, 179, 0) 70%);
+    }
+    .glow-b {
+      position: absolute; right: 0; bottom: 0; width: 480px; height: 480px;
+      background: radial-gradient(circle at 70% 70%, rgba(45, 122, 179, 0.13), rgba(45, 122, 179, 0) 70%);
+    }
+    /* Layer 2 — luminous frame */
+    .layer-frame { position: absolute; inset: 0; z-index: 2; }
+    .frame {
+      position: absolute; top: 80px; bottom: 80px; left: 60px; right: 60px;
+      border: 2px solid var(--c-accent);
+    }
+    /* Layer 3 — content */
+    .layer-content { position: absolute; inset: 0; z-index: 3; }
+    .kicker {
+      position: absolute; left: 110px; top: 138px;
+      font-size: 11pt; font-weight: 300;
+      color: var(--c-accent);
+      letter-spacing: 5px; text-transform: uppercase;
+      max-width: 560px; line-height: 1.6;
+    }
+    .hero {
+      position: absolute; left: 110px; top: 226px;
+      font-family: 'Playfair Display', 'Noto Serif SC', serif;
+      font-size: 55pt; font-weight: 900; line-height: 1.12;
+      color: var(--c-text);
+      text-shadow: 0 0 26px rgba(45, 122, 179, 0.45);
+      max-width: 560px;
+    }
+    .subtitle {
+      position: absolute; left: 110px; top: 356px;
+      font-size: 19pt; font-weight: 300;
+      color: var(--c-text); opacity: 0.92;
+      letter-spacing: 1px; line-height: 1.35;
+      max-width: 540px;
+    }
+    .summary {
+      position: absolute; left: 110px; top: 500px;
+      font-size: 12.5pt; font-weight: 300; line-height: 1.7;
+      color: var(--c-muted);
+      max-width: 520px;
+    }
+    .org {
+      position: absolute; left: 110px; top: 742px;
+      font-size: 14pt; font-weight: 400;
+      color: var(--c-text); line-height: 1.55;
+      max-width: 540px;
+    }
+    .org small {
+      display: block; margin-top: 10px;
+      font-size: 10.5pt; font-weight: 300;
+      color: var(--c-muted); letter-spacing: 1px; line-height: 1.6;
+    }
+    .date {
+      position: absolute; left: 110px; top: 952px;
+      font-size: 10pt; font-weight: 300;
+      color: var(--c-muted);
+      letter-spacing: 3px; text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <div class="cover">
+    <div class="layer-bg">
+      <div class="glow-a"></div>
+      <div class="glow-b"></div>
+    </div>
+    <div class="layer-frame">
+      <div class="frame"></div>
+    </div>
+    <div class="layer-content">
+      <div class="kicker">Бесплатная глобальная инфраструктура · Концепт-нота 2026</div>
+      <div class="hero">CivicClaim OS</div>
+      <div class="subtitle">Глобальный навигатор<br>прав и денег</div>
+      <div class="summary">
+        Машиночитаемая карта государственных выплат, компенсаций, возвратов
+        и невостребованных активов — от Северной Америки до Австралии.
+        Не человек ищет государство, а информация о правах становится
+        доступной человеку: единая схема данных, проверяемые источники
+        и ИИ-гид на каждом шаге.
+      </div>
+      <div class="org">
+        Международная общественная инфраструктура
+        <small>Первый эшелон рынков: США · Канада · Европа · Австралия<br>
+        Ядро: RecoveryOS — 50 рынков, 66+ официальных реестров</small>
+      </div>
+      <div class="date">Ноябрь 2026 · Версия 1.0</div>
+    </div>
+  </div>
+</body>
+</html>
