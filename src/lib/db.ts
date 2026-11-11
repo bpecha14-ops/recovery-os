@@ -23,7 +23,11 @@ const globalForPrisma = globalThis as unknown as {
 
 function resolveDbUrl(): string {
   if (process.env.DATABASE_URL) return process.env.DATABASE_URL;
-  const dbDir = path.join(process.cwd(), "db");
+  // On serverless platforms (Vercel) only /tmp is writable.
+  const isServerless = Boolean(process.env.VERCEL);
+  const dbDir = isServerless
+    ? path.join("/tmp", "recoveryos-db")
+    : path.join(process.cwd(), "db");
   try {
     fs.mkdirSync(dbDir, { recursive: true });
   } catch {

@@ -23,19 +23,30 @@ export async function POST(req: NextRequest) {
 
     const { email, company, volume, channels, source } = parsed.data;
 
-    const db = await getDb();
-    const entry = await db.waitlistEntry.upsert({
-      where: { email },
-      update: {
-        company: company ?? undefined,
-        volume: volume ?? undefined,
-        channels: channels ?? undefined,
-        source: source ?? undefined,
-      },
-      create: { email, company, volume, channels, source },
-    });
-
-    return NextResponse.json({ ok: true, id: entry.id });
+    try {
+      const db = await getDb();
+      const entry = await db.waitlistEntry.upsert({
+        where: { email },
+        update: {
+          company: company ?? undefined,
+          volume: volume ?? undefined,
+          channels: channels ?? undefined,
+          source: source ?? undefined,
+        },
+        create: { email, company, volume, channels, source },
+      });
+      return NextResponse.json({ ok: true, id: entry.id });
+    } catch (dbErr) {
+      // Serverless (Vercel /tmp SQLite, cold instances): persistence may be
+      // unavailable. Never surface an error to the visitor — log and accept.
+      console.error("waitlist persist failed (accepted, see logs):", {
+        email,
+        company,
+        source,
+        dbErr,
+      });
+      return NextResponse.json({ ok: true, persisted: false });
+    }
   } catch (err) {
     console.error("waitlist failed:", err);
     return NextResponse.json(
