@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 
 /**
  * Anonymous usage counter for the scanner.
@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
     }
 
     try {
+      const db = await getDb();
       await db.scanRun.create({ data: parsed.data });
     } catch (dbErr) {
       console.error("scan counter persist failed (non-fatal):", dbErr);

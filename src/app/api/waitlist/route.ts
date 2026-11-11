@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 
 const BodySchema = z.object({
   email: z.string().email().max(200),
@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
 
     const { email, company, volume, channels, source } = parsed.data;
 
+    const db = await getDb();
     const entry = await db.waitlistEntry.upsert({
       where: { email },
       update: {
