@@ -62,3 +62,4 @@ examples/
 db/*.db
 
 !.env.example
+upload/
