@@ -116,3 +116,16 @@ Stage Summary:
 - .gitignore += worklog.md; repo history squashed into a single clean release commit.
 
 **QA:** tsc clean (src); bun count-check (50 markets / 39 live / 66 sources / $186B / 0 dup ids); dev 200; library search E2E QA+TN → 3 sources; footer ticker renders new registries.
+
+## 2026-11-11 — Deploy failure root-cause hunt (grant URL down)
+
+**Symptom:** production deploy slot (w125c9tcqjd1-d.space-z.ai) returns the platform "Failed to deploy" 500 page; preview works.
+
+**Root causes found & fixed (verified by full fresh-clone simulation each time):**
+1. Module-scope PrismaClient crashed `next build` where the client wasn't generated (fresh install, no postinstall) → lazy `getDb()`, `postinstall: prisma generate`, graceful degradation in waitlist/scan routes.
+2. `next/font/google` fetched Geist from Google's CDN **at build time** — fatal in network-restricted deploy runners → switched to self-hosted `geist` npm package (next/font/local, same CSS vars, zero build-time network).
+3. Build peak RSS ~1.6GB → baked `NODE_OPTIONS=--max-old-space-size=1024` into the build script (full build verified green under the cap).
+
+**Proof:** git clone → bun install → capped build → standalone server: GET / 200, waitlist INSERT ok, library-search ok. Fonts served from /_next/static/media locally.
+
+**Note:** local main is 12 commits ahead of origin (github.com/bpecha14-ops/recovery-os, no push credentials in sandbox); bundle with full history saved to download/ for the owner to push.
