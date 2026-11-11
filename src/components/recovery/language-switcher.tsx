@@ -11,12 +11,14 @@ import { LOCALES } from "@/lib/i18n/config";
 import { useI18n } from "@/lib/i18n/context";
 
 /**
- * The 20-language switcher. Shown in the header (desktop + mobile);
- * the choice persists in localStorage and flips the page to RTL for
- * Arabic and Hebrew.
+ * Language switcher. Hidden while the site is English-only (deploy-slimmed);
+ * re-appears automatically as soon as a second locale is registered in
+ * `LOCALES` — no other change needed.
  */
 export function LanguageSwitcher({ className = "" }: { className?: string }) {
   const { locale, setLocale, t } = useI18n();
+
+  if (LOCALES.length <= 1) return null;
 
   return (
     <DropdownMenu>
