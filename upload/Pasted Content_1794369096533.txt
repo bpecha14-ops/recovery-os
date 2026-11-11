@@ -1,0 +1,564 @@
+Console Error
+
+
+A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+See more info here: https://nextjs.org/docs/messages/react-hydration-error
+
+
+  ...
+    <RedirectErrorBoundary router={{...}}>
+      <InnerLayoutRouter url="/" tree={[...]} params={{}} cacheNode={{rsc:<Fragment>, ...}} segmentPath={[...]} ...>
+        <SegmentViewNode type="page" pagePath="page.tsx">
+          <SegmentTrieNode>
+          <Home>
+            <I18nProvider>
+              <div className="flex min-h...">
+                ...
+                  <DialogProvider scope={undefined} triggerRef={{current:null}} contentRef={{current:null}} ...>
+                    <SheetTrigger asChild={true}>
+                      <DialogTrigger data-slot="sheet-trigger" asChild={true}>
+                        <Primitive.button type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                          <Primitive.button.Slot type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                            <Primitive.button.SlotClone type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                              <Button variant="outline" size="icon" className="border-amb..." aria-label="Open menu" ...>
+                                <button
+                                  data-slot="sheet-trigger"
+                                  className={"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded..."}
+                                  aria-label="Open menu"
+                                  type="button"
+                                  aria-haspopup="dialog"
+                                  aria-expanded={false}
++                                 aria-controls="radix-_R_3sandlb_"
+-                                 aria-controls="radix-_R_fhindlb_"
+                                  data-state="closed"
+                                  onClick={function handleEvent}
+                                  ref={function}
+                                >
+                    ...
+                <main className="flex-1">
+                  <Hero>
+                  <HowItWorks>
+                  <Library>
+                  <Channels>
+                  ...
+                    <Primitive.div dir="ltr" data-orientation="horizontal" data-slot="tabs" className="flex flex-..." ...>
+                      <div dir="ltr" data-orientation="horizontal" data-slot="tabs" className="flex flex-..." ref={null}>
+                        ...
+                          <div role="tablist" aria-orientation="horizontal" data-slot="tabs-list" ...>
+                            ...
+                              <Primitive.span.Slot tabIndex={-1} data-orientation="horizontal" ...>
+                                <Primitive.span.SlotClone tabIndex={-1} data-orientation="horizontal" ...>
+                                  <Primitive.button type="button" role="tab" aria-selected={true} ...>
+                                    <button
+                                      type="button"
+                                      role="tab"
+                                      aria-selected={true}
++                                     aria-controls="radix-_R_6jaindlb_-content-upload"
+-                                     aria-controls="radix-_R_qdaindlb_-content-upload"
+                                      data-state="active"
+                                      data-disabled={undefined}
+                                      disabled={false}
++                                     id="radix-_R_6jaindlb_-trigger-upload"
+-                                     id="radix-_R_qdaindlb_-trigger-upload"
+                                      data-slot="tabs-trigger"
+                                      className={"text-amber-200/60 hover:text-amber-200 focus-visible:border-ring fo..."}
+                                      onMouseDown={function}
+                                      onKeyDown={function}
+                                      onFocus={function}
+                                      tabIndex={-1}
+                                      data-orientation="horizontal"
+                                      data-radix-collection-item=""
+                                      ref={function}
+                                    >
++                                     Upload CSV
+                            ...
+                              <Primitive.span.Slot tabIndex={-1} data-orientation="horizontal" ...>
+                                <Primitive.span.SlotClone tabIndex={-1} data-orientation="horizontal" ...>
+                                  <Primitive.button type="button" role="tab" aria-selected={false} ...>
+                                    <button
+                                      type="button"
+                                      role="tab"
+                                      aria-selected={false}
++                                     aria-controls="radix-_R_6jaindlb_-content-paste"
+-                                     aria-controls="radix-_R_qdaindlb_-content-paste"
+                                      data-state="inactive"
+                                      data-disabled={undefined}
+                                      disabled={false}
++                                     id="radix-_R_6jaindlb_-trigger-paste"
+-                                     id="radix-_R_qdaindlb_-trigger-paste"
+                                      data-slot="tabs-trigger"
+                                      className={"text-amber-200/60 hover:text-amber-200 focus-visible:border-ring fo..."}
+                                      onMouseDown={function}
+                                      onKeyDown={function}
+                                      onFocus={function}
+                                      tabIndex={-1}
+                                      data-orientation="horizontal"
+                                      data-radix-collection-item=""
+                                      ref={function}
+                                    >
++                                     Paste data
+                        <TabsContent value="upload" className="mt-4">
+                          <TabsContent data-slot="tabs-content" className="flex-1 out..." value="upload">
+                            <Presence present={true}>
+                              <Primitive.div data-state="active" data-orientation="horizontal" role="tabpanel" ...>
+                                <div
+                                  data-state="active"
+                                  data-orientation="horizontal"
+                                  role="tabpanel"
++                                 aria-labelledby="radix-_R_6jaindlb_-trigger-upload"
+-                                 aria-labelledby="radix-_R_qdaindlb_-trigger-upload"
+                                  hidden={false}
++                                 id="radix-_R_6jaindlb_-content-upload"
+-                                 id="radix-_R_qdaindlb_-content-upload"
+                                  tabIndex={0}
+                                  data-slot="tabs-content"
+                                  className="flex-1 outline-none mt-4"
+                                  style={{animationDuration:"0s"}}
+                                  ref={function}
+                                >
+                        <TabsContent value="paste" className="mt-4">
+                          <TabsContent data-slot="tabs-content" className="flex-1 out..." value="paste">
+                            <Presence present={false}>
+                              <Primitive.div data-state="inactive" data-orientation="horizontal" role="tabpanel" ...>
+                                <div
+                                  data-state="inactive"
+                                  data-orientation="horizontal"
+                                  role="tabpanel"
++                                 aria-labelledby="radix-_R_6jaindlb_-trigger-paste"
+-                                 aria-labelledby="radix-_R_qdaindlb_-trigger-paste"
+                                  hidden={true}
++                                 id="radix-_R_6jaindlb_-content-paste"
+-                                 id="radix-_R_qdaindlb_-content-paste"
+                                  tabIndex={0}
+                                  data-slot="tabs-content"
+                                  className="flex-1 outline-none mt-4"
+                                  style={{animationDuration:undefined}}
+                                  ref={function}
+                                >
+                  <SettlementsBrowser>
+                  <TariffCalculator>
+                  <Pricing>
+                  ...
+                    <div data-slot="accordion" data-orientation="vertical" onKeyDown={function handleEvent} ...>
+                      ...
+                        <div data-state="closed" data-disabled={undefined} data-orientation="vertical" ...>
+                          ...
+                            <AccordionCollectionItemSlot.SlotClone data-radix-collection-item="" ref={function}>
+                              <CollapsibleTrigger aria-disabled={undefined} data-orientation="vertical" ...>
+                                <Primitive.button type="button" aria-controls="radix-_R_6..." aria-expanded={false} ...>
+                                  <button
+                                    type="button"
++                                   aria-controls="radix-_R_63aiindlb_"
+-                                   aria-controls="radix-_R_odaaindlb_"
+                                    aria-expanded={false}
+                                    data-state="closed"
+                                    data-disabled={undefined}
+                                    disabled={undefined}
+                                    aria-disabled={undefined}
+                                    data-orientation="vertical"
++                                   id="radix-_R_23aiindlb_"
+-                                   id="radix-_R_8daaindlb_"
+                                    data-slot="accordion-trigger"
+                                    className={"focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 item..."}
+                                    data-radix-collection-item=""
+                                    onClick={function handleEvent}
+                                    ref={function}
+                                  >
+                          ...
+                            <Presence present={false}>
+                              <Primitive.div data-state="closed" data-disabled={undefined} id="radix-_R_6..." ...>
+                                <div
+                                  data-state="closed"
+                                  data-disabled={undefined}
++                                 id="radix-_R_63aiindlb_"
+-                                 id="radix-_R_odaaindlb_"
+                                  hidden={true}
+                                  role="region"
++                                 aria-labelledby="radix-_R_23aiindlb_"
+-                                 aria-labelledby="radix-_R_8daaindlb_"
+                                  data-orientation="vertical"
+                                  data-slot="accordion-content"
+                                  className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accord..."
+                                  style={{--radix-collapsible-content-height:undefined, ...}}
+                                  ref={function}
+                                >
+                      ...
+                        <div data-state="closed" data-disabled={undefined} data-orientation="vertical" ...>
+                          ...
+                            <AccordionCollectionItemSlot.SlotClone data-radix-collection-item="" ref={function}>
+                              <CollapsibleTrigger aria-disabled={undefined} data-orientation="vertical" ...>
+                                <Primitive.button type="button" aria-controls="radix-_R_6..." aria-expanded={false} ...>
+                                  <button
+                                    type="button"
++                                   aria-controls="radix-_R_65aiindlb_"
+-                                   aria-controls="radix-_R_olaaindlb_"
+                                    aria-expanded={false}
+                                    data-state="closed"
+                                    data-disabled={undefined}
+                                    disabled={undefined}
+                                    aria-disabled={undefined}
+                                    data-orientation="vertical"
++                                   id="radix-_R_25aiindlb_"
+-                                   id="radix-_R_8laaindlb_"
+                                    data-slot="accordion-trigger"
+                                    className={"focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 item..."}
+                                    data-radix-collection-item=""
+                                    onClick={function handleEvent}
+                                    ref={function}
+                                  >
+                          ...
+                            <Presence present={false}>
+                              <Primitive.div data-state="closed" data-disabled={undefined} id="radix-_R_6..." ...>
+                                <div
+                                  data-state="closed"
+                                  data-disabled={undefined}
++                                 id="radix-_R_65aiindlb_"
+-                                 id="radix-_R_olaaindlb_"
+                                  hidden={true}
+                                  role="region"
++                                 aria-labelledby="radix-_R_25aiindlb_"
+-                                 aria-labelledby="radix-_R_8laaindlb_"
+                                  data-orientation="vertical"
+                                  data-slot="accordion-content"
+                                  className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accord..."
+                                  style={{--radix-collapsible-content-height:undefined, ...}}
+                                  ref={function}
+                                >
+                      ...
+                        <div data-state="closed" data-disabled={undefined} data-orientation="vertical" ...>
+                          ...
+                            <AccordionCollectionItemSlot.SlotClone data-radix-collection-item="" ref={function}>
+                              <CollapsibleTrigger aria-disabled={undefined} data-orientation="vertical" ...>
+                                <Primitive.button type="button" aria-controls="radix-_R_6..." aria-expanded={false} ...>
+                                  <button
+                                    type="button"
++                                   aria-controls="radix-_R_67aiindlb_"
+-                                   aria-controls="radix-_R_otaaindlb_"
+                                    aria-expanded={false}
+                                    data-state="closed"
+                                    data-disabled={undefined}
+                                    disabled={undefined}
+                                    aria-disabled={undefined}
+                                    data-orientation="vertical"
++                                   id="radix-_R_27aiindlb_"
+-                                   id="radix-_R_8taaindlb_"
+                                    data-slot="accordion-trigger"
+                                    className={"focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 item..."}
+                                    data-radix-collection-item=""
+                                    onClick={function handleEvent}
+                                    ref={function}
+                                  >
+                          ...
+                            <Presence present={false}>
+                              <Primitive.div data-state="closed" data-disabled={undefined} id="radix-_R_6..." ...>
+                                <div
+                                  data-state="closed"
+                                  data-disabled={undefined}
++                                 id="radix-_R_67aiindlb_"
+-                                 id="radix-_R_otaaindlb_"
+                                  hidden={true}
+                                  role="region"
++                                 aria-labelledby="radix-_R_27aiindlb_"
+-                                 aria-labelledby="radix-_R_8taaindlb_"
+                                  data-orientation="vertical"
+                                  data-slot="accordion-content"
+                                  className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accord..."
+                                  style={{--radix-collapsible-content-height:undefined, ...}}
+                                  ref={function}
+                                >
+                      ...
+                        <div data-state="closed" data-disabled={undefined} data-orientation="vertical" ...>
+                          ...
+                            <AccordionCollectionItemSlot.SlotClone data-radix-collection-item="" ref={function}>
+                              <CollapsibleTrigger aria-disabled={undefined} data-orientation="vertical" ...>
+                                <Primitive.button type="button" aria-controls="radix-_R_6..." aria-expanded={false} ...>
+                                  <button
+                                    type="button"
++                                   aria-controls="radix-_R_69aiindlb_"
+-                                   aria-controls="radix-_R_p5aaindlb_"
+                                    aria-expanded={false}
+                                    data-state="closed"
+                                    data-disabled={undefined}
+                                    disabled={undefined}
+                                    aria-disabled={undefined}
+                                    data-orientation="vertical"
++                                   id="radix-_R_29aiindlb_"
+-                                   id="radix-_R_95aaindlb_"
+                                    data-slot="accordion-trigger"
+                                    className={"focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 item..."}
+                                    data-radix-collection-item=""
+                                    onClick={function handleEvent}
+                                    ref={function}
+                                  >
+                          ...
+                            <Presence present={false}>
+                              <Primitive.div data-state="closed" data-disabled={undefined} id="radix-_R_6..." ...>
+                                <div
+                                  data-state="closed"
+                                  data-disabled={undefined}
++                                 id="radix-_R_69aiindlb_"
+-                                 id="radix-_R_p5aaindlb_"
+                                  hidden={true}
+                                  role="region"
++                                 aria-labelledby="radix-_R_29aiindlb_"
+-                                 aria-labelledby="radix-_R_95aaindlb_"
+                                  data-orientation="vertical"
+                                  data-slot="accordion-content"
+                                  className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accord..."
+                                  style={{--radix-collapsible-content-height:undefined, ...}}
+                                  ref={function}
+                                >
+                      ...
+                        <div data-state="closed" data-disabled={undefined} data-orientation="vertical" ...>
+                          ...
+                            <AccordionCollectionItemSlot.SlotClone data-radix-collection-item="" ref={function}>
+                              <CollapsibleTrigger aria-disabled={undefined} data-orientation="vertical" ...>
+                                <Primitive.button type="button" aria-controls="radix-_R_6..." aria-expanded={false} ...>
+                                  <button
+                                    type="button"
++                                   aria-controls="radix-_R_6baiindlb_"
+-                                   aria-controls="radix-_R_pdaaindlb_"
+                                    aria-expanded={false}
+                                    data-state="closed"
+                                    data-disabled={undefined}
+                                    disabled={undefined}
+                                    aria-disabled={undefined}
+                                    data-orientation="vertical"
++                                   id="radix-_R_2baiindlb_"
+-                                   id="radix-_R_9daaindlb_"
+                                    data-slot="accordion-trigger"
+                                    className={"focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 item..."}
+                                    data-radix-collection-item=""
+                                    onClick={function handleEvent}
+                                    ref={function}
+                                  >
+                          ...
+                            <Presence present={false}>
+                              <Primitive.div data-state="closed" data-disabled={undefined} id="radix-_R_6..." ...>
+                                <div
+                                  data-state="closed"
+                                  data-disabled={undefined}
++                                 id="radix-_R_6baiindlb_"
+-                                 id="radix-_R_pdaaindlb_"
+                                  hidden={true}
+                                  role="region"
++                                 aria-labelledby="radix-_R_2baiindlb_"
+-                                 aria-labelledby="radix-_R_9daaindlb_"
+                                  data-orientation="vertical"
+                                  data-slot="accordion-content"
+                                  className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accord..."
+                                  style={{--radix-collapsible-content-height:undefined, ...}}
+                                  ref={function}
+                                >
+                      ...
+                        <div data-state="closed" data-disabled={undefined} data-orientation="vertical" ...>
+                          ...
+                            <AccordionCollectionItemSlot.SlotClone data-radix-collection-item="" ref={function}>
+                              <CollapsibleTrigger aria-disabled={undefined} data-orientation="vertical" ...>
+                                <Primitive.button type="button" aria-controls="radix-_R_6..." aria-expanded={false} ...>
+                                  <button
+                                    type="button"
++                                   aria-controls="radix-_R_6daiindlb_"
+-                                   aria-controls="radix-_R_plaaindlb_"
+                                    aria-expanded={false}
+                                    data-state="closed"
+                                    data-disabled={undefined}
+                                    disabled={undefined}
+                                    aria-disabled={undefined}
+                                    data-orientation="vertical"
++                                   id="radix-_R_2daiindlb_"
+-                                   id="radix-_R_9laaindlb_"
+                                    data-slot="accordion-trigger"
+                                    className={"focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 item..."}
+                                    data-radix-collection-item=""
+                                    onClick={function handleEvent}
+                                    ref={function}
+                                  >
+                          ...
+                            <Presence present={false}>
+                              <Primitive.div data-state="closed" data-disabled={undefined} id="radix-_R_6..." ...>
+                                <div
+                                  data-state="closed"
+                                  data-disabled={undefined}
++                                 id="radix-_R_6daiindlb_"
+-                                 id="radix-_R_plaaindlb_"
+                                  hidden={true}
+                                  role="region"
++                                 aria-labelledby="radix-_R_2daiindlb_"
+-                                 aria-labelledby="radix-_R_9laaindlb_"
+                                  data-orientation="vertical"
+                                  data-slot="accordion-content"
+                                  className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accord..."
+                                  style={{--radix-collapsible-content-height:undefined, ...}}
+                                  ref={function}
+                                >
+                      ...
+                        <div data-state="closed" data-disabled={undefined} data-orientation="vertical" ...>
+                          ...
+                            <AccordionCollectionItemSlot.SlotClone data-radix-collection-item="" ref={function}>
+                              <CollapsibleTrigger aria-disabled={undefined} data-orientation="vertical" ...>
+                                <Primitive.button type="button" aria-controls="radix-_R_6..." aria-expanded={false} ...>
+                                  <button
+                                    type="button"
++                                   aria-controls="radix-_R_6faiindlb_"
+-                                   aria-controls="radix-_R_ptaaindlb_"
+                                    aria-expanded={false}
+                                    data-state="closed"
+                                    data-disabled={undefined}
+                                    disabled={undefined}
+                                    aria-disabled={undefined}
+                                    data-orientation="vertical"
++                                   id="radix-_R_2faiindlb_"
+-                                   id="radix-_R_9taaindlb_"
+                                    data-slot="accordion-trigger"
+                                    className={"focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 item..."}
+                                    data-radix-collection-item=""
+                                    onClick={function handleEvent}
+                                    ref={function}
+                                  >
+                          ...
+                            <Presence present={false}>
+                              <Primitive.div data-state="closed" data-disabled={undefined} id="radix-_R_6..." ...>
+                                <div
+                                  data-state="closed"
+                                  data-disabled={undefined}
++                                 id="radix-_R_6faiindlb_"
+-                                 id="radix-_R_ptaaindlb_"
+                                  hidden={true}
+                                  role="region"
++                                 aria-labelledby="radix-_R_2faiindlb_"
+-                                 aria-labelledby="radix-_R_9taaindlb_"
+                                  data-orientation="vertical"
+                                  data-slot="accordion-content"
+                                  className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accord..."
+                                  style={{--radix-collapsible-content-height:undefined, ...}}
+                                  ref={function}
+                                >
+                      ...
+                        <div data-state="closed" data-disabled={undefined} data-orientation="vertical" ...>
+                          ...
+                            <AccordionCollectionItemSlot.SlotClone data-radix-collection-item="" ref={function}>
+                              <CollapsibleTrigger aria-disabled={undefined} data-orientation="vertical" ...>
+                                <Primitive.button type="button" aria-controls="radix-_R_6..." aria-expanded={false} ...>
+                                  <button
+                                    type="button"
++                                   aria-controls="radix-_R_6haiindlb_"
+-                                   aria-controls="radix-_R_q5aaindlb_"
+                                    aria-expanded={false}
+                                    data-state="closed"
+                                    data-disabled={undefined}
+                                    disabled={undefined}
+                                    aria-disabled={undefined}
+                                    data-orientation="vertical"
++                                   id="radix-_R_2haiindlb_"
+-                                   id="radix-_R_a5aaindlb_"
+                                    data-slot="accordion-trigger"
+                                    className={"focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 item..."}
+                                    data-radix-collection-item=""
+                                    onClick={function handleEvent}
+                                    ref={function}
+                                  >
+                          ...
+                            <Presence present={false}>
+                              <Primitive.div data-state="closed" data-disabled={undefined} id="radix-_R_6..." ...>
+                                <div
+                                  data-state="closed"
+                                  data-disabled={undefined}
++                                 id="radix-_R_6haiindlb_"
+-                                 id="radix-_R_q5aaindlb_"
+                                  hidden={true}
+                                  role="region"
++                                 aria-labelledby="radix-_R_2haiindlb_"
+-                                 aria-labelledby="radix-_R_a5aaindlb_"
+                                  data-orientation="vertical"
+                                  data-slot="accordion-content"
+                                  className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accord..."
+                                  style={{--radix-collapsible-content-height:undefined, ...}}
+                                  ref={function}
+                                >
+                  ...
+                    <SelectTrigger id="wl-volume" className="w-full">
+                      <SelectTrigger data-slot="select-tri..." data-size="default" className={"border-i..."} ...>
+                        <PopperAnchor asChild={true} __scopePopper={{Popper:[...]}}>
+                          <Primitive.div asChild={true} ref={function}>
+                            <Primitive.div.Slot ref={function}>
+                              <Primitive.div.SlotClone ref={function}>
+                                <Primitive.button type="button" role="combobox" aria-controls="radix-_R_1..." ...>
+                                  <button
+                                    type="button"
+                                    role="combobox"
++                                   aria-controls="radix-_R_15bkindlb_"
+-                                   aria-controls="radix-_R_4leiindlb_"
+                                    aria-expanded={false}
+                                    aria-required={undefined}
+                                    aria-autocomplete="none"
+                                    dir="ltr"
+                                    data-state="closed"
+                                    disabled={false}
+                                    data-disabled={undefined}
+                                    data-placeholder=""
+                                    data-slot="select-trigger"
+                                    data-size="default"
+                                    className={"border-input data-[placeholder]:text-zinc-600 [&_svg:not([class*='tex..."}
+                                    id="wl-volume"
+                                    onClick={function handleEvent}
+                                    onPointerDown={function handleEvent}
+                                    onKeyDown={function handleEvent}
+                                    ref={function}
+                                  >
+                <Footer>
+                <AiGuide>
+                <AiAssistant>
+                  <motion.button type="button" onClick={function toggle} aria-label="Open Goldi..." initial={false} ...>
+                    <button type="button" onClick={function toggle} aria-label="Open Goldi..." className="fixed bott..." ...>
+                      <span>
+                      <span className="relative f...">
+                        <AiGlyph className="h-7 w-7 dr...">
+                          <svg viewBox="0 0 48 48" className="h-7 w-7 dr..." aria-hidden="true" focusable="false">
+                            <defs>
+                              <linearGradient
++                               id="ai-glyph-R2jandlb"
+-                               id="ai-glyph-Radindlb"
+                                x1="0"
+                                y1="0"
+                                x2="1"
+                                y2="1"
+                              >
+                            <path
+                              d="M24 4 C25.7 14.3 33.7 22.3 44 24 C33.7 25.7 25.7 33.7 24 44 C22.3 33.7 14.3 25.7 4 24..."
++                             fill="url(#ai-glyph-R2jandlb)"
+-                             fill="url(#ai-glyph-Radindlb)"
+                            >
+                            ...
+                      ...
+                  ...
+        ...
+      ...
+src/app/page.tsx (21:9) @ Home
+
+
+  19 |     <I18nProvider>
+  20 |       <div className="flex min-h-screen flex-col bg-zinc-950 text-zinc-100">
+> 21 |         <Header />
+     |         ^
+  22 |         <main className="flex-1">
+  23 |           <Hero />
+  24 |           <HowItWorks />
+Call Stack
+18
+
+Show 16 ignore-listed frame(s)
+button
+<anonymous>
+Home
+src/app/page.tsx (21:9)
+1
+2
