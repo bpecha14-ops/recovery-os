@@ -60,3 +60,5 @@ download/
 mini-services/
 examples/
 db/*.db
+
+!.env.example
