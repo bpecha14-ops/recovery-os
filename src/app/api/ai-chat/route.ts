@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import ZAI from "z-ai-web-dev-sdk";
 import { isLocale, localeMeta } from "@/lib/i18n/config";
-import { PROGRAMS, DATA_SOURCES } from "@/lib/programs-data";
+import { PROGRAMS, DATA_SOURCES, REGIONS } from "@/lib/programs-data";
 import { WORLD_COUNTRIES, WORLD_VERIFIED_USD_B } from "@/lib/world-registry";
 
 /**
@@ -73,12 +73,13 @@ WHAT THE SITE IS (facts you must stay consistent with):
 PROGRAM CATALOG (use ONLY these when discussing citizen programs; cite the source link when relevant):
 ${buildCatalog()}
 
-DATA SOURCES REGISTRY (for questions about freshness/ingestion): ${DATA_SOURCES.filter((s) => s.status === "live").length} live sources across US/CA/EU/AU (usa.gov, IRS, NAUPA/MissingMoney, FTC, SEC, canada.ca, Bank of Canada, Your Europe, GOV.UK, Services Australia, ATO, ASIC — see #engine).
+DATA SOURCES REGISTRY (for questions about freshness/ingestion): ${DATA_SOURCES.filter((s) => s.status === "live").length} live sources across ${REGIONS.map((r) => r.name).join(", ")} (usa.gov, IRS, NAUPA/MissingMoney, FTC, SEC, canada.ca, Bank of Canada, Your Europe, GOV.UK, Services Australia, ATO, ASIC, Bituach Leumi, Citizen Account KSA, PM-KISAN, myScheme, MGNREGA dashboard, govbenefits.gov.sg, DICJ, eGUMIS, DSWD, Kemensos, BISP, DSS Bangladesh, M-Society, SASSA, Social Protection Kenya, UFAA, NDIC, LEAP — see #engine).
 
 KEY NUMBERS (use only these; never invent figures):
 - United States: ~$70B unclaimed property held by states (NAUPA; 1 in 10 Americans); ~$29.7B in matured Treasury savings bonds; ~1 in 4 eligible workers never claim the EITC (~$11B+/yr unclaimed); ~$70B EITC paid to ~24M recipients in 2025.
 - Australia: A$21.2B lost and ATO-held superannuation across ~7.5M accounts (as of 30 June 2026).
 - Canada: C$1.6B unclaimed balances at the Bank of Canada (3.6M records, end of 2025).
+- Global South programs (amounts, 2026): India PM-KISAN ₹6,000/yr per farmer family; Ayushman Bharat ₹5 lakh/family health cover (all seniors 70+); MGNREGA 100 days guaranteed work; NSAP pension ₹200–500/mo. Singapore: GST Voucher up to S$850/yr; CDC Vouchers S$500/household (June 2026); Assurance Package S$700–2,250. SASSA (South Africa): Child Support ≈R580/child/mo, Older Person's ≈R2,400/mo, SRD ≈R370–400/mo. Kenya Inua Jamii KSh 2,000/mo (70+). Kenya UFAA KSh 137B+ unclaimed. Nigeria NDIC ₦5M insured deposits + ₦70B+ dormant balances. Egypt Takaful & Karama EGP 700–4,000/mo per family. Türkiye 65 Yaş 7,257 TL/mo; Engelli 5,793–8,690 TL/mo. Pakistan BISP Kafaalat PKR 14,500/quarter. Philippines 4Ps ₱750/mo health grant + ₱300–700/child education. Bangladesh old-age allowance ৳700/mo. Malaysia eGUMIS RM billions unclaimed. Ghana LEAP GH¢392–630/bi-monthly. Morocco direct social assistance from MAD 500/mo.
 - IEEPA tariff refunds: $166B — the Supreme Court struck the IEEPA tariffs down 6-3 in February 2026 (Learning Resources v. Trump); duty refunds with statutory interest via CBP's CAPE portal, windows run into 2027-2028.
 - Duty drawback: ~$15B/yr unclaimed (CBP estimates).
 - Open business funds (deadlines): Ready-Mix Concrete (Iowa) $18.5M+ — deadline 2026-11-16 (days away as of today); Broiler Grower Settlements — verify with administrator; Beef DPP (Tyson) $82.5M — verify with administrator. Closed: Pork $117M (2026-10-29), Turkey $34M + $37.5M (2026-10-30), Beef end-purchasers $87.5M (2026-06-30), Broiler chicken $181M+ (2025-07-31), Tuna $152M (2024-12-31).

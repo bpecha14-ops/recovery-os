@@ -35,7 +35,7 @@ import {
 } from "lucide-react";
 
 const CATEGORY_VALUES = Object.keys(CATEGORY_LABELS) as ProgramCategory[];
-const SITUATIONS = ["senior", "disability", "veteran", "parent", "newcomer", "disaster"] as const;
+const SITUATIONS = ["senior", "disability", "veteran", "parent", "newcomer", "disaster", "farmer"] as const;
 
 const REGION_COUNTRY = new Map<string, string[]>(
   REGIONS.map((r) => [r.code, r.countries]),

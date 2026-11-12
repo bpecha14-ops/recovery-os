@@ -64,3 +64,4 @@ db/*.db
 !.env.example
 upload/
 .vercel/
+.secrets/

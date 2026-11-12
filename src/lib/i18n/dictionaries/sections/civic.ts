@@ -84,6 +84,7 @@ export default {
       parent: "New or expecting parent",
       newcomer: "Newcomer to the country",
       disaster: "Affected by a recent disaster",
+      farmer: "You or your family farm / hold cultivable land",
     },
     qHousing: "Your housing situation",
     qHousingHint: "Why we ask: housing aid usually targets renters; some grants target first-time buyers.",
