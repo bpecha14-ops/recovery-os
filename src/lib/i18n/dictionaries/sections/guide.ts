@@ -11,6 +11,10 @@ export default {
       "New here? The whole flow is: answer a few questions, see matching programs with reasons, file with a checklist. No signup needed.",
       "Three steps, zero cost for individuals. Businesses get a purchase scanner too — it even has a realistic sample.",
     ],
+    tools: [
+      "Every form now lives on the toolkit page — search, eligibility check, claim checklists, the business scanner and the refund calculator.",
+      "Click any card to jump straight into the form. Anonymous, free, and nothing you type ever leaves your browser.",
+    ],
     search: [
       "Pick a country and category — every card links to the official source and shows when it was last verified.",
       "The badges matter: green means a human verified the record; grey means auto-extracted and worth double-checking.",
@@ -62,6 +66,7 @@ export default {
   },
   ask: {
     how: "Explain how CivicClaim OS works in simple terms.",
+    tools: "Walk me through the toolkit — which form should I start with?",
     search: "Which countries and categories can I search right now?",
     eligibility: "How does the anonymous eligibility check work?",
     claim: "What does the claim assistant give me for a program?",

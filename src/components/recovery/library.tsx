@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -599,7 +600,7 @@ export function Library() {
                   {t("library.referralText")}
                 </p>
               </div>
-              <a href="#scanner" className="w-full shrink-0 lg:w-auto">
+              <Link href="/tools#scanner" className="w-full shrink-0 lg:w-auto">
                 <Button
                   size="lg"
                   className="h-12 w-full bg-gradient-to-b from-amber-200 via-amber-400 to-amber-500 px-7 text-base font-semibold text-zinc-950 shadow-[0_0_40px_-10px_rgba(251,191,36,0.6)] transition-all hover:brightness-110 lg:w-auto"
@@ -607,7 +608,7 @@ export function Library() {
                   {t("library.runBusinessScan")}
                   <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
                 </Button>
-              </a>
+              </Link>
             </div>
           </div>
         </Reveal>

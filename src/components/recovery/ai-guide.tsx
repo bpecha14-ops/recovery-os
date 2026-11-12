@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { X, VolumeX, MessageCircle, Sparkles } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
@@ -20,28 +21,37 @@ interface SectionSpot {
   leftVw: number;
 }
 
-const SECTION_SPOTS: SectionSpot[] = [
+/** Main page — overview sections. */
+const HOME_SECTION_SPOTS: SectionSpot[] = [
   { id: "how", leftVw: 4 },
-  { id: "coverage", leftVw: 8 },
-  { id: "search", leftVw: 14 },
-  { id: "eligibility", leftVw: 22 },
-  { id: "claim", leftVw: 30 },
-  { id: "engine", leftVw: 38 },
-  { id: "library", leftVw: 46 },
-  { id: "channels", leftVw: 54 },
-  { id: "scanner", leftVw: 62 },
-  { id: "settlements", leftVw: 70 },
-  { id: "ieepa", leftVw: 78 },
-  { id: "sponsor", leftVw: 86 },
-  { id: "faq", leftVw: 91 },
-  { id: "waitlist", leftVw: 96 },
+  { id: "coverage", leftVw: 10 },
+  { id: "tools", leftVw: 18 },
+  { id: "engine", leftVw: 30 },
+  { id: "library", leftVw: 44 },
+  { id: "channels", leftVw: 56 },
+  { id: "sponsor", leftVw: 70 },
+  { id: "faq", leftVw: 84 },
 ];
 
-const SECTION_IDS = SECTION_SPOTS.map((s) => s.id);
+/** Toolkit page — every form lives here. */
+const TOOLS_SECTION_SPOTS: SectionSpot[] = [
+  { id: "search", leftVw: 5 },
+  { id: "eligibility", leftVw: 18 },
+  { id: "claim", leftVw: 30 },
+  { id: "scanner", leftVw: 43 },
+  { id: "settlements", leftVw: 56 },
+  { id: "ieepa", leftVw: 69 },
+  { id: "waitlist", leftVw: 82 },
+];
 
 export function AiGuide() {
   const reduceMotion = useReducedMotionSafe();
   const { t, tArr } = useI18n();
+  const pathname = usePathname();
+  // Goldie walks a different set of sections on each page.
+  const sectionSpots = pathname.startsWith("/tools")
+    ? TOOLS_SECTION_SPOTS
+    : HOME_SECTION_SPOTS;
   const [activeId, setActiveId] = useState<string | null>(null);
   const [tip, setTip] = useState<string | null>(null);
   const [muted, setMuted] = useState(false);
@@ -66,8 +76,8 @@ export function AiGuide() {
   }, [activeId]);
 
   const section = useMemo(
-    () => SECTION_SPOTS.find((s) => s.id === activeId) ?? null,
-    [activeId]
+    () => sectionSpots.find((s) => s.id === activeId) ?? null,
+    [activeId, sectionSpots]
   );
 
   // Scroll-spy: which section occupies the middle band of the viewport.
@@ -85,12 +95,12 @@ export function AiGuide() {
       { rootMargin: "-42% 0px -42% 0px", threshold: 0 }
     );
 
-    const nodes = SECTION_IDS.map((id) =>
-      document.getElementById(id)
-    ).filter((n): n is HTMLElement => n !== null);
+    const nodes = sectionSpots
+      .map((s) => document.getElementById(s.id))
+      .filter((n): n is HTMLElement => n !== null);
     nodes.forEach((n) => observer.observe(n));
     return () => observer.disconnect();
-  }, []);
+  }, [sectionSpots]);
 
   const clearTimers = () => {
     timersRef.current.forEach(clearTimeout);

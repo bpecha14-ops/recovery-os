@@ -65,3 +65,9 @@ db/*.db
 upload/
 .vercel/
 .secrets/
+
+# local secrets for push/deploy (never commit)
+.git-creds
+.vercel-token
+prod.log
+dev.log

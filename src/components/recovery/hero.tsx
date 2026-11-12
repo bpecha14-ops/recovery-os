@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ShieldCheck, Trash2, Scale, Sparkles } from "lucide-react";
@@ -48,8 +49,8 @@ export function Hero() {
           transition={{ ...spring, delay: 0.05 }}
           className="mx-auto w-fit"
         >
-          <a
-            href="#eligibility"
+          <Link
+            href="/tools#eligibility"
             className="group inline-flex items-center gap-2.5 rounded-full border border-amber-400/25 bg-amber-400/[0.07] py-1.5 pl-3 pr-4 text-sm text-amber-200/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-colors hover:border-amber-400/45 hover:bg-amber-400/[0.12]"
           >
             <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-amber-300" aria-hidden="true" />
@@ -57,7 +58,7 @@ export function Hero() {
             <span className="font-semibold text-amber-300/90 transition-transform group-hover:translate-x-0.5" aria-hidden="true">
               →
             </span>
-          </a>
+          </Link>
         </motion.div>
 
         {/* Display headline — oversized, one gold idea */}
@@ -87,7 +88,7 @@ export function Hero() {
           transition={{ ...spring, delay: 0.34 }}
           className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row"
         >
-          <a href="#eligibility" className="w-full sm:w-auto">
+          <Link href="/tools#eligibility" className="w-full sm:w-auto">
             <Button
               size="lg"
               className="relative h-12 w-full overflow-hidden bg-gradient-to-b from-amber-200 via-amber-400 to-amber-500 px-7 text-base font-semibold text-zinc-950 shadow-[0_0_40px_-8px_rgba(251,191,36,0.55),inset_0_1px_0_rgba(255,255,255,0.45)] transition-all hover:brightness-110 hover:shadow-[0_0_54px_-8px_rgba(251,191,36,0.7),inset_0_1px_0_rgba(255,255,255,0.45)] sm:w-auto"
@@ -100,8 +101,8 @@ export function Hero() {
               <span className="relative">{t("common.runFreeScan")}</span>
               <ArrowRight className="relative ml-2 h-4 w-4" aria-hidden="true" />
             </Button>
-          </a>
-          <a href="#search" className="w-full sm:w-auto">
+          </Link>
+          <Link href="/tools#search" className="w-full sm:w-auto">
             <Button
               size="lg"
               variant="outline"
@@ -109,7 +110,7 @@ export function Hero() {
             >
               {t("hero.ctaLibrary")}
             </Button>
-          </a>
+          </Link>
         </motion.div>
 
         <motion.div

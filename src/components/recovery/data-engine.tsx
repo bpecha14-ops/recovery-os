@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useI18n } from "@/lib/i18n/context";
-import { DATA_SOURCES } from "@/lib/programs-data";
+import { DATA_SOURCES } from "@/lib/data-sources";
 import { Reveal } from "./effects";
 import { ArrowUpRight, Database, Download, FileSearch, Timer } from "lucide-react";
 

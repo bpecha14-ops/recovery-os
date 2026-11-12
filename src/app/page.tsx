@@ -3,20 +3,21 @@ import { Header } from "@/components/recovery/header";
 import { Hero } from "@/components/recovery/hero";
 import { HowItWorks } from "@/components/recovery/how-it-works";
 import { Coverage } from "@/components/recovery/coverage";
-import { CivicModules } from "@/components/recovery/civic-modules";
+import { ToolsHub } from "@/components/recovery/tools-hub";
 import { DataEngine } from "@/components/recovery/data-engine";
-import { Library } from "@/components/recovery/library";
 import { Channels } from "@/components/recovery/channels";
-import { Scanner } from "@/components/recovery/scanner";
-import { SettlementsBrowser } from "@/components/recovery/settlements-browser";
-import { TariffCalculator } from "@/components/recovery/tariff-calculator";
 import { Sponsorship } from "@/components/recovery/sponsorship";
 import { Faq } from "@/components/recovery/faq";
-import { Waitlist } from "@/components/recovery/waitlist";
 import { Footer } from "@/components/recovery/footer";
-import { AiAssistant } from "@/components/recovery/ai-assistant";
 import { AiGuide } from "@/components/recovery/ai-guide";
+import { LazyLibrary, LazyAiAssistant } from "@/components/recovery/lazy-mounts";
 
+/**
+ * Main page — the fast, quiet overview.
+ * Every interactive form lives on /tools (same design system);
+ * this page keeps the narrative, coverage and sustainability story,
+ * with the toolkit hub linking straight into each form.
+ */
 export default function Home() {
   return (
     <I18nProvider>
@@ -27,22 +28,18 @@ export default function Home() {
           <Hero />
           <HowItWorks />
           <Coverage />
-          <CivicModules />
+          <ToolsHub />
           <DataEngine />
           {/* Heritage: RecoveryOS business & money-recovery layer */}
-          <Library />
+          <LazyLibrary />
           <Channels />
-          <Scanner />
-          <SettlementsBrowser />
-          <TariffCalculator />
           {/* Sustainability model */}
           <Sponsorship />
           <Faq />
-          <Waitlist />
         </main>
         <Footer />
         <AiGuide />
-        <AiAssistant />
+        <LazyAiAssistant />
       </div>
     </I18nProvider>
   );

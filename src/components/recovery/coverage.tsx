@@ -6,16 +6,16 @@ import { Reveal, Spotlight } from "./effects";
 import {
   DATA_SOURCES,
   GLOBAL_STATS,
+  PROGRAM_COUNTS,
   REGIONS,
-  programCounts,
-} from "@/lib/programs-data";
+} from "@/lib/data-sources";
 import { Database, Globe2, Landmark, ShieldCheck } from "lucide-react";
 
 const REGION_ICONS = [Landmark, Landmark, Globe2, Landmark];
 
 export function Coverage() {
   const { t } = useI18n();
-  const counts = programCounts();
+  const counts = PROGRAM_COUNTS;
   const liveSources = DATA_SOURCES.filter((s) => s.status === "live").length;
 
   return (

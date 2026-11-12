@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -8,15 +9,16 @@ import { Coins, Menu, ArrowRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { LanguageSwitcher } from "./language-switcher";
 
+/** Cross-page anchors: overview sections stay on `/`, every form lives on `/tools`. */
 const NAV_HREFS = [
-  "#how",
-  "#search",
-  "#eligibility",
-  "#claim",
-  "#engine",
-  "#library",
-  "#scanner",
-  "#sponsor",
+  "/#how",
+  "/tools#search",
+  "/tools#eligibility",
+  "/tools#claim",
+  "/#engine",
+  "/#library",
+  "/tools#scanner",
+  "/#sponsor",
 ];
 
 export function Header() {
@@ -49,24 +51,24 @@ export function Header() {
 
         <nav className="hidden items-center gap-6 lg:flex" aria-label={t("header.ariaMainNav")}>
           {NAV_HREFS.map((href, i) => (
-            <a
+            <Link
               key={href}
               href={href}
               className="text-sm text-zinc-400 transition-colors hover:text-amber-300"
             >
               {navLabels[i] ?? href}
-            </a>
+            </Link>
           ))}
         </nav>
 
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
-          <a href="#eligibility" className="hidden sm:block">
+          <Link href="/tools#eligibility" className="hidden sm:block">
             <Button className="btn-shimmer h-9 bg-gradient-to-b from-amber-200 via-amber-400 to-amber-500 text-sm font-semibold text-zinc-950 shadow-[0_0_24px_-8px_rgba(251,191,36,0.7)] transition-all hover:brightness-110">
               {t("common.runFreeScan")}
               <ArrowRight className="ml-1.5 h-3.5 w-3.5" aria-hidden="true" />
             </Button>
-          </a>
+          </Link>
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button
@@ -87,20 +89,20 @@ export function Header() {
               </SheetTitle>
               <nav className="mt-6 flex flex-col gap-1" aria-label={t("header.ariaMobileNav")}>
                 {NAV_HREFS.map((href, i) => (
-                  <a
+                  <Link
                     key={href}
                     href={href}
                     onClick={() => setOpen(false)}
                     className="rounded-md px-3 py-2.5 text-sm text-amber-200/60 transition-colors hover:bg-amber-400/[0.08] hover:text-amber-200"
                   >
                     {navLabels[i] ?? href}
-                  </a>
+                  </Link>
                 ))}
-                <a href="#eligibility" onClick={() => setOpen(false)} className="mt-3">
+                <Link href="/tools#eligibility" onClick={() => setOpen(false)} className="mt-3">
                   <Button className="w-full bg-gradient-to-b from-amber-200 via-amber-400 to-amber-500 font-semibold text-zinc-950 hover:brightness-110">
                     {t("common.runFreeScan")}
                   </Button>
-                </a>
+                </Link>
               </nav>
             </SheetContent>
           </Sheet>
