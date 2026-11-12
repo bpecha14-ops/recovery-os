@@ -166,3 +166,26 @@ Stage Summary:
 - Живой глобальный MVP: 41 официальная программа 4 рынков, анонимный eligibility-визард с объяснимостью, claim-ассистент с чек-листами, открытый реестр данных, ИИ-гид с инжектом базы.
 - Модель: гражданский слой бесплатен, институциональный API + спонсорский слои описаны на сайте; лиды не продаются.
 - Отчёт для спонсоров: download/CivicClaim_OS_Concept_Note_RU.pdf.
+
+## 2026-11-12 — GLOBAL EXPANSION: Middle East · Asia · Africa + GitHub/Vercel production
+
+**Infra:**
+- GitHub push restored (fine-grained PAT, stored in .secrets/tokens.env, gitignored); unrelated-histories force-push resolved (remote had early squash).
+- Vercel: project `civicclaim-os` created (team scope), production deployed — https://civicclaim-os.vercel.app (200, API live, all global data in the static bundle).
+- Deploy blockers found & fixed: zombie routes (`/api/people-scan`, `/api/admin/export`, `/app/admin`) imported removed `db` export → Vercel build failed; orphaned non-EN dictionaries (ar.ts et al.) had stale types. All removed; tsc clean; build green.
+
+**Data (33 new programs, all with official sources):**
+- ME (9): Israel old-age pension + income support (NIS 1,838 base / supplement 4,375–6,912), Türkiye 65 Yaş 7,257 TL + Engelli 5,793/8,690 TL, KSA Citizen Account (SR 3B/mo), UAE Social Welfare (moce.gov.ae), Qatar GRSIA, Egypt Takaful (EGP 700–4,000/family) + Karama (EGP 884/705).
+- AS (16): India PM-KISAN ₹6,000/yr, PM-JAY ₹5 lakh (70+ universal), MGNREGA 100 days, NSAP ₹200–500; Singapore GST Voucher S$850, CDC Vouchers S$500, Assurance Package S$700–2,250; Japan dormant deposits (DICJ); Korea basic pension; Malaysia eGUMIS; Philippines 4Ps (₱750 + ₱300–700/child); PH Treasury unclaimed; Indonesia PKH; Pakistan BISP Kafaalat PKR 14,500/q; Bangladesh ৳700; Thailand welfare card.
+- AF (8): SASSA CSG/OPG/SRD, Kenya Inua Jamii KSh 2,000 + UFAA, Nigeria NDIC (₦5M insured), Ghana LEAP GH¢392–630, Morocco ASD (MAD 500→1,000 pledge).
+- DATA_SOURCES 17→41 (24 new official sources, ME 5 / AS 13 / AF 6).
+
+**Product:**
+- RegionCode + REGIONS extended (ME/AS/AF); coverage, search filters, wizard country pickers pick them up automatically.
+- Wizard: new "farmer" situation (checkbox + i18n) → PM-KISAN matches.
+- AI guide: dynamic region list in system prompt + Global South key numbers (all 2026-verified amounts).
+- GLOBAL_STATS: 4th stat → KSh 137B (Kenya UFAA) for global framing.
+
+**QA:** tsc 0 src errors; build EXIT 0; count-check: 74 programs / 28 countries / 41 sources / 0 dup ids / 0 orphans; E2E (agent-browser): wizard Asia→India→unemployed→farmer+senior → 2 likely matches (PM-KISAN, MGNREGA) + Ayushman near-miss with "what is missing"; AI chat Kenya 70+ → Inua Jamii with source+verification; mobile 390px no overflow; no console errors.
+
+**State:** GitHub main = 4357c28 (pushed); production = https://civicclaim-os.vercel.app.
