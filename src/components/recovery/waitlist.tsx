@@ -138,7 +138,7 @@ export function Waitlist() {
                         {t("waitlist.spotsClaimed")}
                       </p>
                       <p className="tabular text-sm font-bold text-gradient-gold">
-                        <CountUp to={21} duration={1.4} /> / 50
+                        <CountUp to={21} duration={1.4} ssrValue /> / 50
                       </p>
                     </div>
                     <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-amber-400/[0.08]">

@@ -23,6 +23,14 @@ interface CountUpProps {
   duration?: number; // seconds
   delay?: number; // seconds
   className?: string;
+  /**
+   * Render the REAL value in the server HTML instead of a zero.
+   * Crawlers and no-JS visitors then see "$70B", never "$0B". The
+   * count-up only plays when the counter enters the viewport AFTER
+   * hydration; a counter already on screen at load keeps its value —
+   * replaying 0→to over a server-rendered figure would read as a glitch.
+   */
+  ssrValue?: boolean;
 }
 
 const defaultFormat = (n: number) => Math.round(n).toLocaleString("en-US");
@@ -33,10 +41,13 @@ export function CountUp({
   duration = 1.6,
   delay = 0,
   className,
+  ssrValue = false,
 }: CountUpProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const [started, setStarted] = useState(false);
-  const [display, setDisplay] = useState(() => format(0));
+  // Initial render must match the server exactly (hydration-safe):
+  // with ssrValue both render format(to), without it both render format(0).
+  const [display, setDisplay] = useState(() => format(ssrValue ? to : 0));
   const reduce = useReducedMotionSafe();
   // Keep the latest formatter without re-triggering the raf cycle —
   // inline arrow props would otherwise reset the count on every render.
@@ -49,9 +60,20 @@ export function CountUp({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    let isFirstCallback = true;
     const io = new IntersectionObserver(
       (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
+        const visible = entries.some((e) => e.isIntersecting);
+        if (isFirstCallback) {
+          isFirstCallback = false;
+          // Visible before JS attached (i.e. in the first paint): with
+          // ssrValue the real figure is already on screen — keep it.
+          if (visible && ssrValue) {
+            io.disconnect();
+            return;
+          }
+        }
+        if (visible) {
           setStarted(true);
           io.disconnect();
         }
@@ -60,7 +82,7 @@ export function CountUp({
     );
     io.observe(el);
     return () => io.disconnect();
-  }, []);
+  }, [ssrValue]);
 
   useEffect(() => {
     if (!started) return;

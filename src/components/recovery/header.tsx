@@ -9,7 +9,9 @@ import { Coins, Menu, ArrowRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { LanguageSwitcher } from "./language-switcher";
 
-/** Cross-page anchors: overview sections stay on `/`, every form lives on `/tools`. */
+/** Cross-page anchors: overview sections stay on `/`, citizen forms live on
+ *  `/tools`, and the business layer narrative (channels + sponsorship)
+ *  lives on `/business`. */
 const NAV_HREFS = [
   "/#how",
   "/tools#search",
@@ -18,7 +20,7 @@ const NAV_HREFS = [
   "/#engine",
   "/#library",
   "/tools#scanner",
-  "/#sponsor",
+  "/business#sponsor",
 ];
 
 export function Header() {

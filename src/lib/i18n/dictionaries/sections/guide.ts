@@ -13,7 +13,7 @@ export default {
     ],
     tools: [
       "Every form now lives on the toolkit page — search, eligibility check, claim checklists, the business scanner and the refund calculator.",
-      "Click any card to jump straight into the form. Anonymous, free, and nothing you type ever leaves your browser.",
+      "Anonymous and free: form answers stay in your browser. If you chat with me, the text you type is sent to our AI provider to get an answer.",
     ],
     search: [
       "Pick a country and category — every card links to the official source and shows when it was last verified.",
@@ -54,6 +54,10 @@ export default {
     sponsor: [
       "The citizen layer is free forever — institutions pay for API and SLA, sponsors fund new countries. Nobody sells user requests.",
       "Foundations: this page is the sustainability model donors ask about — open data, public metrics, CC BY licensing.",
+    ],
+    business: [
+      "The business layer in one place: six recovery channels, the institutional API and the sponsorship model.",
+      "Citizens keep the free toolkit — this page is for companies, NGOs and donors. The interactive forms live in the toolkit.",
     ],
     faq: [
       "Good questions live here — including 'is this legal advice?' (spoiler: no, we are not a law firm).",

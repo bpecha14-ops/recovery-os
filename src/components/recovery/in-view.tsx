@@ -11,11 +11,16 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 export function InView({
   minHeight,
   rootMargin = "700px",
+  id,
   children,
 }: {
   /** Placeholder height before the section loads — keeps scrollbar stable. */
   minHeight: number;
   rootMargin?: string;
+  /** Anchor target while the real section is still loading (e.g. "scanner").
+   *  Carried by the placeholder so #hash links and URL loads scroll
+   *  correctly — then handed over to the real section once it mounts. */
+  id?: string;
   children: ReactNode;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -43,7 +48,14 @@ export function InView({
   }, [shown, rootMargin]);
 
   return (
-    <div ref={ref} style={shown ? undefined : { minHeight }}>
+    <div
+      ref={ref}
+      // Before mount the placeholder IS the anchor target (so #hash links
+      // work immediately); after mount the real section carries its own id.
+      id={shown ? undefined : id}
+      className={shown ? undefined : "scroll-mt-20"}
+      style={shown ? undefined : { minHeight }}
+    >
       {shown ? children : null}
     </div>
   );

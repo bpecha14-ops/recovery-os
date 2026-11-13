@@ -132,8 +132,16 @@ export function DataEngine() {
             <p className="mt-3 max-w-3xl text-sm leading-relaxed text-zinc-400">
               {t("civic.engine.slaBody")}
             </p>
-            <p className="mt-4 text-xs font-medium uppercase tracking-wide text-amber-300/80">
-              {t("civic.engine.openLicense")}
+            <p className="mt-4 text-xs leading-relaxed text-amber-300/80">
+              {t("civic.engine.openLicense")}{" "}
+              <a
+                href={t("civic.engine.repoUrl")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-amber-400/40 underline-offset-2 transition-colors hover:text-amber-200 hover:decoration-amber-300"
+              >
+                {t("civic.engine.openCode")}
+              </a>
             </p>
           </div>
         </Reveal>

@@ -51,17 +51,18 @@ export function ToolsPage() {
       {/* Citizen layer — mounts immediately */}
       <CivicModules />
 
-      {/* Business & money-recovery layer — mounts on approach */}
-      <InView minHeight={760}>
+      {/* Business & money-recovery layer — mounts on approach;
+          the placeholder keeps the anchor target so #hash links work */}
+      <InView minHeight={760} id="scanner">
         <Scanner />
       </InView>
-      <InView minHeight={640}>
+      <InView minHeight={640} id="settlements">
         <SettlementsBrowser />
       </InView>
-      <InView minHeight={620}>
+      <InView minHeight={620} id="ieepa">
         <TariffCalculator />
       </InView>
-      <InView minHeight={560}>
+      <InView minHeight={560} id="waitlist">
         <Waitlist />
       </InView>
     </>

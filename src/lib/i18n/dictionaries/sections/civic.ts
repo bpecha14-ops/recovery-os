@@ -1,10 +1,10 @@
 export default {
   coverage: {
-    eyebrow: "First-echelon markets",
+    eyebrow: "Live coverage",
     headingA: "One engine, ",
-    headingGold: "four markets",
+    headingGold: "28 countries",
     headingB: ", built to scale worldwide.",
-    lead: "CivicClaim OS starts where official open data is densest and the unclaimed money pile is biggest. The data schema, verification workflow and AI guide are multilingual from day one — adding the next country is a process, not a rewrite.",
+    lead: "CivicClaim OS launched where official open data is densest — the US, Canada, Europe and Australia — and now covers 28 countries across seven regions, from the Middle East and Asia to Africa. The data schema, verification workflow and AI guide are multilingual from day one — adding the next country is a process, not a rewrite.",
     marketsTitle: "Live coverage",
     sourcesTitle: "Open Data Engine sources",
     freeNote: "Free for people. Sustainable infrastructure for organizations. Sponsored growth for new countries and languages.",
@@ -122,7 +122,7 @@ export default {
     eyebrow: "Module 4 — Open Public Data Engine",
     headingA: "Where the data comes from —",
     headingGold: "and stays fresh",
-    lead: "Every record in CivicClaim OS traces back to an official source. The engine ingests three ways: open APIs where they exist, monitored public pages where they don't, and documented request-access registries where the law asks for it. Our whole database is published under CC BY 4.0.",
+    lead: "Every record in CivicClaim OS traces back to an official source. The engine ingests three ways: open APIs where they exist, monitored public pages where they don't, and documented request-access registries where the law asks for it. Our compilation and metadata are published under CC BY 4.0.",
     accessTitle: "How to read this table",
     access: {
       "open-api": "Open API — auto-ingested on a schedule",
@@ -134,10 +134,13 @@ export default {
     statusPlanned: "Planned",
     slaTitle: "Freshness SLA",
     slaBody: "Each record carries a verification status and a date. Records older than their SLA get flagged \"needs re-check\" and drop in ranking until a human re-verifies them against the official source. Field-level changelogs are kept for every program.",
-    openLicense: "Database: CC BY 4.0 · Code: open source",
+    openLicense:
+      "Our compilation and metadata: CC BY 4.0. Underlying official texts remain under their sources' terms.",
+    openCode: "Code: open source",
+    repoUrl: "https://github.com/bpecha14-ops/recovery-os",
   },
   sponsor: {
-    eyebrow: "Free for people — funded by missions, not margins",
+    eyebrow: "Free for people — paid for by institutions and sponsors",
     headingA: "A public layer,",
     headingGold: "an institutional layer",
     headingB: ", a sponsor layer.",

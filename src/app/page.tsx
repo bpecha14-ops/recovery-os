@@ -5,18 +5,18 @@ import { HowItWorks } from "@/components/recovery/how-it-works";
 import { Coverage } from "@/components/recovery/coverage";
 import { ToolsHub } from "@/components/recovery/tools-hub";
 import { DataEngine } from "@/components/recovery/data-engine";
-import { Channels } from "@/components/recovery/channels";
-import { Sponsorship } from "@/components/recovery/sponsorship";
+import { BusinessCta } from "@/components/recovery/business-cta";
 import { Faq } from "@/components/recovery/faq";
 import { Footer } from "@/components/recovery/footer";
 import { AiGuide } from "@/components/recovery/ai-guide";
 import { LazyLibrary, LazyAiAssistant } from "@/components/recovery/lazy-mounts";
 
 /**
- * Main page — the fast, quiet overview.
+ * Main page — the fast, quiet, citizen-first overview.
  * Every interactive form lives on /tools (same design system);
- * this page keeps the narrative, coverage and sustainability story,
- * with the toolkit hub linking straight into each form.
+ * the business layer narrative (recovery channels + sponsorship)
+ * lives on /business. This page keeps the story, coverage and
+ * the world library, with the toolkit hub linking to each form.
  */
 export default function Home() {
   return (
@@ -30,11 +30,10 @@ export default function Home() {
           <Coverage />
           <ToolsHub />
           <DataEngine />
-          {/* Heritage: RecoveryOS business & money-recovery layer */}
+          {/* Heritage: RecoveryOS world library of unclaimed money */}
           <LazyLibrary />
-          <Channels />
-          {/* Sustainability model */}
-          <Sponsorship />
+          {/* Business layer signpost — the full story is on /business */}
+          <BusinessCta />
           <Faq />
         </main>
         <Footer />

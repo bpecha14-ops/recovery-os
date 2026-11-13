@@ -130,7 +130,7 @@ export function Channels() {
                     <div className="mt-2.5 flex items-baseline gap-2">
                       <span className="tabular text-3xl font-bold tracking-tight text-gradient-gold">
                         {c.statValue !== undefined && c.statFormat ? (
-                          <CountUp to={c.statValue} format={c.statFormat} duration={1.6} delay={0.15} />
+                          <CountUp to={c.statValue} format={c.statFormat} duration={1.6} delay={0.15} ssrValue />
                         ) : (
                           (text?.stat ?? c.stat)
                         )}

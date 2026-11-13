@@ -39,7 +39,7 @@ const AiAssistant = dynamic(
 
 export function LazyLibrary() {
   return (
-    <InView minHeight={720}>
+    <InView minHeight={720} id="library">
       <Library />
     </InView>
   );

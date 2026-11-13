@@ -9,9 +9,10 @@ import {
   PROGRAM_COUNTS,
   REGIONS,
 } from "@/lib/data-sources";
-import { Database, Globe2, Landmark, ShieldCheck } from "lucide-react";
+import { Compass, Database, Globe2, Landmark, ShieldCheck } from "lucide-react";
 
-const REGION_ICONS = [Landmark, Landmark, Globe2, Landmark];
+// One icon per region, in REGIONS order: US, CA, EU, AU, ME, AS, AF.
+const REGION_ICONS = [Landmark, Landmark, Globe2, Landmark, Compass, Globe2, Landmark];
 
 export function Coverage() {
   const { t } = useI18n();

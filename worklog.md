@@ -189,3 +189,23 @@ Stage Summary:
 **QA:** tsc 0 src errors; build EXIT 0; count-check: 74 programs / 28 countries / 41 sources / 0 dup ids / 0 orphans; E2E (agent-browser): wizard Asia→India→unemployed→farmer+senior → 2 likely matches (PM-KISAN, MGNREGA) + Ayushman near-miss with "what is missing"; AI chat Kenya 70+ → Inua Jamii with source+verification; mobile 390px no overflow; no console errors.
 
 **State:** GitHub main = 4357c28 (pushed); production = https://civicclaim-os.vercel.app.
+
+---
+
+## 2026-11-14 — Review fixes: /business page, honest claims, SSR counters, doc refresh
+
+**Site (user review list):**
+- New `/business` page (same design system): Channels + Sponsorship moved off the overview; main page keeps citizen story + World Library + a compact signpost CTA. Goldie walks business sections there; sponsorship CTAs repointed to /tools.
+- CC BY badge (data engine): "Database: CC BY 4.0 · Code: open source" → "Our compilation and metadata: CC BY 4.0. Underlying official texts remain under their sources' terms." + "Code: open source" now links the public repo (github.com/bpecha14-ops/recovery-os).
+- Privacy honesty: hero trust badge → "Eligibility answers are processed in your browser. If you use the AI guide, the text you type is sent to our AI provider." Same caveat added to footer legal, Goldie tools tip and the ai-chat system prompt.
+- "funded by missions, not margins" removed (sponsor eyebrow → factual "paid for by institutions and sponsors"); "recurring recovery stream" kept on /business only.
+- Counters: CountUp gains ssrValue — server HTML renders real figures ($70B, $186B+, A$21.2B, 25%, 21/50, library/channel stats), count-up plays only when a counter enters the viewport after hydration.
+- Stale "four markets" copy synced to reality: hero subtitle, coverage heading ("28 countries"), footer about.
+- Anchor bug fix: InView placeholders now carry the section id (#library, #scanner, #settlements, #ieepa, #waitlist) so #hash links and direct URL loads scroll correctly before lazy chunks mount.
+- Footer/header navs repointed across pages (Link instead of <a>).
+
+**Document:** concept note regenerated — 74 programs / 28 countries / 41 sources (35 live) everywhere; ch.8 retitled "от первого эшелона к глобальной карте" + second-echelon breakdown; ch.5 CC BY compilation-vs-sources clarification; ch.6 AI-provider honesty; ch.10 roadmap reality note; ch.11 civic layer state; cover updated.
+
+**QA:** build EXIT 0 (/, /tools, /business static); tsc clean; hydration-check clean on all 3 pages (normal + reduced motion); SSR HTML asserts ($70B/$186B+, no "missions", cross-page links, repo link); DOM QA: no horizontal overflow, sections correct, no page errors; PDF 15 pages, no blank pages.
+
+**State:** origin/main = this commit; production redeployed to civicclaim-os.vercel.app.

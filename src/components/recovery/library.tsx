@@ -221,7 +221,7 @@ export function Library() {
             ].map((s, i) => (
               <div key={statItems[i]?.label ?? i} className="relative bg-[#0a0a0c] p-5">
                 <div className="tabular text-3xl font-bold tracking-tight text-gradient-gold">
-                  <CountUp to={s.value} format={s.format} delay={0.15 + i * 0.1} />
+                  <CountUp to={s.value} format={s.format} delay={0.15 + i * 0.1} ssrValue />
                 </div>
                 <div className="mt-1.5 flex items-center gap-2 text-xs leading-relaxed text-zinc-400">
                   {s.live && (

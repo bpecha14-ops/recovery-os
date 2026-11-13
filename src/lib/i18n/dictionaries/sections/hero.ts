@@ -4,12 +4,13 @@ export default {
   titleGold: "money",
   titleB: " it never told you about.",
   subtitle:
-    "CivicClaim OS maps official benefits, compensations, tax credits and unclaimed money across the United States, Canada, Europe and Australia — then walks you to the official claim, hand in hand. Free forever for individuals.",
+    "CivicClaim OS maps official benefits, compensations, tax credits and unclaimed money across 28 countries — from the US, Canada, Europe and Australia to the Middle East, Asia and Africa — then walks you to the official claim, hand in hand. Free forever for individuals.",
   ctaScan: "Check what I'm owed",
   ctaLibrary: "Browse programs — free",
   trustNoFee: "Free forever for individuals",
   trustOfficial: "Every program links to its official source",
-  trustDelete: "Answers never leave your browser",
+  trustDelete:
+    "Eligibility answers are processed in your browser. If you use the AI guide, the text you type is sent to our AI provider.",
   deadlineLead: "Data freshness promise:",
   deadlineBody:
     "every program record carries a source, a verification status and a last-checked date — records go stale, they get flagged and re-verified before they rank. Unclaimed US property alone: $70B. Lost Australian super: A$21.2B.",

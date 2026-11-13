@@ -8,7 +8,8 @@ import { Reveal, Spotlight, GoldenStream } from "./effects";
 import { Check, HandHeart, LineChart } from "lucide-react";
 
 // Non-text plan data — aligned by index with civic.sponsor.layers in the dictionary.
-const LAYER_META = [{ highlight: true, ctaHref: "#search" }, { highlight: false, ctaHref: "#waitlist" }, { highlight: false, ctaHref: "#waitlist" }];
+// CTAs point across pages: the free search lives on /tools, the partner waitlist too.
+const LAYER_META = [{ highlight: true, ctaHref: "/tools#search" }, { highlight: false, ctaHref: "/tools#waitlist" }, { highlight: false, ctaHref: "/tools#waitlist" }];
 
 export function Sponsorship() {
   const { t, tArr } = useI18n();

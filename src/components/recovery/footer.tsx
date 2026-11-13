@@ -1,11 +1,27 @@
 "use client";
 
+import Link from "next/link";
 import { Coins } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { Marquee, LiveClock, GoldenStream } from "./effects";
 
-const PRODUCT_HREFS = ["#search", "#eligibility", "#claim", "#engine", "#library", "#sponsor"];
-const CHANNEL_HREFS = ["#channels", "#settlements", "#ieepa", "#channels", "#waitlist"];
+// Cross-page anchors: citizen forms live on /tools, the business layer
+// narrative (channels, sponsorship) on /business, the engine on /.
+const PRODUCT_HREFS = [
+  "/tools#search",
+  "/tools#eligibility",
+  "/tools#claim",
+  "/#engine",
+  "/#library",
+  "/business#sponsor",
+];
+const CHANNEL_HREFS = [
+  "/business#channels",
+  "/tools#settlements",
+  "/tools#ieepa",
+  "/tools#scanner",
+  "/tools#waitlist",
+];
 
 // The living footer ticker — every official registry in the library, rolling.
 const REGISTRY_TICKER = [
@@ -116,12 +132,12 @@ export function Footer() {
             <ul className="mt-4 space-y-2 text-sm">
               {PRODUCT_HREFS.map((href, i) => (
                 <li key={href + i}>
-                  <a
+                  <Link
                     href={href}
                     className="transition-colors hover:text-amber-300"
                   >
                     {productLabels[i] ?? href}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -131,12 +147,12 @@ export function Footer() {
             <ul className="mt-4 space-y-2 text-sm">
               {CHANNEL_HREFS.map((href, i) => (
                 <li key={href + i}>
-                  <a
+                  <Link
                     href={href}
                     className="transition-colors hover:text-amber-300"
                   >
                     {channelLabels[i] ?? href}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

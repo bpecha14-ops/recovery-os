@@ -21,16 +21,15 @@ interface SectionSpot {
   leftVw: number;
 }
 
-/** Main page — overview sections. */
+/** Main page — overview sections (business narrative lives on /business). */
 const HOME_SECTION_SPOTS: SectionSpot[] = [
   { id: "how", leftVw: 4 },
-  { id: "coverage", leftVw: 10 },
-  { id: "tools", leftVw: 18 },
-  { id: "engine", leftVw: 30 },
-  { id: "library", leftVw: 44 },
-  { id: "channels", leftVw: 56 },
-  { id: "sponsor", leftVw: 70 },
-  { id: "faq", leftVw: 84 },
+  { id: "coverage", leftVw: 12 },
+  { id: "tools", leftVw: 22 },
+  { id: "engine", leftVw: 34 },
+  { id: "library", leftVw: 48 },
+  { id: "business", leftVw: 62 },
+  { id: "faq", leftVw: 80 },
 ];
 
 /** Toolkit page — every form lives here. */
@@ -44,6 +43,12 @@ const TOOLS_SECTION_SPOTS: SectionSpot[] = [
   { id: "waitlist", leftVw: 82 },
 ];
 
+/** Business & partners page — channels + sponsorship. */
+const BUSINESS_SECTION_SPOTS: SectionSpot[] = [
+  { id: "channels", leftVw: 28 },
+  { id: "sponsor", leftVw: 66 },
+];
+
 export function AiGuide() {
   const reduceMotion = useReducedMotionSafe();
   const { t, tArr } = useI18n();
@@ -51,7 +56,9 @@ export function AiGuide() {
   // Goldie walks a different set of sections on each page.
   const sectionSpots = pathname.startsWith("/tools")
     ? TOOLS_SECTION_SPOTS
-    : HOME_SECTION_SPOTS;
+    : pathname.startsWith("/business")
+      ? BUSINESS_SECTION_SPOTS
+      : HOME_SECTION_SPOTS;
   const [activeId, setActiveId] = useState<string | null>(null);
   const [tip, setTip] = useState<string | null>(null);
   const [muted, setMuted] = useState(false);

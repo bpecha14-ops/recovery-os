@@ -180,6 +180,7 @@ export function Hero() {
                   to={i === 0 ? 70 : i === 1 ? WORLD_VERIFIED_USD_B : i === 2 ? 21.2 : 25}
                   format={STAT_FORMATS[i]}
                   delay={0.2 + i * 0.1}
+                  ssrValue
                 />
               </div>
               <div className="mt-2 text-xs leading-relaxed text-zinc-500 sm:text-sm">
