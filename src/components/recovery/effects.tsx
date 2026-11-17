@@ -431,9 +431,47 @@ export function GoldenStream({
     let running = true;
     let width = 0;
     let height = 0;
-    let dpr = 1;
-    const mouse = { x: -9999, y: -9999 };
+    // Soft blurred glows carry no crisp detail: a 1× backing store is
+    // visually identical and cuts fill cost ~4× on hidpi screens.
+    const DPR = 1;
+    const mouse = { x: -9999, y: -9999, clientX: -9999, clientY: -9999 };
     let particles: Particle[] = [];
+
+    // Pre-rendered sprites. PER-FORMANCE CONTRACT: never call shadowBlur,
+    // shadowColor or createLinearGradient inside the frame loop — drawing
+    // 110 particles with shadowBlur stalled the main thread so hard the
+    // page dropped to ~2fps (measured). drawImage of a cached sprite is
+    // an order of magnitude cheaper and looks the same.
+    const makeGlowSprite = (hue: number) => {
+      const s = document.createElement("canvas");
+      s.width = 64;
+      s.height = 64;
+      const g = s.getContext("2d");
+      if (!g) return s;
+      const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+      grad.addColorStop(0, `hsla(${hue}, 95%, 74%, 1)`);
+      grad.addColorStop(0.3, `hsla(${hue}, 95%, 62%, 0.5)`);
+      grad.addColorStop(1, `hsla(${hue}, 95%, 60%, 0)`);
+      g.fillStyle = grad;
+      g.fillRect(0, 0, 64, 64);
+      return s;
+    };
+    const glowSprites = [38, 43, 48].map(makeGlowSprite);
+
+    const streakSprite = (() => {
+      const s = document.createElement("canvas");
+      s.width = 128;
+      s.height = 8;
+      const g = s.getContext("2d");
+      if (g) {
+        const grad = g.createLinearGradient(0, 0, 128, 0);
+        grad.addColorStop(0, "hsla(43, 92%, 62%, 0)");
+        grad.addColorStop(1, "hsla(43, 92%, 62%, 0.85)");
+        g.fillStyle = grad;
+        g.fillRect(0, 0, 128, 8);
+      }
+      return s;
+    })();
 
     const spawn = (): Particle => {
       const depth = Math.random(); // 0 = far, 1 = near
@@ -456,12 +494,13 @@ export function GoldenStream({
       const rect = canvas.getBoundingClientRect();
       width = rect.width;
       height = rect.height;
-      dpr = Math.min(2, window.devicePixelRatio || 1);
-      canvas.width = Math.floor(width * dpr);
-      canvas.height = Math.floor(height * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      canvas.width = Math.floor(width * DPR);
+      canvas.height = Math.floor(height * DPR);
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      // Glow sprites read denser than raw dots, so fewer particles
+      // still fill the frame.
       const count = Math.round(
-        (width < 640 ? 42 : width < 1100 ? 78 : 110) * Math.max(0.15, density),
+        (width < 640 ? 26 : width < 1100 ? 44 : 60) * Math.max(0.15, density),
       );
       particles = Array.from({ length: count }, () => {
         const p = spawn();
@@ -472,20 +511,39 @@ export function GoldenStream({
       });
     };
 
+    // Store raw client coords only; the canvas rect is resolved once per
+    // frame inside draw(), so the pointermove hot path never forces layout.
     const onMove = (e: PointerEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      mouse.x = e.clientX - rect.left;
-      mouse.y = e.clientY - rect.top;
+      mouse.clientX = e.clientX;
+      mouse.clientY = e.clientY;
     };
+
+    // 30fps cap: drifting dust is indistinguishable at 30fps, and the
+    // halved frame budget keeps mid-tier laptops smooth.
+    const FRAME_MS = 1000 / 30;
+    let last = 0;
+    let prevT = 0;
 
     const draw = (t: number) => {
       if (!running) return;
+      raf = requestAnimationFrame(draw);
+      if (t - last < FRAME_MS) return;
+      last = t;
+      // Motion tuned per-60fps-frame originally; scale by real dt so the
+      // 30fps cap does not halve particle speed.
+      const step = Math.min(3, Math.max(0, (t - prevT) / (1000 / 60)));
+      prevT = t;
+
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = mouse.clientX - rect.left;
+      mouse.y = mouse.clientY - rect.top;
+
       ctx.clearRect(0, 0, width, height);
       ctx.globalCompositeOperation = "lighter";
 
       for (const p of particles) {
-        p.x += p.vx;
-        p.phase += p.speed;
+        p.x += p.vx * step;
+        p.phase += p.speed * step;
         let y = p.baseY + Math.sin(p.phase) * p.amp;
 
         // gentle magnetic deflection around the cursor
@@ -506,31 +564,25 @@ export function GoldenStream({
 
         // streak trail for a minority of particles
         if (p.streak > 0) {
-          const grad = ctx.createLinearGradient(
+          ctx.globalAlpha = p.alpha * 0.8;
+          ctx.drawImage(
+            streakSprite,
             p.x - p.streak,
-            y,
-            p.x,
-            y,
+            y - p.size * 0.4,
+            p.streak,
+            p.size * 0.8,
           );
-          grad.addColorStop(0, "rgba(251,191,36,0)");
-          grad.addColorStop(1, `hsla(${p.hue},92%,62%,${p.alpha})`);
-          ctx.strokeStyle = grad;
-          ctx.lineWidth = p.size * 0.8;
-          ctx.beginPath();
-          ctx.moveTo(p.x - p.streak, y);
-          ctx.lineTo(p.x, y);
-          ctx.stroke();
         }
 
-        ctx.fillStyle = `hsla(${p.hue},95%,${58 + p.size * 6}%,${p.alpha})`;
-        ctx.shadowColor = `hsla(${p.hue},95%,60%,${p.alpha})`;
-        ctx.shadowBlur = p.size * 5;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
+        const sprite =
+          glowSprites[p.hue < 43 ? 0 : p.hue < 46 ? 1 : 2];
+        ctx.globalAlpha = p.alpha;
+        // sprite radius ≈ old arc + shadowBlur halo
+        const r = p.size * 3.2;
+        ctx.drawImage(sprite, p.x - r, y - r, r * 2, r * 2);
       }
+      ctx.globalAlpha = 1;
       ctx.globalCompositeOperation = "source-over";
-      raf = requestAnimationFrame(draw);
     };
 
     resize();
@@ -549,6 +601,7 @@ export function GoldenStream({
           cancelAnimationFrame(raf);
         } else if (visible && !running) {
           running = true;
+          prevT = 0;
           raf = requestAnimationFrame(draw);
         }
       },
