@@ -118,7 +118,7 @@ export function Scanner() {
     results === null ? 0 : results.openTotalHigh + results.ieepaHigh;
 
   return (
-    <section id="scanner" className="relative scroll-mt-20 overflow-hidden bg-zinc-950 py-20 sm:py-28">
+    <section id="scanner" className="relative scroll-mt-20 overflow-hidden bg-cf-deep/70 py-20 sm:py-28">
       <GoldenStream density={0.45} />
       <div
         aria-hidden="true"
@@ -161,7 +161,7 @@ export function Scanner() {
                     <button
                       type="button"
                       onClick={() => inputRef.current?.click()}
-                      className="group flex w-full flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-amber-400/[0.28] bg-black px-6 py-12 text-amber-200/50 transition-all hover:border-amber-400/55 hover:bg-amber-400/[0.04] hover:text-amber-300"
+                      className="group flex w-full flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-amber-400/[0.28] bg-cf-deep/85 px-6 py-12 text-amber-200/50 transition-all hover:border-amber-400/55 hover:bg-amber-400/[0.04] hover:text-amber-300"
                       aria-label={t("scanner.upload.chooseAriaLabel")}
                     >
                       <UploadCloud className="h-8 w-8 transition-transform duration-300 group-hover:-translate-y-0.5" aria-hidden="true" />
@@ -244,9 +244,9 @@ export function Scanner() {
                         </span>
                       )}
                     </div>
-                    <div className="mt-3 max-h-44 overflow-y-auto rounded-lg border border-amber-400/[0.10] bg-[#050506]">
+                    <div className="mt-3 max-h-44 overflow-y-auto rounded-lg border border-amber-400/[0.10] bg-cf-deep/90">
                       <table className="gold-table w-full text-left text-xs">
-                        <thead className="sticky top-0 bg-black text-[11px] uppercase tracking-wide">
+                        <thead className="sticky top-0 bg-cf-deep/85 text-[11px] uppercase tracking-wide">
                           <tr>
                             <th className="px-3 py-2">{t("scanner.preview.colDate")}</th>
                             <th className="px-3 py-2">{t("scanner.preview.colDescription")}</th>

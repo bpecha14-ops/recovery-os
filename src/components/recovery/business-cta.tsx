@@ -14,7 +14,7 @@ export function BusinessCta() {
   const { t } = useI18n();
 
   return (
-    <section id="business" className="relative scroll-mt-20 bg-zinc-950 py-16 sm:py-20">
+    <section id="business" className="relative scroll-mt-20 bg-cf-deep/70 py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal>
           <div className="panel-black flex flex-col items-start gap-6 rounded-2xl border-amber-400/[0.16] p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">

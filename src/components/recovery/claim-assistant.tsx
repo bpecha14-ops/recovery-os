@@ -97,7 +97,7 @@ export function ClaimAssistant({
   };
 
   return (
-    <section id="claim" className="relative scroll-mt-20 bg-zinc-950 py-20 sm:py-28">
+    <section id="claim" className="relative scroll-mt-20 bg-cf-deep/70 py-20 sm:py-28">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal className="max-w-3xl">
           <p className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.2em] text-amber-400/90">
@@ -127,10 +127,10 @@ export function ClaimAssistant({
                   setProgramId("");
                 }}
               >
-                <SelectTrigger id="claim-country" className="w-full border-amber-400/20 bg-zinc-900/60 text-zinc-200">
+                <SelectTrigger id="claim-country" className="w-full border-amber-400/20 bg-cf-base/60 text-zinc-200">
                   <SelectValue placeholder={t("civic.search.country")} />
                 </SelectTrigger>
-                <SelectContent className="border-amber-400/20 bg-zinc-900 text-zinc-200">
+                <SelectContent className="border-amber-400/20 bg-cf-base/75 text-zinc-200">
                   <SelectItem value="all">{t("civic.search.allCountries")}</SelectItem>
                   {COUNTRIES.map((c) => (
                     <SelectItem key={c} value={c}>
@@ -145,10 +145,10 @@ export function ClaimAssistant({
                 {t("civic.claim.pick")}
               </label>
               <Select value={programId} onValueChange={setProgramId}>
-                <SelectTrigger id="claim-program" className="w-full border-amber-400/20 bg-zinc-900/60 text-zinc-200">
+                <SelectTrigger id="claim-program" className="w-full border-amber-400/20 bg-cf-base/60 text-zinc-200">
                   <SelectValue placeholder={t("civic.claim.pick")} />
                 </SelectTrigger>
-                <SelectContent className="max-h-72 border-amber-400/20 bg-zinc-900 text-zinc-200">
+                <SelectContent className="max-h-72 border-amber-400/20 bg-cf-base/75 text-zinc-200">
                   {programs.map((p) => (
                     <SelectItem key={p.id} value={p.id}>
                       {p.name} · {p.country}
@@ -178,7 +178,7 @@ export function ClaimAssistant({
                   <Button
                     variant="outline"
                     size="sm"
-                    className="border-zinc-700 bg-transparent text-zinc-300 hover:bg-zinc-800/60 hover:text-white"
+                    className="border-zinc-700 bg-transparent text-zinc-300 hover:bg-cf-raised/60 hover:text-white"
                     onClick={() => window.print()}
                   >
                     <Printer className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
@@ -194,7 +194,7 @@ export function ClaimAssistant({
                       {t("civic.claim.progress", { done: stepsDone, total: program.steps.length })}
                     </span>
                   </p>
-                  <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-zinc-800">
+                  <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-cf-raised/80">
                     <div
                       className="h-full rounded-full bg-gradient-to-r from-amber-300 to-amber-500 transition-all"
                       style={{
@@ -213,7 +213,7 @@ export function ClaimAssistant({
                             className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 text-sm leading-relaxed transition-all ${
                               checked
                                 ? "border-emerald-400/30 bg-emerald-400/[0.05] text-zinc-400 line-through"
-                                : "border-zinc-800 bg-zinc-900/40 text-zinc-200 hover:border-amber-400/30"
+                                : "border-zinc-800 bg-cf-base/40 text-zinc-200 hover:border-amber-400/30"
                             }`}
                           >
                             <Checkbox

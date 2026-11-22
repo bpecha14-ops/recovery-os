@@ -1,32 +1,24 @@
 import type { Metadata } from "next";
-import { I18nProvider } from "@/lib/i18n/context";
-import { Header } from "@/components/recovery/header";
 import { ToolsHero } from "@/components/recovery/tools-hero";
 import { ToolsPage } from "@/components/recovery/tools-page";
-import { Footer } from "@/components/recovery/footer";
-import { AiGuide } from "@/components/recovery/ai-guide";
-import { LazyAiAssistant } from "@/components/recovery/lazy-mounts";
 
+/**
+ * /tools — the eligibility wizard leads (it is the product's core),
+ * followed by the program search, the claim assistant and the heritage
+ * money-recovery tools. The global layout provides the ambient
+ * background, header, footer and Goldie.
+ */
 export const metadata: Metadata = {
-  title: "Toolkit — every form in one place | CivicClaim OS",
+  title: "Check what you're owed — the anonymous eligibility wizard",
   description:
-    "All interactive tools of CivicClaim OS: global rights & money search, anonymous eligibility wizard, claim assistant checklists, business purchase scanner, settlements browser and the IEEPA tariff refund calculator. Free, anonymous, browser-only.",
+    "Answer a few anonymous questions — no name, no email, no ID. Deterministic rules written and checked by humans match you to official programs, each with a source and verification date. Works offline after load.",
 };
 
 export default function Tools() {
   return (
-    <I18nProvider>
-      <div className="flex min-h-screen flex-col bg-zinc-950 text-zinc-100">
-        <Header />
-        <main className="flex-1">
-          {/* Every form of CivicClaim OS, in the same style as the main page */}
-          <ToolsHero />
-          <ToolsPage />
-        </main>
-        <Footer />
-        <AiGuide />
-        <LazyAiAssistant delay={900} />
-      </div>
-    </I18nProvider>
+    <>
+      <ToolsHero />
+      <ToolsPage />
+    </>
   );
 }

@@ -1,7 +1,8 @@
 /**
- * RecoveryOS i18n — currently English-only (deploy-slimmed).
- * To re-add languages: append an entry here, drop a dictionary file into
- * `dictionaries/`, and register it in `dictionaries/index.ts`.
+ * CivicClaim i18n — English (source of truth) + Russian
+ * (machine-translated, labeled in the footer). To add more: append an
+ * entry here, drop a dictionary file into `dictionaries/`, and register
+ * it in `dictionaries/index.ts`. Missing keys fall back to English.
  */
 
 export interface LocaleMeta {
@@ -16,6 +17,7 @@ export interface LocaleMeta {
 
 export const LOCALES: readonly LocaleMeta[] = [
   { code: "en", label: "English", flag: "🇬🇧", english: "English" },
+  { code: "ru", label: "Русский", flag: "🇷🇺", english: "Russian" },
 ] as const;
 
 export type LocaleCode = (typeof LOCALES)[number]["code"];

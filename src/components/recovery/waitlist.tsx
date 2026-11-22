@@ -82,7 +82,7 @@ export function Waitlist() {
   }
 
   return (
-    <section id="waitlist" className="relative scroll-mt-20 overflow-hidden bg-zinc-950 py-20 sm:py-28">
+    <section id="waitlist" className="relative scroll-mt-20 overflow-hidden bg-cf-deep/70 py-20 sm:py-28">
       <GoldenStream density={0.55} />
       <div
         aria-hidden="true"
@@ -96,7 +96,7 @@ export function Waitlist() {
         <Reveal>
           <Card className="panel-black panel-beam animate-glow overflow-hidden">
             <div className="grid lg:grid-cols-5">
-              <div className="relative overflow-hidden bg-black p-8 text-white lg:col-span-2 sm:p-10">
+              <div className="relative overflow-hidden bg-cf-deep/85 p-8 text-white lg:col-span-2 sm:p-10">
                 <div
                   aria-hidden="true"
                   className="pointer-events-none absolute inset-0"
@@ -132,7 +132,7 @@ export function Waitlist() {
                   </ul>
 
                   {/* Spots progress — filling live */}
-                  <div className="mt-7 rounded-xl border border-amber-400/[0.16] bg-[#050506] p-4">
+                  <div className="mt-7 rounded-xl border border-amber-400/[0.16] bg-cf-deep/90 p-4">
                     <div className="flex items-baseline justify-between gap-2">
                       <p className="text-xs font-medium uppercase tracking-wide text-amber-300/70">
                         {t("waitlist.spotsClaimed")}
@@ -210,7 +210,7 @@ export function Waitlist() {
                         {CHANNEL_IDS.map((id, i) => (
                           <label
                             key={id}
-                            className="flex cursor-pointer items-center gap-2 rounded-lg border border-amber-400/[0.16] bg-[#050506] px-3 py-2.5 text-sm text-zinc-300 transition-colors hover:border-amber-400/40 hover:bg-amber-400/[0.05] has-[:checked]:border-amber-400/60 has-[:checked]:bg-amber-400/10"
+                            className="flex cursor-pointer items-center gap-2 rounded-lg border border-amber-400/[0.16] bg-cf-deep/90 px-3 py-2.5 text-sm text-zinc-300 transition-colors hover:border-amber-400/40 hover:bg-amber-400/[0.05] has-[:checked]:border-amber-400/60 has-[:checked]:bg-amber-400/10"
                           >
                             <Checkbox
                               checked={channels.includes(id)}

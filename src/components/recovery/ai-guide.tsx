@@ -24,12 +24,11 @@ interface SectionSpot {
 /** Main page — overview sections (business narrative lives on /business). */
 const HOME_SECTION_SPOTS: SectionSpot[] = [
   { id: "how", leftVw: 4 },
-  { id: "coverage", leftVw: 12 },
-  { id: "tools", leftVw: 22 },
-  { id: "engine", leftVw: 34 },
-  { id: "library", leftVw: 48 },
-  { id: "business", leftVw: 62 },
-  { id: "faq", leftVw: 80 },
+  { id: "coverage", leftVw: 16 },
+  { id: "data", leftVw: 30 },
+  { id: "faq", leftVw: 48 },
+  { id: "matrix", leftVw: 62 },
+  { id: "programs", leftVw: 80 },
 ];
 
 /** Toolkit page — every form lives here. */
@@ -205,7 +204,7 @@ export function AiGuide() {
               animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
               exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 6, scale: 0.95 }}
               transition={{ type: "spring", stiffness: 380, damping: 30 }}
-              className={`absolute bottom-[calc(100%+0.6rem)] w-[min(280px,calc(100vw-5rem))] rounded-2xl border border-amber-400/25 bg-zinc-950/97 p-3.5 pr-8 shadow-[0_16px_44px_-12px_rgba(0,0,0,0.85)] backdrop-blur-xl ${
+              className={`absolute bottom-[calc(100%+0.6rem)] w-[min(280px,calc(100vw-5rem))] rounded-2xl border border-amber-400/25 bg-cf-deep/97 p-3.5 pr-8 shadow-[0_16px_44px_-12px_rgba(0,0,0,0.85)] backdrop-blur-xl ${
                 alignRight ? "right-0" : "left-0"
               }`}
             >
@@ -235,7 +234,7 @@ export function AiGuide() {
               {/* tail */}
               <span
                 aria-hidden="true"
-                className={`absolute -bottom-1.5 h-3 w-3 rotate-45 border-b border-r border-amber-400/25 bg-zinc-950 ${
+                className={`absolute -bottom-1.5 h-3 w-3 rotate-45 border-b border-r border-amber-400/25 bg-cf-deep/70 ${
                   alignRight ? "right-4" : "left-4"
                 }`}
               />
@@ -248,7 +247,7 @@ export function AiGuide() {
           <button
             type="button"
             onClick={() => setMuted(false)}
-            className="absolute bottom-[calc(100%+0.6rem)] left-0 flex items-center gap-1.5 rounded-full border border-amber-400/25 bg-zinc-950/95 px-3 py-1.5 text-[10px] font-medium text-amber-200/90 shadow-lg backdrop-blur transition-colors hover:border-amber-400/50"
+            className="absolute bottom-[calc(100%+0.6rem)] left-0 flex items-center gap-1.5 rounded-full border border-amber-400/25 bg-cf-deep/95 px-3 py-1.5 text-[10px] font-medium text-amber-200/90 shadow-lg backdrop-blur transition-colors hover:border-amber-400/50"
           >
             <VolumeX className="h-3 w-3" aria-hidden="true" />
             {t("guide.unmute")}
@@ -289,7 +288,7 @@ export function AiGuide() {
           {/* The coin — same build as the corner AI button: round golden
               ring, coin face, glow, hover scale. */}
           <span
-            className={`relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 bg-zinc-950 shadow-[0_0_28px_-6px_rgba(251,191,36,0.55)] transition-transform duration-200 group-hover:scale-105 sm:h-16 sm:w-16 ${
+            className={`relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 bg-cf-deep/70 shadow-[0_0_28px_-6px_rgba(251,191,36,0.55)] transition-transform duration-200 group-hover:scale-105 sm:h-16 sm:w-16 ${
               tip ? "border-amber-300" : "border-amber-300/70"
             }`}
           >

@@ -23,7 +23,7 @@ const ACCESS_ICONS = {
 export function DataEngine() {
   const { t } = useI18n();
   return (
-    <section id="engine" className="relative scroll-mt-20 bg-zinc-950 py-20 sm:py-28">
+    <section id="engine" className="relative scroll-mt-20 bg-cf-deep/70 py-20 sm:py-28">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal className="max-w-3xl">
           <p className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.2em] text-amber-400/90">
@@ -61,7 +61,7 @@ export function DataEngine() {
           <div className="panel-black mt-8 overflow-hidden rounded-2xl">
             <div className="max-h-[520px] overflow-y-auto">
               <Table>
-                <TableHeader className="sticky top-0 z-10 bg-zinc-900/95 backdrop-blur">
+                <TableHeader className="sticky top-0 z-10 bg-cf-base/95 backdrop-blur">
                   <TableRow className="border-zinc-800 hover:bg-transparent">
                     <TableHead className="text-amber-200/90">{t("civic.engine.columns.source")}</TableHead>
                     <TableHead className="text-amber-200/90">{t("civic.engine.columns.agency")}</TableHead>
@@ -107,7 +107,7 @@ export function DataEngine() {
                             className={
                               s.status === "live"
                                 ? "border-emerald-400/25 bg-emerald-400/[0.06] text-[11px] text-emerald-300/90"
-                                : "border-zinc-600 bg-zinc-800/60 text-[11px] text-zinc-400"
+                                : "border-zinc-600 bg-cf-raised/60 text-[11px] text-zinc-400"
                             }
                           >
                             {s.status === "live" ? t("civic.engine.statusLive") : t("civic.engine.statusPlanned")}

@@ -12,7 +12,7 @@ export function HowItWorks() {
   const steps = tArr<{ title: string; text: string }>("how.steps");
 
   return (
-    <section id="how" className="relative scroll-mt-20 overflow-hidden bg-zinc-950 py-20 sm:py-28">
+    <section id="how" className="relative scroll-mt-20 overflow-hidden bg-cf-deep/70 py-20 sm:py-28">
       <GoldenStream density={0.5} />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal className="max-w-3xl">
@@ -42,7 +42,7 @@ export function HowItWorks() {
                 <Reveal key={i} delay={i * 0.12}>
                   <div className="group relative">
                     <div className="relative mb-6 flex items-end gap-4 md:mb-8">
-                      <span className="tabular bg-zinc-950 text-7xl font-bold leading-none tracking-tighter text-amber-400/[0.09] transition-colors duration-500 group-hover:text-amber-400/30">
+                      <span className="tabular bg-cf-deep/70 text-7xl font-bold leading-none tracking-tighter text-amber-400/[0.09] transition-colors duration-500 group-hover:text-amber-400/30">
                         {STEP_NUMBERS[i] ?? String(i + 1).padStart(2, "0")}
                       </span>
                       <span

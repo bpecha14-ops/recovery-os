@@ -1,10 +1,12 @@
 import type { LocaleCode } from "../config";
 import { en, type Dictionary } from "./en";
+import { ru } from "./ru";
 
 /**
- * Deploy-slimmed registry: English only for now.
- * To re-add a language, import its file and register it here.
+ * Locale registry. Russian ships as a machine-translated partial
+ * dictionary; the runtime falls back to English per missing key.
  */
 export const dictionaries: Partial<Record<LocaleCode, Dictionary>> = {
   en,
+  ru,
 };

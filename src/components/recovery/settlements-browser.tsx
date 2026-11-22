@@ -107,7 +107,7 @@ export function SettlementsBrowser() {
   );
 
   return (
-    <section id="settlements" className="relative scroll-mt-20 overflow-hidden bg-zinc-950 py-20 sm:py-28">
+    <section id="settlements" className="relative scroll-mt-20 overflow-hidden bg-cf-deep/70 py-20 sm:py-28">
       <GoldenStream density={0.5} />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
@@ -133,7 +133,7 @@ export function SettlementsBrowser() {
                 className={`rounded-full border px-3.5 py-1.5 text-sm transition-colors ${
                   filter === id
                     ? "border-amber-400/60 bg-gradient-to-b from-amber-300 to-amber-500 font-semibold text-zinc-950"
-                    : "border-amber-400/[0.14] bg-black text-amber-200/50 hover:border-amber-400/35 hover:text-amber-200"
+                    : "border-amber-400/[0.14] bg-cf-deep/85 text-amber-200/50 hover:border-amber-400/35 hover:text-amber-200"
                 }`}
               >
                 {filters[i]?.label ?? id}

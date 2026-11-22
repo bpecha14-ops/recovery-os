@@ -190,7 +190,7 @@ export function AiAssistant() {
           aria-hidden="true"
           className="absolute -inset-1.5 rounded-full bg-amber-400/25 blur-md transition-opacity duration-300 group-hover:opacity-100 animate-glow"
         />
-        <span className="relative flex h-14 w-14 items-center justify-center rounded-full border-2 border-amber-300/70 bg-zinc-950 shadow-[0_0_28px_-6px_rgba(251,191,36,0.55)] transition-transform duration-200 group-hover:scale-105 sm:h-16 sm:w-16">
+        <span className="relative flex h-14 w-14 items-center justify-center rounded-full border-2 border-amber-300/70 bg-cf-deep/70 shadow-[0_0_28px_-6px_rgba(251,191,36,0.55)] transition-transform duration-200 group-hover:scale-105 sm:h-16 sm:w-16">
           <AiGlyph className="h-7 w-7 drop-shadow-[0_0_10px_rgba(251,191,36,0.45)] sm:h-8 sm:w-8" />
         </span>
         {unread && !open && (
@@ -201,7 +201,7 @@ export function AiAssistant() {
             1
           </span>
         )}
-        <span className="pointer-events-none absolute -left-1 top-0 hidden -translate-x-full whitespace-nowrap rounded-md border border-amber-400/25 bg-zinc-950/95 px-2.5 py-1.5 text-xs font-medium text-amber-100 opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100 sm:block">
+        <span className="pointer-events-none absolute -left-1 top-0 hidden -translate-x-full whitespace-nowrap rounded-md border border-amber-400/25 bg-cf-deep/95 px-2.5 py-1.5 text-xs font-medium text-amber-100 opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100 sm:block">
           {t("assistant.askGoldie")}
         </span>
       </motion.button>
@@ -216,7 +216,7 @@ export function AiAssistant() {
             animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
             exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 24, scale: 0.96 }}
             transition={{ type: "spring", stiffness: 380, damping: 32 }}
-            className="fixed bottom-[5.5rem] right-4 z-[60] flex h-[min(560px,calc(100dvh-7.5rem))] w-[min(400px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-amber-400/25 bg-zinc-950/97 shadow-[0_24px_70px_-18px_rgba(0,0,0,0.85)] backdrop-blur-xl"
+            className="fixed bottom-[5.5rem] right-4 z-[60] flex h-[min(560px,calc(100dvh-7.5rem))] w-[min(400px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-amber-400/25 bg-cf-deep/97 shadow-[0_24px_70px_-18px_rgba(0,0,0,0.85)] backdrop-blur-xl"
           >
             {/* Header */}
             <div className="relative flex items-center gap-3 border-b border-amber-400/15 bg-gradient-to-r from-amber-400/10 via-transparent to-transparent px-4 py-3">
@@ -238,6 +238,16 @@ export function AiAssistant() {
                 <p className="flex items-center gap-1.5 text-xs text-zinc-400">
                   <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden="true" />
                   {t("assistant.online")}
+                  <span className="text-zinc-600">·</span>
+                  <span className="font-mono text-[10px] text-zinc-500">
+                    Z.ai (GLM)
+                  </span>
+                  <a
+                    href="/method#ai"
+                    className="font-mono text-[10px] text-cf-cyan hover:underline"
+                  >
+                    what it can &amp; cannot do
+                  </a>
                 </p>
               </div>
               <button
@@ -358,7 +368,7 @@ export function AiAssistant() {
                   onKeyDown={onKey}
                   placeholder={t("assistant.placeholder")}
                   rows={1}
-                  className="max-h-28 min-h-[44px] flex-1 resize-none border-amber-400/20 bg-black/60 text-sm text-white placeholder:text-zinc-600 focus-visible:ring-amber-400"
+                  className="max-h-28 min-h-[44px] flex-1 resize-none border-amber-400/20 bg-cf-deep/85/60 text-sm text-white placeholder:text-zinc-600 focus-visible:ring-amber-400"
                 />
                 <Button
                   type="button"

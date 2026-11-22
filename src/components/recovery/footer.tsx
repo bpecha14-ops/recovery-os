@@ -81,14 +81,14 @@ export function Footer() {
   const productLabels = tArr<string>("footer.product");
   const channelLabels = tArr<string>("footer.channelsNav");
   return (
-    <footer className="relative mt-auto overflow-hidden border-t border-amber-400/[0.10] bg-zinc-950 text-zinc-400">
+    <footer className="relative mt-auto overflow-hidden border-t border-amber-400/[0.10] bg-cf-deep/70 text-zinc-400">
       <GoldenStream density={0.4} />
       <div aria-hidden="true" className="hairline-gold" />
 
       {/* World registry ticker — the library never sleeps */}
       <div className="relative border-b border-amber-400/[0.08] py-4">
         <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 sm:px-6">
-          <span className="hidden shrink-0 items-center gap-2 rounded-full border border-amber-400/25 bg-black px-3 py-1 text-[11px] font-medium text-amber-200/80 sm:inline-flex">
+          <span className="hidden shrink-0 items-center gap-2 rounded-full border border-amber-400/25 bg-cf-deep/85 px-3 py-1 text-[11px] font-medium text-amber-200/80 sm:inline-flex">
             <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-amber-400" aria-hidden="true" />
             <LiveClock />
           </span>

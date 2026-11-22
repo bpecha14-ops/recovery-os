@@ -20,7 +20,7 @@ export function BusinessHero() {
   const { t } = useI18n();
 
   return (
-    <section className="relative overflow-hidden bg-zinc-950 pb-14 pt-24 text-white sm:pb-20 sm:pt-32">
+    <section className="relative overflow-hidden bg-cf-deep/70 pb-14 pt-24 text-white sm:pb-20 sm:pt-32">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
@@ -89,7 +89,7 @@ export function BusinessHero() {
               <a
                 key={j.anchor}
                 href={`#${j.anchor}`}
-                className="group inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-black px-4 py-2 text-sm text-amber-200/90 transition-all hover:border-amber-400/60 hover:bg-amber-400/10 hover:text-amber-100"
+                className="group inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-cf-deep/85 px-4 py-2 text-sm text-amber-200/90 transition-all hover:border-amber-400/60 hover:bg-amber-400/10 hover:text-amber-100"
               >
                 <j.Icon className="h-3.5 w-3.5 text-amber-400/80" aria-hidden="true" />
                 {j.anchor === "channels" ? "Recovery channels" : "Sponsorship & API"}
@@ -98,7 +98,7 @@ export function BusinessHero() {
             ))}
             <Link
               href="/tools#scanner"
-              className="group inline-flex items-center gap-2 rounded-full border border-zinc-700/60 bg-black px-4 py-2 text-sm text-zinc-300 transition-all hover:border-amber-400/40 hover:text-amber-200"
+              className="group inline-flex items-center gap-2 rounded-full border border-zinc-700/60 bg-cf-deep/85 px-4 py-2 text-sm text-zinc-300 transition-all hover:border-amber-400/40 hover:text-amber-200"
             >
               <Building2 className="h-3.5 w-3.5 text-zinc-500 transition-colors group-hover:text-amber-400/80" aria-hidden="true" />
               {t("business.hero.toolsCta")}

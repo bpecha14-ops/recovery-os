@@ -23,7 +23,7 @@ export function Sponsorship() {
   const metrics = tArr<string>("civic.sponsor.metrics");
 
   return (
-    <section id="sponsor" className="relative scroll-mt-20 overflow-hidden bg-zinc-950 py-20 sm:py-28">
+    <section id="sponsor" className="relative scroll-mt-20 overflow-hidden bg-cf-deep/70 py-20 sm:py-28">
       <GoldenStream density={0.45} />
       <div
         aria-hidden="true"

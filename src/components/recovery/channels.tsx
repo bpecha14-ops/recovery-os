@@ -45,7 +45,7 @@ export function Channels() {
   const ticker = tArr<string>("channels.ticker");
 
   return (
-    <section id="channels" className="relative scroll-mt-20 overflow-hidden bg-zinc-950 py-20 sm:py-28">
+    <section id="channels" className="relative scroll-mt-20 overflow-hidden bg-cf-deep/70 py-20 sm:py-28">
       <GoldenStream density={0.5} />
       <div
         aria-hidden="true"

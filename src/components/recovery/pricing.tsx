@@ -25,7 +25,7 @@ export function Pricing() {
   }>("pricing.plans");
 
   return (
-    <section id="pricing" className="relative scroll-mt-20 overflow-hidden bg-zinc-950 py-20 sm:py-28">
+    <section id="pricing" className="relative scroll-mt-20 overflow-hidden bg-cf-deep/70 py-20 sm:py-28">
       <GoldenStream density={0.45} />
       <div
         aria-hidden="true"

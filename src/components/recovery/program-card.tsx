@@ -23,7 +23,7 @@ export function VerificationBadge({ program }: { program: Program }) {
       className={`gap-1 border-amber-400/30 px-2 py-0.5 text-[11px] font-medium ${
         verified
           ? "bg-amber-400/10 text-amber-200"
-          : "bg-zinc-800/80 text-zinc-400"
+          : "bg-cf-raised/80 text-zinc-400"
       }`}
       title={verified ? t("civic.search.verified") : t("civic.search.autoExtracted")}
     >
@@ -53,7 +53,7 @@ export function ProgramCard({
     <Card className="panel-black h-full transition-colors hover:border-amber-400/30">
       <CardContent className="flex h-full flex-col p-5">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge className="bg-zinc-800/80 font-medium text-zinc-300 hover:bg-zinc-800/80">
+          <Badge className="bg-cf-raised/80 font-medium text-zinc-300 hover:bg-cf-raised/80">
             {program.country} · {program.jurisdiction}
           </Badge>
           <VerificationBadge program={program} />

@@ -165,7 +165,7 @@ export function Library() {
   }, [result]);
 
   return (
-    <section id="library" className="relative scroll-mt-20 overflow-hidden bg-zinc-950 py-20 sm:py-28">
+    <section id="library" className="relative scroll-mt-20 overflow-hidden bg-cf-deep/70 py-20 sm:py-28">
       <div
         aria-hidden="true"
         className="aurora-drift pointer-events-none absolute inset-0"
@@ -219,7 +219,7 @@ export function Library() {
                 live: false,
               },
             ].map((s, i) => (
-              <div key={statItems[i]?.label ?? i} className="relative bg-[#0a0a0c] p-5">
+              <div key={statItems[i]?.label ?? i} className="relative bg-cf-base/80 p-5">
                 <div className="tabular text-3xl font-bold tracking-tight text-gradient-gold">
                   <CountUp to={s.value} format={s.format} delay={0.15 + i * 0.1} ssrValue />
                 </div>
@@ -271,7 +271,7 @@ export function Library() {
                   {t("library.searchTitle")}{" "}
                   <span className="text-gradient-gold">{t("library.searchTitleGold")}</span>
                 </h3>
-                <span className="inline-flex shrink-0 items-center gap-2 rounded-full border border-amber-400/25 bg-black px-3 py-1 text-[11px] font-medium text-amber-200/80">
+                <span className="inline-flex shrink-0 items-center gap-2 rounded-full border border-amber-400/25 bg-cf-deep/85 px-3 py-1 text-[11px] font-medium text-amber-200/80">
                   <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-amber-400" aria-hidden="true" />
                   <LiveClock />
                 </span>
@@ -289,7 +289,7 @@ export function Library() {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder={t("library.namePlaceholder")}
-                  className="mt-2 h-11 border-amber-400/20 bg-[#050506] text-white placeholder:text-zinc-600 focus-visible:ring-amber-400"
+                  className="mt-2 h-11 border-amber-400/20 bg-cf-deep/90 text-white placeholder:text-zinc-600 focus-visible:ring-amber-400"
                 />
               </div>
 
@@ -310,7 +310,7 @@ export function Library() {
                       value={pickerQuery}
                       onChange={(e) => setPickerQuery(e.target.value)}
                       placeholder={t("library.pickerPlaceholder", { count: WORLD_COUNTRIES.length })}
-                      className="h-10 border-amber-400/15 bg-[#050506] pl-9 text-sm text-white placeholder:text-zinc-600 focus-visible:ring-amber-400"
+                      className="h-10 border-amber-400/15 bg-cf-deep/90 pl-9 text-sm text-white placeholder:text-zinc-600 focus-visible:ring-amber-400"
                     />
                   </div>
                   <div className="mt-3 flex flex-wrap gap-1.5">
@@ -324,7 +324,7 @@ export function Library() {
                           className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-all ${
                             active
                               ? "border-amber-400/60 bg-amber-400/15 text-amber-200"
-                              : "border-amber-400/[0.14] bg-black text-amber-200/50 hover:border-amber-400/45 hover:text-amber-200"
+                              : "border-amber-400/[0.14] bg-cf-deep/85 text-amber-200/50 hover:border-amber-400/45 hover:text-amber-200"
                           }`}
                         >
                           <span aria-hidden="true">{c.flag}</span>
@@ -369,7 +369,7 @@ export function Library() {
 
               {/* Results — the personal checklist */}
               {result && (
-                <div className="mt-6 rounded-xl border border-amber-400/25 bg-[#050506] p-5 sm:p-6">
+                <div className="mt-6 rounded-xl border border-amber-400/25 bg-cf-deep/90 p-5 sm:p-6">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="flex items-center gap-2 text-sm font-semibold text-amber-300">
@@ -457,7 +457,7 @@ export function Library() {
         {/* ------------------------------------------------ REGION TABS */}
         <Reveal delay={0.1} className="mt-14">
           <div
-            className="inline-flex flex-wrap rounded-full border border-amber-400/[0.18] bg-black p-1"
+            className="inline-flex flex-wrap rounded-full border border-amber-400/[0.18] bg-cf-deep/85 p-1"
             role="tablist"
             aria-label={t("library.regionsAriaLabel")}
           >
@@ -644,7 +644,7 @@ export function Library() {
 
       {/* ------------------------------------------------ COUNTRY DETAIL DIALOG */}
       <Dialog open={openCountry !== null} onOpenChange={(o) => !o && setOpenCountry(null)}>
-        <DialogContent className="max-h-[85vh] max-w-2xl overflow-y-auto border-amber-400/[0.16] bg-[#0a0a0c] text-zinc-100">
+        <DialogContent className="max-h-[85vh] max-w-2xl overflow-y-auto border-amber-400/[0.16] bg-cf-base/80 text-zinc-100">
           {openCountry && (
             <>
               <DialogHeader>
@@ -706,7 +706,7 @@ export function Library() {
                           </a>
                         )}
                       </div>
-                      <p className="mt-3 rounded-lg border border-amber-400/[0.10] bg-black px-3 py-2 text-xs leading-relaxed text-zinc-500">
+                      <p className="mt-3 rounded-lg border border-amber-400/[0.10] bg-cf-deep/85 px-3 py-2 text-xs leading-relaxed text-zinc-500">
                         {s.note}
                       </p>
                     </div>

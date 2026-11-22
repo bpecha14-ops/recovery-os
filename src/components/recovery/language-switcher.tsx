@@ -35,7 +35,7 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
       <DropdownMenuContent
         align="end"
         sideOffset={8}
-        className="max-h-[22rem] w-52 overflow-y-auto border-amber-400/25 bg-zinc-950/98 backdrop-blur-xl"
+        className="max-h-[22rem] w-52 overflow-y-auto border-amber-400/25 bg-cf-deep/98 backdrop-blur-xl"
       >
         {LOCALES.map((l) => (
           <DropdownMenuItem

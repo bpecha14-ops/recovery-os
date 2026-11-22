@@ -17,7 +17,7 @@ function ChunkPlaceholder({ minHeight }: { minHeight: number }) {
   return (
     <div
       aria-hidden="true"
-      className="relative overflow-hidden bg-zinc-950"
+      className="relative overflow-hidden bg-cf-deep/70"
       style={{ minHeight }}
     >
       <div className="absolute inset-0 animate-pulse bg-gradient-to-b from-transparent via-amber-400/[0.03] to-transparent" />

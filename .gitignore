@@ -71,3 +71,4 @@ upload/
 .vercel-token
 prod.log
 dev.log
+.tmp-bg/

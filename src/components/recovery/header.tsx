@@ -31,7 +31,7 @@ export function Header() {
   const navLabels = tArr<string>("header.nav");
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-amber-400/[0.10] bg-[#0a0a0c]">
+    <header className="sticky top-0 z-50 w-full border-b border-amber-400/[0.10] bg-cf-base/80">
       {/* Gold scroll progress — quiet luxury detail */}
       <motion.div
         aria-hidden="true"
@@ -84,7 +84,7 @@ export function Header() {
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="w-72 border-amber-400/[0.16] bg-[#0a0a0c] text-zinc-100"
+              className="w-72 border-amber-400/[0.16] bg-cf-base/80 text-zinc-100"
             >
               <SheetTitle className="text-left text-white">
                 CivicClaim <span className="text-amber-400">OS</span>

@@ -48,7 +48,7 @@ export function GlobalSearch({
   }, [country, category, query]);
 
   return (
-    <section id="search" className="relative scroll-mt-20 bg-zinc-950 py-20 sm:py-28">
+    <section id="search" className="relative scroll-mt-20 bg-cf-deep/70 py-20 sm:py-28">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal className="max-w-3xl">
           <p className="flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.2em] text-amber-400/90">
@@ -72,10 +72,10 @@ export function GlobalSearch({
                 {t("civic.search.country")}
               </label>
               <Select value={country} onValueChange={setCountry}>
-                <SelectTrigger id="search-country" className="w-full border-amber-400/20 bg-zinc-900/60 text-zinc-200">
+                <SelectTrigger id="search-country" className="w-full border-amber-400/20 bg-cf-base/60 text-zinc-200">
                   <SelectValue placeholder={t("civic.search.country")} />
                 </SelectTrigger>
-                <SelectContent className="border-amber-400/20 bg-zinc-900 text-zinc-200">
+                <SelectContent className="border-amber-400/20 bg-cf-base/75 text-zinc-200">
                   <SelectItem value="all">{t("civic.search.allCountries")}</SelectItem>
                   {COUNTRIES.map((c) => (
                     <SelectItem key={c} value={c}>
@@ -90,10 +90,10 @@ export function GlobalSearch({
                 {t("civic.search.category")}
               </label>
               <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger id="search-category" className="w-full border-amber-400/20 bg-zinc-900/60 text-zinc-200">
+                <SelectTrigger id="search-category" className="w-full border-amber-400/20 bg-cf-base/60 text-zinc-200">
                   <SelectValue placeholder={t("civic.search.category")} />
                 </SelectTrigger>
-                <SelectContent className="border-amber-400/20 bg-zinc-900 text-zinc-200">
+                <SelectContent className="border-amber-400/20 bg-cf-base/75 text-zinc-200">
                   <SelectItem value="all">{t("civic.search.allCategories")}</SelectItem>
                   {CATEGORY_VALUES.map((c) => (
                     <SelectItem key={c} value={c}>
@@ -112,7 +112,7 @@ export function GlobalSearch({
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={t("civic.search.searchPlaceholder")}
-                className="w-full border-amber-400/20 bg-zinc-900/60 text-zinc-200 placeholder:text-zinc-500"
+                className="w-full border-amber-400/20 bg-cf-base/60 text-zinc-200 placeholder:text-zinc-500"
               />
             </div>
             {(country !== "all" || category !== "all" || query) && (

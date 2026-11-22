@@ -14,7 +14,7 @@ export function Faq() {
   const faqs = tArr<{ question: string; answer: string }>("faq.items");
 
   return (
-    <section id="faq" className="relative scroll-mt-20 overflow-hidden bg-zinc-950 py-20 sm:py-28">
+    <section id="faq" className="relative scroll-mt-20 overflow-hidden bg-cf-deep/70 py-20 sm:py-28">
       <GoldenStream density={0.35} />
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <Reveal className="text-center">

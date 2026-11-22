@@ -24,7 +24,7 @@ export function Hero() {
   const { t, tArr } = useI18n();
   const tickerItems = tArr<string>("hero.ticker");
   return (
-    <section className="relative overflow-hidden bg-zinc-950 pb-20 pt-28 text-white sm:pb-28 sm:pt-36">
+    <section className="relative overflow-hidden bg-cf-deep/70 pb-20 pt-28 text-white sm:pb-28 sm:pt-36">
       {/* Layered depth: aurora glows → engineering grid → particle stream */}
       <div
         aria-hidden="true"
@@ -106,7 +106,7 @@ export function Hero() {
             <Button
               size="lg"
               variant="outline"
-              className="h-12 w-full border-amber-400/35 bg-black px-7 text-base text-amber-200 transition-all hover:border-amber-400/70 hover:bg-amber-400/10 hover:text-amber-100 hover:shadow-[0_0_32px_-12px_rgba(251,191,36,0.5)] sm:w-auto"
+              className="h-12 w-full border-amber-400/35 bg-cf-deep/85 px-7 text-base text-amber-200 transition-all hover:border-amber-400/70 hover:bg-amber-400/10 hover:text-amber-100 hover:shadow-[0_0_32px_-12px_rgba(251,191,36,0.5)] sm:w-auto"
             >
               {t("hero.ctaLibrary")}
             </Button>
@@ -138,7 +138,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...spring, delay: 0.58 }}
-          className="relative mx-auto mt-10 flex max-w-3xl items-start gap-3 overflow-hidden rounded-xl border border-amber-400/25 bg-black px-4 py-3 text-sm text-amber-200/90"
+          className="relative mx-auto mt-10 flex max-w-3xl items-start gap-3 overflow-hidden rounded-xl border border-amber-400/25 bg-cf-deep/85 px-4 py-3 text-sm text-amber-200/90"
           role="note"
         >
           <div
@@ -169,7 +169,7 @@ export function Hero() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ ...spring, delay: i * 0.08 }}
-              className="relative bg-[#0a0a0c] p-5 sm:p-6"
+              className="relative bg-cf-base/80 p-5 sm:p-6"
             >
               <div
                 className={`tabular text-3xl font-bold tracking-tight sm:text-4xl ${

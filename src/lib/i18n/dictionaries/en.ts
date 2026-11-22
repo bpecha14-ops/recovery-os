@@ -17,6 +17,7 @@ import guide from "./sections/guide";
 import civic from "./sections/civic";
 import tools from "./sections/tools";
 import business from "./sections/business";
+import site from "./sections/site";
 
 /**
  * The English dictionary is the source of truth: every other locale file
@@ -42,6 +43,7 @@ export const en = {
   civic,
   tools,
   business,
+  site,
 };
 
 export type Dictionary = typeof en;

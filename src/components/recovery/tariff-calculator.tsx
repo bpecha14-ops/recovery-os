@@ -46,7 +46,7 @@ export function TariffCalculator() {
   }, []);
 
   return (
-    <section id="ieepa" className="relative scroll-mt-20 overflow-hidden bg-zinc-950 py-16 text-white sm:py-24">
+    <section id="ieepa" className="relative scroll-mt-20 overflow-hidden bg-cf-deep/70 py-16 text-white sm:py-24">
       <GoldenStream density={0.5} />
       <div
         aria-hidden="true"
@@ -126,7 +126,7 @@ export function TariffCalculator() {
                     min="0"
                     value={principal}
                     onChange={(e) => setPrincipal(e.target.value)}
-                    className="tabular border-amber-400/[0.16] bg-[#050506] text-amber-100 focus-visible:ring-amber-400/50"
+                    className="tabular border-amber-400/[0.16] bg-cf-deep/90 text-amber-100 focus-visible:ring-amber-400/50"
                   />
                 </div>
                 <div className="space-y-2">
@@ -136,7 +136,7 @@ export function TariffCalculator() {
                     type="date"
                     value={lastPayDate}
                     onChange={(e) => setLastPayDate(e.target.value)}
-                    className="border-amber-400/[0.16] bg-[#050506] text-amber-100 focus-visible:ring-amber-400/50"
+                    className="border-amber-400/[0.16] bg-cf-deep/90 text-amber-100 focus-visible:ring-amber-400/50"
                   />
                 </div>
                 <div className="space-y-2">
@@ -148,7 +148,7 @@ export function TariffCalculator() {
                     min="0"
                     value={ratePct}
                     onChange={(e) => setRatePct(e.target.value)}
-                    className="tabular border-amber-400/[0.16] bg-[#050506] text-amber-100 focus-visible:ring-amber-400/50"
+                    className="tabular border-amber-400/[0.16] bg-cf-deep/90 text-amber-100 focus-visible:ring-amber-400/50"
                   />
                 </div>
                 <div className="flex items-center gap-2 sm:col-span-2">
@@ -186,7 +186,7 @@ export function TariffCalculator() {
                 </div>
               </div>
 
-              <div className="mt-4 flex flex-wrap items-center justify-center gap-2 rounded-lg border border-amber-400/[0.14] bg-black px-3 py-2">
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-2 rounded-lg border border-amber-400/[0.14] bg-cf-deep/85 px-3 py-2">
                 <Timer className="h-3.5 w-3.5 shrink-0 text-amber-400" aria-hidden="true" />
                 <p className="text-xs text-zinc-400">
                   {t("ieepa.dripLine")}{" "}
