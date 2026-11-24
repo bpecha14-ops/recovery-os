@@ -323,10 +323,13 @@
 }
 
 /* ---------------------------------------------------------------------------
- * AMBIENT BACKGROUND — five full-bleed slides, CSS-only crossfade + Ken Burns.
- * 50s cycle, each slide holds 10s with a 1.5s crossfade overlap (3% of 50s).
- * Slide 2–5 images are attached only after [data-loaded] so first paint
- * downloads slide 1 alone; total payload stays under the 2MB budget.
+ * AMBIENT BACKGROUND v2 — "Civic Aurora".
+ * Fully procedural: zero image requests, so no stale cached file can ever
+ * overlay a fresh deploy. Grammar borrowed from the best product sites:
+ * light-well base → drifting aurora blobs → rotating conic prism veil →
+ * living canvas particles (sparks / stars / comets) → film grain → a much
+ * lighter scrim than v1, so the light actually reads as VIVID, not murky.
+ * Every layer animates transform/opacity only — no layout, no paint loops.
  * ------------------------------------------------------------------------- */
 .ambient-root {
   position: fixed;
@@ -335,72 +338,190 @@
   overflow: hidden;
   background: #060B18;
   pointer-events: none;
+  contain: strict;
 }
-.ambient-slide {
+
+/* L1 — deep navy light-well: directional depth, never flat black. */
+.ambient-base {
   position: absolute;
   inset: 0;
-  background-size: cover;
-  background-position: center;
-  opacity: 0;
-  will-change: transform, opacity;
-  animation:
-    ambient-fade 50s linear infinite,
-    ambient-drift 12s ease-in-out infinite alternate;
-  animation-delay: calc(var(--slide-i) * 10s), calc(var(--slide-i) * 3s);
-  animation-fill-mode: both, both;
+  background: radial-gradient(
+    120% 85% at 50% -10%,
+    #10204a 0%,
+    #0a1428 32%,
+    #060B18 60%,
+    #03060f 100%
+  );
 }
-@keyframes ambient-fade {
-  0% { opacity: 0; }
-  3% { opacity: 1; }
-  20% { opacity: 1; }
-  23% { opacity: 0; }
-  100% { opacity: 0; }
+
+/* L2 — aurora blobs: soft-edged radial light, each on its own slow orbit. */
+.ambient-blob {
+  position: absolute;
+  border-radius: 9999px;
+  will-change: transform;
 }
-@keyframes ambient-drift {
-  from { transform: scale(1); }
-  to { transform: scale(1.06); }
+.ambient-blob--gold {
+  width: 62vw;
+  height: 62vw;
+  max-width: 1000px;
+  max-height: 1000px;
+  left: -16%;
+  top: -22%;
+  background: radial-gradient(
+    circle,
+    rgba(217, 164, 65, 0.26) 0%,
+    rgba(217, 164, 65, 0.10) 38%,
+    rgba(0, 0, 0, 0) 68%
+  );
+  animation: blob-orbit-a 38s ease-in-out infinite alternate;
 }
-/* Radial vignette — edges darker than the center where content sits. */
+.ambient-blob--cyan {
+  width: 58vw;
+  height: 58vw;
+  max-width: 940px;
+  max-height: 940px;
+  right: -20%;
+  top: -8%;
+  background: radial-gradient(
+    circle,
+    rgba(56, 189, 248, 0.22) 0%,
+    rgba(56, 189, 248, 0.08) 40%,
+    rgba(0, 0, 0, 0) 70%
+  );
+  animation: blob-orbit-b 46s ease-in-out infinite alternate;
+}
+.ambient-blob--teal {
+  width: 52vw;
+  height: 52vw;
+  max-width: 860px;
+  max-height: 860px;
+  left: 4%;
+  bottom: -26%;
+  background: radial-gradient(
+    circle,
+    rgba(45, 212, 191, 0.17) 0%,
+    rgba(45, 212, 191, 0.06) 42%,
+    rgba(0, 0, 0, 0) 72%
+  );
+  animation: blob-orbit-c 54s ease-in-out infinite alternate;
+}
+@keyframes blob-orbit-a {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(14vw, 9vh, 0) scale(1.14); }
+}
+@keyframes blob-orbit-b {
+  from { transform: translate3d(0, 0, 0) scale(1.08); }
+  to { transform: translate3d(-12vw, 13vh, 0) scale(0.94); }
+}
+@keyframes blob-orbit-c {
+  from { transform: translate3d(0, 0, 0) scale(0.96); }
+  to { transform: translate3d(18vw, -10vh, 0) scale(1.12); }
+}
+
+/* L3 — conic prism veil: a slow rotating wash that ties the palette
+   together. Oversized (inset -60%) so rotation never exposes a corner. */
+.ambient-prism {
+  position: absolute;
+  inset: -60%;
+  opacity: 0.6;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    rgba(217, 164, 65, 0.12) 0deg,
+    rgba(56, 189, 248, 0.12) 90deg,
+    rgba(45, 212, 191, 0.10) 180deg,
+    rgba(21, 43, 92, 0.12) 270deg,
+    rgba(217, 164, 65, 0.12) 360deg
+  );
+  animation: prism-spin 110s linear infinite;
+  will-change: transform;
+}
+@keyframes prism-spin {
+  to { transform: rotate(1turn); }
+}
+
+/* L4 — living particles canvas (sparks, stars, comets) — see the TSX. */
+.ambient-particles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* L5 — film grain: one 140px fractal-noise tile, barely-there opacity. */
+.ambient-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 140px 140px;
+}
+
+/* L6 — readability: soft vignette + a light scrim. Panels carry their own
+   contrast (rgba 0.72 navy), so the page stays vivid instead of murky. */
 .ambient-vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(120% 90% at 50% 40%, transparent 40%, rgba(6, 11, 24, 0.55) 100%);
+  background: radial-gradient(120% 90% at 50% 40%, transparent 40%, rgba(3, 6, 16, 0.52) 100%);
 }
-/* Flat scrim — guarantees >= 4.5:1 body-text contrast on the brightest slide. */
 .ambient-scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(6, 11, 24, 0.66), rgba(6, 11, 24, 0.78));
+  background: linear-gradient(180deg, rgba(6, 11, 24, 0.30), rgba(6, 11, 24, 0.46));
 }
-/* Tab hidden → freeze the rotation (Page Visibility API adds this class). */
-.ambient-root[data-paused="true"] .ambient-slide {
-  animation-play-state: paused;
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-blob,
+  .ambient-prism {
+    animation: none;
+  }
 }
-/* Slide images — desktop full-bleed, lighter mobile variants under 768px. */
-.ambient-s1[data-loaded] { background-image: url("/backgrounds/s1-ledger.webp"); }
-.ambient-s2[data-loaded] { background-image: url("/backgrounds/s2-verified-flow.webp"); }
-.ambient-s3[data-loaded] { background-image: url("/backgrounds/s3-open-map.webp"); }
-.ambient-s4[data-loaded] { background-image: url("/backgrounds/s4-signature.webp"); }
-.ambient-s5[data-loaded] { background-image: url("/backgrounds/s5-ground-home.webp"); }
-@media (max-width: 767px) {
-  .ambient-s1[data-loaded] { background-image: url("/backgrounds/s1-ledger-m.webp"); }
-  .ambient-s2[data-loaded] { background-image: url("/backgrounds/s2-verified-flow-m.webp"); }
-  .ambient-s3[data-loaded] { background-image: url("/backgrounds/s3-open-map-m.webp"); }
-  .ambient-s4[data-loaded] { background-image: url("/backgrounds/s4-signature-m.webp"); }
-  .ambient-s5[data-loaded] { background-image: url("/backgrounds/s5-ground-home-m.webp"); }
+
+/* Prism headline — the flowing civic spectrum, applied to display titles. */
+.text-prism {
+  background: linear-gradient(
+    115deg,
+    #f7e9c4 0%,
+    #e7c77e 18%,
+    #d9a441 38%,
+    #f7e9c4 50%,
+    #2dd4bf 66%,
+    #38bdf8 82%,
+    #f7e9c4 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: prism-flow 9s ease-in-out infinite;
+}
+@keyframes prism-flow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ambient-slide {
+  .text-prism {
     animation: none;
-    opacity: 0;
+    background: linear-gradient(115deg, #f7e9c4, #e7c77e 45%, #d9a441);
+    -webkit-background-clip: text;
+    background-clip: text;
   }
-  .ambient-s1 {
-    opacity: 1;
-    background-image: url("/backgrounds/s1-ledger.webp");
-  }
-  @media (max-width: 767px) {
-    .ambient-s1 { background-image: url("/backgrounds/s1-ledger-m.webp"); }
-  }
+}
+
+/* Hero glow — a wide breathing halo behind the headline. */
+.hero-glow {
+  position: absolute;
+  inset-inline: 0;
+  top: -32%;
+  height: 82%;
+  background: radial-gradient(
+    46% 52% at 50% 42%,
+    rgba(217, 164, 65, 0.20) 0%,
+    rgba(56, 189, 248, 0.08) 45%,
+    rgba(0, 0, 0, 0) 72%
+  );
+  animation: aurora-drift 14s ease-in-out infinite;
+  will-change: transform;
+  pointer-events: none;
 }
 
 /* ---------------------------------------------------------------------------

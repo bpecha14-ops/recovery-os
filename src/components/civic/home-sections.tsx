@@ -56,7 +56,9 @@ function Hero() {
 
   return (
     <section className="relative pb-16 pt-20 sm:pb-24 sm:pt-28">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+      {/* Breathing halo behind the headline — pure light, no layout cost. */}
+      <div className="hero-glow" aria-hidden="true" />
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
         <div className="mx-auto max-w-3xl text-center">
           <motion.h1
             initial={{ opacity: 0, y: 24 }}
@@ -64,13 +66,13 @@ function Hero() {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="text-balance text-4xl font-bold leading-[1.06] tracking-tight text-zinc-50 sm:text-6xl"
           >
-            {t("site.home.hero.title")}
+            <span className="text-prism">{t("site.home.hero.title")}</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-            className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-zinc-300"
+            className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-zinc-200"
           >
             {t("site.home.hero.subtitle")}
           </motion.p>
@@ -83,7 +85,7 @@ function Hero() {
             <Button
               asChild
               size="lg"
-              className="h-12 w-full border border-cf-cyan/50 bg-cf-cyan/15 px-7 text-base font-semibold text-cf-cyan transition-all hover:bg-cf-cyan/25 hover:text-white sm:w-auto"
+              className="btn-shimmer h-12 w-full border border-amber-300/40 bg-gradient-to-b from-amber-300 to-amber-500 px-7 text-base font-semibold text-cf-deep shadow-[0_10px_36px_-12px_rgba(217,164,65,0.65)] transition-all hover:from-amber-200 hover:to-amber-400 hover:shadow-[0_14px_44px_-12px_rgba(217,164,65,0.8)] sm:w-auto"
             >
               <Link href="/tools">
                 {t("site.home.hero.ctaPrimary")}
@@ -94,7 +96,7 @@ function Hero() {
               asChild
               size="lg"
               variant="outline"
-              className="h-12 w-full border-cf-line bg-cf-deep/60 px-7 text-base text-zinc-200 transition-colors hover:border-cf-gold/40 hover:text-amber-200 sm:w-auto"
+              className="h-12 w-full border-cf-line bg-cf-deep/60 px-7 text-base text-zinc-200 transition-all hover:border-cf-cyan/50 hover:bg-cf-cyan/10 hover:text-white sm:w-auto"
             >
               <Link href="/coverage">{t("site.home.hero.ctaSecondary")}</Link>
             </Button>
@@ -103,7 +105,7 @@ function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.35 }}
-            className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-zinc-400"
+            className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-zinc-300"
           >
             {trust.map((item, i) => {
               const Icon = trustIcons[i] ?? ShieldCheck;
