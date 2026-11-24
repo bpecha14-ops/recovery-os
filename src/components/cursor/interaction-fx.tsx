@@ -70,34 +70,42 @@ export function InteractionFX() {
     let trx = 0;
     let tryY = 0;
     let engaged = false;
+    let needsSnap = false;
 
     const applyGlow = () => {
       const root = rootRef.current;
       const gold = goldRef.current as Halo;
       const cyan = cyanRef.current as Halo;
       const core = coreRef.current as Halo;
-      if (!gold || !cyan || !core) return;
-      if (pointerIn) {
-        gx += (pointerX - gx) * 0.14;
-        gy += (pointerY - gy) * 0.14;
-        cx += (pointerX - cx) * 0.42;
-        cy += (pointerY - cy) * 0.42;
+      if (!gold || !cyan || !core) return pointerIn;
+      if (root) root.classList.toggle("is-on", pointerIn);
+      if (!pointerIn) return false;
+      // Settled: everything parked within half a pixel — the loop can
+      // sleep until the next pointermove (one forced write on entry so
+      // a teleporting pointer never leaves the halo behind).
+      if (needsSnap) needsSnap = false;
+      else {
+        const parked =
+          Math.abs(pointerX - gx) < 0.5 &&
+          Math.abs(pointerY - gy) < 0.5 &&
+          Math.abs((interactive ? 1.45 : 1) - scale) < 0.03;
+        if (parked) return false;
       }
+      gx += (pointerX - gx) * 0.14;
+      gy += (pointerY - gy) * 0.14;
+      cx += (pointerX - cx) * 0.42;
+      cy += (pointerY - cy) * 0.42;
       scale += ((interactive ? 1.45 : 1) - scale) * 0.16;
       gold.style.transform = `translate3d(${gx}px, ${gy}px, 0) scale(${scale.toFixed(3)})`;
       cyan.style.transform = `translate3d(${gx}px, ${gy}px, 0) scale(${scale.toFixed(3)})`;
       core.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
-      if (root) {
-        root.classList.toggle("is-on", pointerIn);
-        root.classList.toggle("is-interactive", interactive);
-      }
+      if (root) root.classList.toggle("is-interactive", interactive);
+      return true;
     };
 
     const tick = () => {
       raf = 0;
-      let busy = pointerIn;
-
-      applyGlow();
+      let busy = applyGlow();
 
       if (card) {
         rx += (trx - rx) * 0.2;
@@ -129,6 +137,7 @@ export function InteractionFX() {
         pointerIn = true;
         gx = cx = pointerX;
         gy = cy = pointerY;
+        needsSnap = true;
       }
       const target = e.target as Element | null;
       interactive = !!target?.closest?.(INTERACTIVE_SEL);

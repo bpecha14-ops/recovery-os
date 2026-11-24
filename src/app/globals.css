@@ -323,155 +323,118 @@
 }
 
 /* ---------------------------------------------------------------------------
- * AMBIENT BACKGROUND v2 — "Civic Aurora".
- * Fully procedural: zero image requests, so no stale cached file can ever
- * overlay a fresh deploy. Grammar borrowed from the best product sites:
- * light-well base → drifting aurora blobs → rotating conic prism veil →
- * living canvas particles (sparks / stars / comets) → film grain → a much
- * lighter scrim than v1, so the light actually reads as VIVID, not murky.
- * Every layer animates transform/opacity only — no layout, no paint loops.
+ * AMBIENT BACKGROUND v3 — "Sunset City".
+ * A real golden-hour Los Angeles panorama (public/city-sunset.jpg) alive
+ * across the whole viewport: ken-burns drift inside a scroll-parallax
+ * wrapper, a breathing sun glow, a canvas of twinkling city lights, warm
+ * haze and bird flocks, film grain, and navy readability scrims. All
+ * layers animate transform/opacity only. If the photo is ever replaced,
+ * ship it under a NEW filename so no stale cache can overlay a deploy.
  * ------------------------------------------------------------------------- */
-.ambient-root {
+.city-root {
   position: fixed;
   inset: 0;
   z-index: 0;
   overflow: hidden;
-  background: #060B18;
+  background: #060b18; /* loading floor under the photo */
   pointer-events: none;
   contain: strict;
 }
 
-/* L1 — deep navy light-well: directional depth, never flat black. */
-.ambient-base {
+/* Parallax wrapper — transform written by JS (scroll listener, clamped). */
+.city-parallax {
+  position: absolute;
+  inset: -6% 0; /* headroom so the drift never exposes an edge */
+  will-change: transform;
+}
+
+/* The photo — slow ken-burns: zoom + diagonal drift, 70s each way. */
+.city-photo {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    120% 85% at 50% -10%,
-    #10204a 0%,
-    #0a1428 32%,
-    #060B18 60%,
-    #03060f 100%
-  );
+  background-image: url("/city-sunset.jpg");
+  background-size: cover;
+  background-position: center 38%;
+  will-change: transform;
+  animation: city-kenburns 70s ease-in-out infinite alternate;
+}
+@keyframes city-kenburns {
+  from {
+    transform: scale(1.08) translate3d(-1.6%, 0.8%, 0);
+  }
+  to {
+    transform: scale(1.17) translate3d(1.8%, -1.4%, 0);
+  }
 }
 
-/* L2 — aurora blobs: soft-edged radial light, each on its own slow orbit. */
-.ambient-blob {
+/* The sun — a warm breathing glow across the horizon band. */
+.city-sunglow {
   position: absolute;
-  border-radius: 9999px;
-  will-change: transform;
-}
-.ambient-blob--gold {
-  width: 62vw;
-  height: 62vw;
-  max-width: 1000px;
-  max-height: 1000px;
-  left: -16%;
-  top: -22%;
+  left: 0;
+  right: 0;
+  top: 46%;
+  height: 46%;
   background: radial-gradient(
-    circle,
-    rgba(217, 164, 65, 0.26) 0%,
-    rgba(217, 164, 65, 0.10) 38%,
-    rgba(0, 0, 0, 0) 68%
-  );
-  animation: blob-orbit-a 38s ease-in-out infinite alternate;
-}
-.ambient-blob--cyan {
-  width: 58vw;
-  height: 58vw;
-  max-width: 940px;
-  max-height: 940px;
-  right: -20%;
-  top: -8%;
-  background: radial-gradient(
-    circle,
-    rgba(56, 189, 248, 0.22) 0%,
-    rgba(56, 189, 248, 0.08) 40%,
+    58% 90% at 62% 88%,
+    rgba(255, 176, 84, 0.26) 0%,
+    rgba(255, 140, 66, 0.10) 38%,
     rgba(0, 0, 0, 0) 70%
   );
-  animation: blob-orbit-b 46s ease-in-out infinite alternate;
+  animation: city-breath 11s ease-in-out infinite alternate;
+  will-change: transform, opacity;
 }
-.ambient-blob--teal {
-  width: 52vw;
-  height: 52vw;
-  max-width: 860px;
-  max-height: 860px;
-  left: 4%;
-  bottom: -26%;
-  background: radial-gradient(
-    circle,
-    rgba(45, 212, 191, 0.17) 0%,
-    rgba(45, 212, 191, 0.06) 42%,
-    rgba(0, 0, 0, 0) 72%
-  );
-  animation: blob-orbit-c 54s ease-in-out infinite alternate;
-}
-@keyframes blob-orbit-a {
-  from { transform: translate3d(0, 0, 0) scale(1); }
-  to { transform: translate3d(14vw, 9vh, 0) scale(1.14); }
-}
-@keyframes blob-orbit-b {
-  from { transform: translate3d(0, 0, 0) scale(1.08); }
-  to { transform: translate3d(-12vw, 13vh, 0) scale(0.94); }
-}
-@keyframes blob-orbit-c {
-  from { transform: translate3d(0, 0, 0) scale(0.96); }
-  to { transform: translate3d(18vw, -10vh, 0) scale(1.12); }
+@keyframes city-breath {
+  from {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  to {
+    transform: scale(1.06) translateY(-1.5%);
+    opacity: 1;
+  }
 }
 
-/* L3 — conic prism veil: a slow rotating wash that ties the palette
-   together. Oversized (inset -60%) so rotation never exposes a corner. */
-.ambient-prism {
-  position: absolute;
-  inset: -60%;
-  opacity: 0.6;
-  background: conic-gradient(
-    from 0deg at 50% 50%,
-    rgba(217, 164, 65, 0.12) 0deg,
-    rgba(56, 189, 248, 0.12) 90deg,
-    rgba(45, 212, 191, 0.10) 180deg,
-    rgba(21, 43, 92, 0.12) 270deg,
-    rgba(217, 164, 65, 0.12) 360deg
-  );
-  animation: prism-spin 110s linear infinite;
-  will-change: transform;
-}
-@keyframes prism-spin {
-  to { transform: rotate(1turn); }
-}
-
-/* L4 — living particles canvas (sparks, stars, comets) — see the TSX. */
-.ambient-particles {
+/* Living canvas (lights, haze, birds) — see the TSX. */
+.city-living {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
 }
 
-/* L5 — film grain: one 140px fractal-noise tile, barely-there opacity. */
-.ambient-grain {
+/* Film grain: one 140px fractal-noise tile, barely-there opacity. */
+.city-grain {
   position: absolute;
   inset: 0;
-  opacity: 0.04;
+  opacity: 0.05;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
   background-size: 140px 140px;
 }
 
-/* L6 — readability: soft vignette + a light scrim. Panels carry their own
-   contrast (rgba 0.72 navy), so the page stays vivid instead of murky. */
-.ambient-vignette {
+/* Readability: an even navy veil plus stronger bands top (header/hero
+   text) and bottom (footer), then a vignette. The sunset still reads
+   through the middle band where the skyline lives. */
+.city-scrim {
   position: absolute;
   inset: 0;
-  background: radial-gradient(120% 90% at 50% 40%, transparent 40%, rgba(3, 6, 16, 0.52) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(6, 11, 24, 0.66) 0%,
+    rgba(6, 11, 24, 0.38) 30%,
+    rgba(6, 11, 24, 0.34) 58%,
+    rgba(6, 11, 24, 0.52) 78%,
+    rgba(4, 8, 18, 0.74) 100%
+  );
 }
-.ambient-scrim {
+.city-vignette {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(6, 11, 24, 0.30), rgba(6, 11, 24, 0.46));
+  background: radial-gradient(120% 92% at 50% 42%, transparent 42%, rgba(3, 6, 16, 0.5) 100%);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ambient-blob,
-  .ambient-prism {
+  .city-photo,
+  .city-sunglow {
     animation: none;
   }
 }
@@ -578,6 +541,116 @@
   }
 }
 
+/* ---------------------------------------------------------------------------
+ * GOLDIE — the drawn character (see components/recovery/goldie-face.tsx).
+ * Eyes/brows/mouth live in the TSX; this block drives the arms and the
+ * talking mouth. All animation is transform-only and reduced-motion-gated.
+ * ------------------------------------------------------------------------- */
+.goldie-face {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.goldie-brow {
+  fill: none;
+  stroke: #3a2410;
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: transform 0.3s ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.goldie-brows--curious .goldie-brow--r {
+  transform: rotate(-10deg) translateY(-1.5px);
+}
+.goldie-brows--drag .goldie-brow--l,
+.goldie-brows--drag .goldie-brow--r {
+  transform: translateY(-3px);
+}
+.goldie-brows--flee .goldie-brow--l {
+  transform: rotate(14deg) translateY(-1px);
+}
+.goldie-brows--flee .goldie-brow--r {
+  transform: rotate(-14deg) translateY(-1px);
+}
+
+/* Arms — absolutely positioned behind the coin, poking out at the sides. */
+.goldie-arms {
+  position: absolute;
+  left: -20%;
+  top: -6%;
+  width: 140%;
+  height: 112%;
+  pointer-events: none;
+}
+.goldie-arm {
+  will-change: transform;
+}
+.goldie-arms--idle .goldie-arm--l,
+.goldie-arms--curious .goldie-arm--l {
+  animation: arm-sway-l 3.2s ease-in-out infinite alternate;
+}
+.goldie-arms--idle .goldie-arm--r,
+.goldie-arms--curious .goldie-arm--r {
+  animation: arm-sway-r 3.2s ease-in-out infinite alternate;
+}
+.goldie-arms--talk .goldie-arm--l {
+  animation: arm-sway-l 2.2s ease-in-out infinite alternate;
+}
+.goldie-arms--talk .goldie-arm--r {
+  animation: arm-wave 0.7s ease-in-out infinite alternate;
+}
+.goldie-arms--drag .goldie-arm--l {
+  animation: arm-flail-l 0.24s linear infinite alternate;
+}
+.goldie-arms--drag .goldie-arm--r {
+  animation: arm-flail-r 0.24s linear infinite alternate;
+}
+.goldie-arms--flee .goldie-arm--l {
+  animation: arm-flail-l 0.34s linear infinite alternate;
+}
+.goldie-arms--flee .goldie-arm--r {
+  animation: arm-flail-r 0.34s linear infinite alternate;
+}
+@keyframes arm-sway-l {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(9deg); }
+}
+@keyframes arm-sway-r {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-9deg); }
+}
+@keyframes arm-wave {
+  from { transform: rotate(-16deg); }
+  to { transform: rotate(-58deg); }
+}
+@keyframes arm-flail-l {
+  from { transform: rotate(-34deg); }
+  to { transform: rotate(24deg); }
+}
+@keyframes arm-flail-r {
+  from { transform: rotate(34deg); }
+  to { transform: rotate(-24deg); }
+}
+
+/* Talking mouth — a soft yap. */
+.goldie-mouth--talk {
+  animation: goldie-yap 0.38s ease-in-out infinite alternate;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes goldie-yap {
+  from { transform: scaleY(0.55); }
+  to { transform: scaleY(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .goldie-arm,
+  .goldie-mouth--talk {
+    animation: none !important;
+  }
+}
+
 /* Prism headline — the flowing civic spectrum, applied to display titles. */
 .text-prism {
   background: linear-gradient(
@@ -631,7 +704,8 @@
  * art, no chrome, black on white.
  * ------------------------------------------------------------------------- */
 @media print {
-  .ambient-root,
+  .city-root,
+  .cursor-fx,
   .no-print {
     display: none !important;
   }

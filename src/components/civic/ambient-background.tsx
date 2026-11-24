@@ -3,37 +3,65 @@
 import { useEffect, useRef } from "react";
 
 /**
- * AmbientBackground — the Civic Futurism living backdrop, v2 "Civic Aurora".
+ * AmbientBackground — the living backdrop, v3 "Sunset City".
  *
- * Fully procedural: ZERO image requests. A deep navy light-well, three
- * drifting aurora blobs (gold / cyan / teal), a slowly rotating conic
- * prism veil, a canvas layer with data sparks, twinkling stars and the
- * occasional comet, and a film-grain finish — the same layered-aurora
- * grammar as the best product sites, in the Civic palette.
+ * A real golden-hour Los Angeles panorama (public/city-sunset.jpg, 1920×1080
+ * progressive JPEG, ~350KB) stretched across the whole viewport and kept
+ * ALIVE on top of it:
  *
- * Because nothing is an image, no cached file can ever overlay a stale
- * version after a deploy (the old crossfading-photo system is gone).
+ *   photo (slow ken-burns drift)  →  scroll parallax wrapper (JS)
+ *   breathing sun glow at the horizon
+ *   canvas: twinkling city lights + drifting warm haze + bird flocks
+ *   film grain + readability scrims (navy gradient, top/bottom bands)
  *
- * Performance contract:
- * - one canvas, DPR capped at 1.75, ~40 sparks + ~70 stars on desktop,
- *   roughly half on small screens;
- * - the rAF loop stops when the tab is hidden and never starts at all
- *   under prefers-reduced-motion (a single static star frame is drawn);
- * - all other layers are pure CSS transform/opacity animations — no
- *   layout, no paint, GPU-composited;
- * - nothing essential is ever rendered inside this layer (aria-hidden).
+ * Why a photo again (v2 was fully procedural): the request is a literally
+ * breathtaking city sunset — photographic depth wins. The stale-cache
+ * problem from v1 is avoided by a unique filename; if the file is ever
+ * replaced, ship it under a NEW name.
+ *
+ * Performance contract (same as v2):
+ * - one canvas, DPR capped at 1.75, rAF capped at ~40fps, loop paused when
+ *   the tab is hidden, nothing at all under prefers-reduced-motion except
+ *   one static light-twinkle frame;
+ * - photo + glow are GPU-composited CSS transform/opacity animations;
+ * - parallax is one passive scroll listener writing a transform at most
+ *   once per frame, clamped so it never runs away on long pages;
+ * - nothing essential lives here (aria-hidden).
  */
 
-const GOLD = "217, 164, 65";
-const CYAN = "56, 189, 248";
-const TEAL = "45, 212, 191";
-
-type Star = { x: number; y: number; r: number; phase: number; speed: number; c: string };
-type Spark = { x: number; y: number; r: number; vy: number; sway: number; phase: number; c: string; a: number };
-type Comet = { x: number; y: number; vx: number; vy: number; life: number; max: number };
+type Light = { x: number; y: number; r: number; phase: number; speed: number; warm: boolean };
+type Haze = { x: number; y: number; rx: number; ry: number; vx: number; a: number };
+type Bird = { x: number; y: number; vx: number; flap: number; size: number; phase: number };
 
 export function AmbientBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const parallaxRef = useRef<HTMLDivElement>(null);
+
+  // Scroll parallax: the city slides gently as you scroll (max ±110px,
+  // saturated after ~14 screens so it can never run away).
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const el = parallaxRef.current;
+    if (!el || reduced) return;
+    let raf = 0;
+    let pending = false;
+    const apply = () => {
+      pending = false;
+      const y = Math.min(window.scrollY * 0.08, 110);
+      el.style.transform = `translate3d(0, ${-y.toFixed(1)}px, 0)`;
+    };
+    const onScroll = () => {
+      if (!pending) {
+        pending = true;
+        raf = requestAnimationFrame(apply);
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -45,35 +73,31 @@ export function AmbientBackground() {
     let raf = 0;
     let w = 0;
     let h = 0;
-    let stars: Star[] = [];
-    let sparks: Spark[] = [];
-    let comet: Comet | null = null;
-    let nextCometAt = 0;
+    let lights: Light[] = [];
+    let haze: Haze[] = [];
+    let birds: Bird[] = [];
+    let nextFlockAt = 3;
 
     const rand = (min: number, max: number) => min + Math.random() * (max - min);
-    const palette = [GOLD, CYAN, TEAL, "248, 250, 252"];
 
     const seed = () => {
       const small = w < 768;
-      const starCount = small ? 42 : 78;
-      const sparkCount = small ? 18 : 34;
-      stars = Array.from({ length: starCount }, () => ({
+      // City lights live in the skyline band (bottom ~45% of the frame).
+      lights = Array.from({ length: small ? 26 : 56 }, () => ({
         x: Math.random() * w,
-        y: Math.random() * h,
-        r: rand(0.4, 1.5),
+        y: h * rand(0.62, 0.97),
+        r: rand(0.5, 1.6),
         phase: Math.random() * Math.PI * 2,
-        speed: rand(0.4, 1.4),
-        c: palette[(Math.random() * palette.length) | 0],
+        speed: rand(0.5, 1.8),
+        warm: Math.random() < 0.72,
       }));
-      sparks = Array.from({ length: sparkCount }, () => ({
+      haze = Array.from({ length: small ? 2 : 4 }, () => ({
         x: Math.random() * w,
-        y: Math.random() * h,
-        r: rand(0.6, 1.8),
-        vy: rand(6, 16), // px per second, upward
-        sway: rand(4, 14),
-        phase: Math.random() * Math.PI * 2,
-        c: Math.random() < 0.55 ? GOLD : CYAN,
-        a: rand(0.25, 0.7),
+        y: h * rand(0.55, 0.9),
+        rx: rand(0.22, 0.42) * w,
+        ry: rand(0.04, 0.09) * h,
+        vx: rand(6, 16) * (Math.random() < 0.5 ? -1 : 1),
+        a: rand(0.03, 0.07),
       }));
     };
 
@@ -90,74 +114,77 @@ export function AmbientBackground() {
       if (reduced) draw(0);
     };
 
-    const drawStar = (s: Star, alpha: number) => {
+    const drawBird = (b: Bird, t: number) => {
+      // Tiny "m" silhouette — two strokes whose angle beats with flap.
+      const s = b.size;
+      const beat = Math.sin(t * b.flap + b.phase);
+      const dy = beat * s * 0.55;
+      ctx.strokeStyle = "rgba(20, 14, 10, 0.62)";
+      ctx.lineWidth = Math.max(1, s * 0.16);
+      ctx.lineCap = "round";
       ctx.beginPath();
-      ctx.fillStyle = `rgba(${s.c}, ${alpha})`;
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.moveTo(b.x - s, b.y - dy);
+      ctx.quadraticCurveTo(b.x - s * 0.35, b.y + s * 0.18, b.x, b.y);
+      ctx.quadraticCurveTo(b.x + s * 0.35, b.y + s * 0.18, b.x + s, b.y - dy);
+      ctx.stroke();
     };
 
     const draw = (t: number) => {
       ctx.clearRect(0, 0, w, h);
+      const dt = 1 / 40;
 
-      // Stars — twinkle in place.
-      for (const s of stars) {
-        drawStar(s, 0.18 + 0.5 * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase)));
-      }
-
-      // Sparks — fine motes drifting upward with a gentle sway.
-      const dt = 1 / 60;
-      for (const p of sparks) {
-        p.y -= p.vy * dt;
-        p.x += Math.sin(t * 0.7 + p.phase) * p.sway * dt;
-        if (p.y < -4) {
-          p.y = h + 4;
-          p.x = Math.random() * w;
-        }
-        const tw = 0.6 + 0.4 * Math.sin(t * 1.6 + p.phase * 3);
-        drawStar({ ...p, r: p.r } as Star, p.a * tw);
-      }
-
-      // Comet — one at a time, every 9–17 seconds.
-      if (!comet && t > nextCometAt) {
-        const fromLeft = Math.random() < 0.5;
-        comet = {
-          x: fromLeft ? rand(-0.1, 0.2) * w : rand(0.8, 1.1) * w,
-          y: rand(0.04, 0.3) * h,
-          vx: (fromLeft ? 1 : -1) * rand(220, 320),
-          vy: rand(70, 120),
-          life: 0,
-          max: rand(1.1, 1.7),
-        };
-      }
-      if (comet) {
-        comet.life += dt;
-        const k = comet.life / comet.max;
-        const fade = k < 0.15 ? k / 0.15 : 1 - Math.max(0, (k - 0.6) / 0.4);
-        const tail = 110;
-        const nx = comet.vx / Math.hypot(comet.vx, comet.vy);
-        const ny = comet.vy / Math.hypot(comet.vx, comet.vy);
-        const grad = ctx.createLinearGradient(
-          comet.x, comet.y, comet.x - nx * tail, comet.y - ny * tail,
-        );
-        grad.addColorStop(0, `rgba(248, 250, 252, ${0.85 * fade})`);
-        grad.addColorStop(0.35, `rgba(${CYAN}, ${0.4 * fade})`);
-        grad.addColorStop(1, "rgba(56, 189, 248, 0)");
-        ctx.strokeStyle = grad;
-        ctx.lineWidth = 1.6;
-        ctx.lineCap = "round";
+      // City lights — warm glimmer over the skyline band.
+      for (const l of lights) {
+        const a = 0.14 + 0.4 * (0.5 + 0.5 * Math.sin(t * l.speed + l.phase));
         ctx.beginPath();
-        ctx.moveTo(comet.x, comet.y);
-        ctx.lineTo(comet.x - nx * tail, comet.y - ny * tail);
-        ctx.stroke();
-        drawStar({ x: comet.x, y: comet.y, r: 1.7, phase: 0, speed: 0, c: "248, 250, 252" }, 0.95 * fade);
-        comet.x += comet.vx * dt;
-        comet.y += comet.vy * dt;
-        if (comet.life >= comet.max || comet.y > h + 40 || comet.x < -60 || comet.x > w + 60) {
-          comet = null;
-          nextCometAt = t + rand(9, 17);
-        }
+        ctx.fillStyle = l.warm
+          ? `rgba(255, 199, 120, ${a.toFixed(3)})`
+          : `rgba(190, 227, 248, ${(a * 0.8).toFixed(3)})`;
+        ctx.arc(l.x, l.y, l.r, 0, Math.PI * 2);
+        ctx.fill();
       }
+
+      // Warm haze drifting sideways — the golden-hour smog glow.
+      for (const hz of haze) {
+        hz.x += hz.vx * dt;
+        if (hz.x - hz.rx > w) hz.x = -hz.rx;
+        if (hz.x + hz.rx < 0) hz.x = w + hz.rx;
+        const g = ctx.createRadialGradient(hz.x, hz.y, 0, hz.x, hz.y, hz.rx);
+        g.addColorStop(0, `rgba(233, 168, 84, ${hz.a})`);
+        g.addColorStop(1, "rgba(233, 168, 84, 0)");
+        ctx.save();
+        ctx.translate(hz.x, hz.y);
+        ctx.scale(1, hz.ry / hz.rx);
+        ctx.translate(-hz.x, -hz.y);
+        ctx.fillStyle = g;
+        ctx.fillRect(hz.x - hz.rx, hz.y - hz.rx, hz.rx * 2, hz.rx * 2);
+        ctx.restore();
+      }
+
+      // Bird flocks — a small "v" crosses the sky every 14–26s.
+      if (!birds.length && t > nextFlockAt) {
+        const fromLeft = Math.random() < 0.5;
+        const n = 3 + ((Math.random() * 4) | 0);
+        const baseY = h * rand(0.14, 0.42);
+        const vx = (fromLeft ? 1 : -1) * rand(70, 120);
+        birds = Array.from({ length: n }, (_, i) => ({
+          x: (fromLeft ? -30 : w + 30) + (fromLeft ? -1 : 1) * i * rand(18, 34),
+          y: baseY + (i % 2 === 0 ? 1 : -1) * i * rand(6, 16),
+          vx: vx * rand(0.92, 1.1),
+          flap: rand(9, 13),
+          size: rand(4.5, 8),
+          phase: Math.random() * Math.PI * 2,
+        }));
+      }
+      for (const b of birds) {
+        b.x += b.vx * dt;
+        b.y += Math.sin(t * 0.7 + b.phase) * 6 * dt;
+        drawBird(b, t);
+      }
+      birds = birds.filter(
+        (b) => b.x > -60 && b.x < w + 60 && b.y > -30 && b.y < h + 30,
+      );
+      if (!birds.length) nextFlockAt = t + rand(14, 26);
     };
 
     let last = 0;
@@ -204,22 +231,21 @@ export function AmbientBackground() {
   }, []);
 
   return (
-    <div className="ambient-root" aria-hidden="true">
-      {/* L1 — deep navy light-well: directional depth, never flat black. */}
-      <div className="ambient-base" />
-      {/* L2 — aurora blobs: living light in the Civic palette. */}
-      <div className="ambient-blob ambient-blob--gold" />
-      <div className="ambient-blob ambient-blob--cyan" />
-      <div className="ambient-blob ambient-blob--teal" />
-      {/* L3 — conic prism veil: a slow rotating wash tying the palette together. */}
-      <div className="ambient-prism" />
-      {/* L4 — living particles: sparks, stars, comets. */}
-      <canvas ref={canvasRef} className="ambient-particles" />
-      {/* L5 — film grain: tactile finish over the digital gradient. */}
-      <div className="ambient-grain" />
-      {/* L6 — readability: soft vignette + a much lighter scrim than v1. */}
-      <div className="ambient-vignette" />
-      <div className="ambient-scrim" />
+    <div className="city-root" aria-hidden="true">
+      {/* L1 — the panorama: ken-burns photo inside a scroll-parallax wrap. */}
+      <div ref={parallaxRef} className="city-parallax">
+        <div className="city-photo" />
+      </div>
+      {/* L2 — the sun: a warm glow band on the horizon that breathes. */}
+      <div className="city-sunglow" />
+      {/* L3 — living layer: city lights, haze, birds. */}
+      <canvas ref={canvasRef} className="city-living" />
+      {/* L4 — film grain: tactile finish. */}
+      <div className="city-grain" />
+      {/* L5 — readability: navy wash + top/bottom bands + vignette. Panels
+          are already translucent navy, so this stays a veil, not a wall. */}
+      <div className="city-scrim" />
+      <div className="city-vignette" />
     </div>
   );
 }

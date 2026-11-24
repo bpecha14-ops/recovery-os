@@ -6,15 +6,16 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X, VolumeX, MessageCircle, Sparkles } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { useReducedMotionSafe } from "@/lib/use-reduced-motion-safe";
+import { GoldieArms, GoldieFace, type GoldieMood } from "@/components/recovery/goldie-face";
 
 /**
- * Goldie — the live AI: a golden coin that roams the page. Goldie wanders
- * to random waypoints across the viewport, leans toward the cursor out of
- * curiosity and springs away when a hand comes too close; he watches which
- * section the visitor is in and drops contextual tips wherever he is. The
- * avatar mirrors the AI chat button one-to-one (round golden ring, coin
- * face, glow, hover scale). Clicking Goldie opens the chat (via a custom
- * event) with the section context.
+ * Goldie — the live AI: a drawn golden coin character that roams the page.
+ * He wanders to random waypoints, watches the cursor (eyes track, leans
+ * toward it, springs away when a hand comes too close), can be PICKED UP
+ * and dragged anywhere, and shows his mood on his face — talking arcs and
+ * a waving arm for tips, wide eyes and flailing arms while carried.
+ * Section tips still fire wherever he happens to be; clicking (not
+ * dragging) him opens the chat with the section context.
  */
 
 interface SectionSpot {
@@ -103,6 +104,31 @@ export function AiGuide() {
   const lastDodgeRef = useRef(0);
   const lastPtrRef = useRef({ x: 0, y: 0 });
 
+  /* ---------------------------------------------------------------- */
+  /* Pick-up & drag — Goldie can be carried anywhere. Pointer events */
+  /* with capture: a press that moves >6px becomes a drag (the coin   */
+  /* follows 1:1, roam is paused, the click is suppressed); a press  */
+  /* without movement stays a click and opens the chat. After the    */
+  /* drop, roaming resumes from the new spot.                         */
+  /* ---------------------------------------------------------------- */
+  const [dragging, setDragging] = useState(false);
+  const draggingRef = useRef(false);
+  const dragRef = useRef<{
+    sx: number;
+    sy: number;
+    bx: number;
+    by: number;
+    moved: boolean;
+  } | null>(null);
+  const suppressClickRef = useRef(false);
+
+  /* Mood inputs: cursor proximity (curiosity) + a short flee flash. */
+  const [curious, setCurious] = useState(false);
+  const [fleeUntil, setFleeUntil] = useState(0);
+  useEffect(() => {
+    draggingRef.current = dragging;
+  }, [dragging]);
+
   useEffect(() => {
     roamRef.current = roam;
   }, [roam]);
@@ -150,14 +176,18 @@ export function AiGuide() {
     };
   };
 
-  // Random drift — paused while a tip is showing (he dwells to talk)
-  // and while the tab is hidden.
+  // Random drift — paused while a tip is showing (he dwells to talk),
+  // while he is being dragged, and while the tab is hidden.
   useEffect(() => {
     if (reduceMotion) return;
     let timer: ReturnType<typeof setTimeout>;
     const schedule = () => {
       timer = setTimeout(() => {
-        if (!document.hidden && !tipActiveRef.current) {
+        if (
+          !document.hidden &&
+          !tipActiveRef.current &&
+          !draggingRef.current
+        ) {
           setRoam(pickWaypoint(roamRef.current.x, roamRef.current.y));
         }
         schedule();
@@ -167,7 +197,8 @@ export function AiGuide() {
     return () => clearTimeout(timer);
   }, [reduceMotion]);
 
-  // Cursor reaction: lean toward the pointer; dodge when it's too close.
+  // Cursor reaction: lean toward the pointer; dodge when it's too close
+  // (never while he is being carried).
   useEffect(() => {
     if (reduceMotion) return;
     const hoverFine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
@@ -192,10 +223,12 @@ export function AiGuide() {
       const leanY = (dy / dist) * 5 * near;
       const leanR = (dx / dist) * 5 * near;
       coin.style.transform = `translate(${leanX.toFixed(1)}px, ${leanY.toFixed(1)}px) rotate(${leanR.toFixed(1)}deg)`;
+      setCurious(dist < 380);
       // Playful dodge: spring to a waypoint away from the hand.
       const now = performance.now();
-      if (dist < 120 && now - lastDodgeRef.current > 2800) {
+      if (!draggingRef.current && dist < 120 && now - lastDodgeRef.current > 2800) {
         lastDodgeRef.current = now;
+        setFleeUntil(now + 1600);
         setRoam((cur) =>
           pickWaypoint(cur.x, cur.y, {
             x: lastPtrRef.current.x,
@@ -217,6 +250,14 @@ export function AiGuide() {
       cancelAnimationFrame(raf);
     };
   }, [reduceMotion]);
+
+  // The flee mood is a flash, not a state: clear it when it expires.
+  useEffect(() => {
+    if (!fleeUntil) return;
+    const left = fleeUntil - performance.now();
+    const timer = setTimeout(() => setFleeUntil(0), Math.max(0, left));
+    return () => clearTimeout(timer);
+  }, [fleeUntil]);
 
   const section = useMemo(
     () => sectionSpots.find((s) => s.id === activeId) ?? null,
@@ -308,6 +349,11 @@ export function AiGuide() {
   }
 
   function openChat() {
+    // A drag that just ended must NOT open the chat.
+    if (suppressClickRef.current) {
+      suppressClickRef.current = false;
+      return;
+    }
     setTip(null);
     window.dispatchEvent(
       new CustomEvent("recoveryos:open-chat", {
@@ -320,6 +366,81 @@ export function AiGuide() {
   }
 
   const alignRight = roam.right;
+
+  // Mood, most urgent first: carried > talking > fleeing > curious > idle.
+  const mood: GoldieMood = dragging
+    ? "drag"
+    : tip
+      ? "talk"
+      : fleeUntil > performance.now()
+        ? "flee"
+        : curious
+          ? "curious"
+          : "idle";
+
+  // --- Pick-up & drag handlers (pointer-captured on the coin) -----------
+  const onCoinPointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    // Freeze at the VISUAL position: the coin may be mid-walk (the roam
+    // state holds the TARGET, not where he currently is on screen), and
+    // the drag must start exactly under the hand. left-4/bottom-4 = 16px.
+    const rect = e.currentTarget.getBoundingClientRect();
+    const visualX = rect.left - 16;
+    const visualY = window.innerHeight - 16 - rect.bottom;
+    const vw = window.innerWidth;
+    setRoam({
+      x: visualX,
+      y: visualY,
+      flee: false,
+      dur: 0.012,
+      right: visualX > vw * 0.55,
+    });
+    dragRef.current = {
+      sx: e.clientX,
+      sy: e.clientY,
+      bx: visualX,
+      by: visualY,
+      moved: false,
+    };
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      /* capture is best-effort */
+    }
+    setDragging(true);
+  };
+
+  const onCoinPointerMove = (e: React.PointerEvent<HTMLButtonElement>) => {
+    const d = dragRef.current;
+    if (!d) return;
+    const dx = e.clientX - d.sx;
+    const dy = e.clientY - d.sy;
+    if (!d.moved && Math.hypot(dx, dy) > 6) d.moved = true;
+    if (!d.moved) return;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const small = vw < 768;
+    const minX = small ? 4 : 16;
+    const maxX = Math.max(minX, vw - (small ? 68 : 96));
+    const maxY = Math.max(40, vh * (small ? 0.5 : 0.72));
+    const x = Math.min(Math.max(d.bx + dx, minX), maxX);
+    const y = Math.min(Math.max(d.by - dy, 0), maxY);
+    setRoam({ x, y, flee: false, dur: 0.012, right: x > vw * 0.55 });
+  };
+
+  const onCoinPointerUp = (e: React.PointerEvent<HTMLButtonElement>) => {
+    const d = dragRef.current;
+    if (!d) return;
+    dragRef.current = null;
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {
+      /* already released */
+    }
+    setDragging(false);
+    // A real drag ends here — swallow the click that follows pointerup.
+    if (d.moved) suppressClickRef.current = true;
+  };
 
   return (
     <motion.div
@@ -399,10 +520,14 @@ export function AiGuide() {
           </button>
         )}
 
-        {/* Scout himself */}
+        {/* Scout himself — grab him, carry him, drop him anywhere. */}
         <motion.button
           type="button"
           onClick={openChat}
+          onPointerDown={onCoinPointerDown}
+          onPointerMove={onCoinPointerMove}
+          onPointerUp={onCoinPointerUp}
+          onPointerCancel={onCoinPointerUp}
           aria-label={t("guide.avatarLabel")}
           title={t("guide.askGoldie")}
           animate={
@@ -412,6 +537,7 @@ export function AiGuide() {
                   left: 0,
                   y: [0, -7, 0],
                   rotate: tip ? [0, -4, 4, 0] : 0,
+                  scale: dragging ? 1.12 : 1,
                 }
           }
           transition={
@@ -420,9 +546,11 @@ export function AiGuide() {
               : {
                   y: { duration: 2.8, repeat: Infinity, ease: "easeInOut" },
                   rotate: { duration: 0.5 },
+                  scale: { duration: 0.18 },
                 }
           }
-          className="group relative block"
+          className="group relative block cursor-grab"
+          style={{ touchAction: "none" }}
         >
           {/* Lean layer — the JS cursor engine writes its transform here;
               its own transition smooths the trail. Inner spans keep their
@@ -440,20 +568,16 @@ export function AiGuide() {
                 tip ? "opacity-100 animate-glow" : "opacity-60 group-hover:opacity-100"
               }`}
             />
-            {/* The coin — same build as the corner AI button: round golden
-                ring, coin face, glow, hover scale. */}
+            {/* Arms — behind the coin, poking out at the sides. */}
+            <GoldieArms mood={mood} />
+            {/* The coin — round golden ring, drawn character face, glow,
+                hover scale. Later sibling of the arms → stacked on top. */}
             <span
               className={`relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 bg-cf-deep/70 shadow-[0_0_28px_-6px_rgba(251,191,36,0.55)] transition-transform duration-200 group-hover:scale-105 sm:h-16 sm:w-16 ${
                 tip ? "border-amber-300" : "border-amber-300/70"
               }`}
             >
-              <img
-                src="/ai-goldie.png"
-                alt=""
-                aria-hidden="true"
-                className="h-full w-full object-cover"
-                draggable={false}
-              />
+              <GoldieFace mood={mood} />
             </span>
             <span className="pointer-events-none absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-zinc-950 bg-amber-400 text-zinc-950">
               <MessageCircle className="h-3 w-3" aria-hidden="true" />
