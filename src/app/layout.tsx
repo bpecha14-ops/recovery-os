@@ -14,6 +14,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { I18nProvider } from "@/lib/i18n/context";
 import { AmbientBackground } from "@/components/civic/ambient-background";
+import { InteractionFX } from "@/components/cursor/interaction-fx";
 import { SiteHeader } from "@/components/civic/site-header";
 import { SiteFooter } from "@/components/civic/site-footer";
 import { AiGuide } from "@/components/recovery/ai-guide";
@@ -54,6 +55,8 @@ export default function RootLayout({
         <I18nProvider>
           {/* Living backdrop — shared by every page (aria-hidden). */}
           <AmbientBackground />
+          {/* Cursor glow + panel tilt engine (pointer-only, aria-hidden). */}
+          <InteractionFX />
           <div className="relative z-10 flex min-h-screen flex-col">
             <SiteHeader />
             <main className="flex-1">{children}</main>
