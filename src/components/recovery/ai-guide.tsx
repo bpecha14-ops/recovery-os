@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { X, VolumeX, MessageCircle, Sparkles } from "lucide-react";
+import { X, VolumeX, MessageCircle, Scale } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { useReducedMotionSafe } from "@/lib/use-reduced-motion-safe";
 import { GoldieArms, GoldieFace, type GoldieMood } from "@/components/recovery/goldie-face";
@@ -475,7 +475,8 @@ export function AiGuide() {
               }`}
             >
               <p className="flex items-start gap-2 text-xs leading-relaxed text-zinc-300">
-                <Sparkles
+                {/* Scales of justice: Goldie's tips are about your rights. */}
+                <Scale
                   className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-300"
                   aria-hidden="true"
                 />
@@ -581,6 +582,13 @@ export function AiGuide() {
             </span>
             <span className="pointer-events-none absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-zinc-950 bg-amber-400 text-zinc-950">
               <MessageCircle className="h-3 w-3" aria-hidden="true" />
+            </span>
+            {/* "Objection!" — the § badge while he is carried away. */}
+            <span
+              aria-hidden="true"
+              className={`goldie-objection ${dragging ? "goldie-objection--on" : ""}`}
+            >
+              §
             </span>
           </span>
         </motion.button>

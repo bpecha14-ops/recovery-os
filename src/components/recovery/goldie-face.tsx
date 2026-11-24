@@ -205,8 +205,15 @@ export function GoldieFace({ mood }: { mood: GoldieMood }) {
  * Arms poking out from behind the coin. viewBox 140×100 where the coin
  * occupies the central 100×100; shoulders sit ON the coin edge so the
  * swing reads as attached. Mood classes drive the keyframe animation.
+ *
+ * Rights-themed props: while TALKING the right hand holds golden scales
+ * of justice (the beam tilts — he is weighing your rights); while being
+ * CARRIED the left hand grips a judge's gavel and the flail reads as
+ * "Objection!". Props fade in/out with the mood.
  */
 export function GoldieArms({ mood }: { mood: GoldieMood }) {
+  const talking = mood === "talk";
+  const carrying = mood === "drag";
   return (
     <svg
       className={`goldie-arms goldie-arms--${mood}`}
@@ -218,11 +225,43 @@ export function GoldieArms({ mood }: { mood: GoldieMood }) {
       <g className="goldie-arm goldie-arm--l" style={{ transformOrigin: "30px 62px" }}>
         <line x1="30" y1="62" x2="12" y2="79" stroke="#c89030" strokeWidth="6.5" strokeLinecap="round" />
         <circle cx="12" cy="79" r="4.8" fill="#e7c77e" stroke="#a06a1c" strokeWidth="1.2" />
+        {/* The gavel — carried in the left hand. No counter-rotation:
+            the flail swings it like a strike. */}
+        <g
+          className="goldie-prop goldie-gavel"
+          style={{ transformOrigin: "12px 79px", opacity: carrying ? 1 : 0 }}
+        >
+          <line x1="12" y1="79" x2="3" y2="66" stroke="#8a5a24" strokeWidth="2.6" strokeLinecap="round" />
+          <rect x="-3" y="61.5" width="13" height="6.5" rx="2.4" fill="#7a4a1e" stroke="#a06a1c" strokeWidth="1" />
+          <rect x="-3" y="61.5" width="3.2" height="6.5" rx="1.4" fill="#e7c77e" opacity="0.9" />
+        </g>
       </g>
       {/* Right arm — shoulder at (110,62) */}
       <g className="goldie-arm goldie-arm--r" style={{ transformOrigin: "110px 62px" }}>
         <line x1="110" y1="62" x2="128" y2="79" stroke="#c89030" strokeWidth="6.5" strokeLinecap="round" />
         <circle cx="128" cy="79" r="4.8" fill="#e7c77e" stroke="#a06a1c" strokeWidth="1.2" />
+        {/* The scales of justice — held up in the right hand while he
+            talks. Counter-rotated around the hand so the beam stays
+            level while the arm presents it. */}
+        <g
+          className="goldie-prop goldie-scales"
+          style={{ transformOrigin: "128px 79px", opacity: talking ? 1 : 0 }}
+        >
+          <g className="goldie-scales-inner" style={{ transform: "rotate(42deg)" }}>
+            <g className="goldie-scales-weigh" style={{ transformOrigin: "128px 57px" }}>
+              <line x1="128" y1="79" x2="128" y2="57" stroke="#c89030" strokeWidth="2.4" strokeLinecap="round" />
+              <line x1="115" y1="59" x2="141" y2="59" stroke="#c89030" strokeWidth="2.6" strokeLinecap="round" />
+              <circle cx="128" cy="57" r="2.4" fill="#e7c77e" stroke="#a06a1c" strokeWidth="0.8" />
+              {/* chains + pans */}
+              <line x1="115" y1="59" x2="112.5" y2="67" stroke="#a06a1c" strokeWidth="1" />
+              <line x1="115" y1="59" x2="117.5" y2="67" stroke="#a06a1c" strokeWidth="1" />
+              <path d="M 110 67 Q 112.5 71 115 71 Q 117.5 71 120 67 Z" fill="#e7c77e" stroke="#a06a1c" strokeWidth="0.9" />
+              <line x1="141" y1="59" x2="138.5" y2="67" stroke="#a06a1c" strokeWidth="1" />
+              <line x1="141" y1="59" x2="143.5" y2="67" stroke="#a06a1c" strokeWidth="1" />
+              <path d="M 136 67 Q 138.5 71 141 71 Q 143.5 71 146 67 Z" fill="#e7c77e" stroke="#a06a1c" strokeWidth="0.9" />
+            </g>
+          </g>
+        </g>
       </g>
     </svg>
   );

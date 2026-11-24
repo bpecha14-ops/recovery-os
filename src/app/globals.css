@@ -323,13 +323,14 @@
 }
 
 /* ---------------------------------------------------------------------------
- * AMBIENT BACKGROUND v3 — "Sunset City".
- * A real golden-hour Los Angeles panorama (public/city-sunset.jpg) alive
- * across the whole viewport: ken-burns drift inside a scroll-parallax
- * wrapper, a breathing sun glow, a canvas of twinkling city lights, warm
- * haze and bird flocks, film grain, and navy readability scrims. All
- * layers animate transform/opacity only. If the photo is ever replaced,
- * ship it under a NEW filename so no stale cache can overlay a deploy.
+ * AMBIENT BACKGROUND v4 — "Hills Vista".
+ * Standing on the Beverly Hills hills: a vast Los Angeles panorama
+ * (public/city-sunset-v2.jpg, high overlook, the whole basin) with a
+ * drawn RED sun breathing at the horizon, foreground hill silhouettes
+ * on their own faster parallax, and a canvas of stars, city lights,
+ * haze, cloud shadows, birds and an LAX-bound airliner. All layers
+ * animate transform/opacity only. If the photo is ever replaced, ship
+ * it under a NEW filename so no stale cache can overlay a deploy.
  * ------------------------------------------------------------------------- */
 .city-root {
   position: fixed;
@@ -341,60 +342,174 @@
   contain: strict;
 }
 
-/* Parallax wrapper — transform written by JS (scroll listener, clamped). */
+/* Parallax wrappers — transforms written by JS (scroll listener,
+   clamped, one per depth). */
 .city-parallax {
   position: absolute;
   inset: -6% 0; /* headroom so the drift never exposes an edge */
   will-change: transform;
 }
+.city-hills {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+.city-hills svg {
+  position: absolute;
+  left: -2%;
+  bottom: -4%;
+  width: 104%;
+  height: 58%;
+  display: block;
+}
+.city-hills--far svg {
+  height: 38%;
+}
+.city-hill {
+  transform-box: fill-box;
+}
+.city-hill--far {
+  fill: #0b1226; /* far ridge: navy, catching a little sky */
+}
+.city-hill--near {
+  fill: #02040a; /* the hill you stand on: darker than the scrimmed sky */
+  filter: blur(1px);
+}
+/* The wide blurred rim stroke — the sun's afterglow bleeding off the
+   ridge line; the thin stroke above it is the crisp lit edge. */
+.city-hill-glow {
+  filter: blur(4px);
+}
 
-/* The photo — slow ken-burns: zoom + diagonal drift, 70s each way. */
+/* The photo — slow ken-burns with more travel, 90s each way. The drawn
+   sun is a child of this element, so the drift carries it with the
+   city. On narrow portrait screens the photo is framed toward the sun
+   (the JS placement math mirrors this 94% x). */
 .city-photo {
   position: absolute;
   inset: 0;
-  background-image: url("/city-sunset.jpg");
+  background-image: url("/city-sunset-v2.jpg");
   background-size: cover;
   background-position: center 38%;
   will-change: transform;
-  animation: city-kenburns 70s ease-in-out infinite alternate;
+  animation: city-kenburns 90s ease-in-out infinite alternate;
+}
+@media (max-width: 767px) {
+  .city-photo {
+    background-position: 94% 38%;
+  }
 }
 @keyframes city-kenburns {
   from {
-    transform: scale(1.08) translate3d(-1.6%, 0.8%, 0);
+    transform: scale(1.07) translate3d(-2.2%, 1%, 0);
   }
   to {
-    transform: scale(1.17) translate3d(1.8%, -1.4%, 0);
+    transform: scale(1.18) translate3d(2.4%, -1.8%, 0);
   }
 }
 
-/* The sun — a warm breathing glow across the horizon band. */
-.city-sunglow {
+/* The RED sun — layered to sit IN the dusk sky, not ON it. Everything
+   blends in screen mode (ADDING light to the photo instead of painting
+   over it), and the wash + band warm the whole sky region around the
+   disc, so the photo's gradient appears to warm BECAUSE of the sun.
+   NOTE: .city-sun itself must stay transform-free — a transform would
+   create a stacking context and isolate the children's blend modes. */
+.city-sun {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.city-sun-core,
+.city-sun-corona,
+.city-sun-wash,
+.city-sun-band {
   position: absolute;
   left: 0;
-  right: 0;
-  top: 46%;
-  height: 46%;
+  top: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+/* The disc — deep red, softened, half-buried in the haze. */
+.city-sun-core {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
   background: radial-gradient(
-    58% 90% at 62% 88%,
-    rgba(255, 176, 84, 0.26) 0%,
-    rgba(255, 140, 66, 0.10) 38%,
-    rgba(0, 0, 0, 0) 70%
+    circle,
+    rgba(255, 84, 36, 0.72) 0%,
+    rgba(255, 62, 26, 0.5) 45%,
+    rgba(255, 48, 18, 0.18) 68%,
+    rgba(255, 40, 16, 0) 80%
   );
-  animation: city-breath 11s ease-in-out infinite alternate;
+  filter: blur(6px);
+  animation: sun-breathe 9s ease-in-out infinite alternate;
+}
+/* The corona — glow bleeding through the smog at the horizon. */
+.city-sun-corona {
+  width: 920px;
+  height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 96, 40, 0.42) 0%,
+    rgba(255, 76, 30, 0.2) 34%,
+    rgba(240, 60, 24, 0.08) 58%,
+    rgba(0, 0, 0, 0) 74%
+  );
+  animation: sun-breathe 9s ease-in-out infinite alternate;
   will-change: transform, opacity;
 }
-@keyframes city-breath {
+/* The wash — the SKY warming in a huge soft ellipse around the sun,
+   reaching well up into the purple so the dusk reads sun-caused. */
+.city-sun-wash {
+  width: 1900px;
+  height: 820px;
+  background: radial-gradient(
+    ellipse,
+    rgba(255, 86, 44, 0.4) 0%,
+    rgba(255, 66, 30, 0.2) 45%,
+    rgba(255, 60, 28, 0.08) 68%,
+    rgba(0, 0, 0, 0) 80%
+  );
+  transform: translate(-50%, -62%);
+}
+/* The band — the horizon itself glowing: a mile-wide strip of dusk
+   heat centered on the sun, brightest right at the sun line. */
+.city-sun-band {
+  width: 2600px;
+  height: 540px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 66, 30, 0) 0%,
+    rgba(255, 66, 30, 0.13) 34%,
+    rgba(255, 92, 42, 0.26) 56%,
+    rgba(255, 66, 30, 0.12) 80%,
+    rgba(255, 66, 30, 0) 100%
+  ),
+    linear-gradient(
+    90deg,
+    rgba(255, 66, 30, 0) 0%,
+    rgba(255, 66, 30, 0.6) 22%,
+    rgba(255, 66, 30, 1) 50%,
+    rgba(255, 66, 30, 0.6) 78%,
+    rgba(255, 66, 30, 0) 100%
+  );
+  background-blend-mode: multiply;
+  transform: translate(-50%, -55%);
+}
+@keyframes sun-breathe {
   from {
-    transform: scale(1);
-    opacity: 0.85;
+    transform: translate(-50%, -50%) scale(0.96);
+    opacity: 0.86;
   }
   to {
-    transform: scale(1.06) translateY(-1.5%);
+    transform: translate(-50%, -50%) scale(1.05);
     opacity: 1;
   }
 }
 
-/* Living canvas (lights, haze, birds) — see the TSX. */
+/* Living canvas (stars, lights, haze, clouds, birds, plane) — TSX. */
 .city-living {
   position: absolute;
   inset: 0;
@@ -419,10 +534,10 @@
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(6, 11, 24, 0.66) 0%,
-    rgba(6, 11, 24, 0.38) 30%,
+    rgba(6, 11, 24, 0.68) 0%,
+    rgba(6, 11, 24, 0.40) 30%,
     rgba(6, 11, 24, 0.34) 58%,
-    rgba(6, 11, 24, 0.52) 78%,
+    rgba(6, 11, 24, 0.5) 78%,
     rgba(4, 8, 18, 0.74) 100%
   );
 }
@@ -432,9 +547,76 @@
   background: radial-gradient(120% 92% at 50% 42%, transparent 42%, rgba(3, 6, 16, 0.5) 100%);
 }
 
+/* L6 — the sun's bloom, painted ABOVE the scrims. The veil dims the
+   whole photo (that is its job — text contrast), but it also eats the
+   sun's glow and makes the red disc read as pasted. This layer is the
+   sun SHINING THROUGH the veil: a wide warm haze + the visible dim
+   disc at the same screen spot (JS-pinned), riding the photo's
+   parallax. Normal blending over the navy reads as light in haze. */
+.city-bloom {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+.city-bloom-glow,
+.city-bloom-disc {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.city-bloom-glow {
+  width: 1500px;
+  height: 620px;
+  background: radial-gradient(
+    ellipse,
+    rgba(255, 82, 40, 0.30) 0%,
+    rgba(255, 64, 28, 0.14) 45%,
+    rgba(255, 56, 26, 0.05) 66%,
+    rgba(0, 0, 0, 0) 80%
+  );
+  animation: sun-breathe 9s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+.city-bloom-disc {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 88, 40, 0.48) 0%,
+    rgba(255, 66, 28, 0.32) 46%,
+    rgba(255, 52, 22, 0.12) 70%,
+    rgba(255, 44, 20, 0) 82%
+  );
+  filter: blur(8px);
+  /* The lower half melts into the horizon haze BEFORE it can sit on
+     top of the city lights — the disc is half-sunk, like a real dusk
+     sun behind the smog layer. */
+  mask-image: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 1) 38%,
+    rgba(0, 0, 0, 0.55) 60%,
+    rgba(0, 0, 0, 0) 86%
+  );
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 1) 38%,
+    rgba(0, 0, 0, 0.55) 60%,
+    rgba(0, 0, 0, 0) 86%
+  );
+  animation: sun-breathe 9s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .city-photo,
-  .city-sunglow {
+  .city-sun-core,
+  .city-sun-corona,
+  .city-bloom-glow,
+  .city-bloom-disc {
     animation: none;
   }
 }
@@ -597,8 +779,10 @@
 .goldie-arms--talk .goldie-arm--l {
   animation: arm-sway-l 2.2s ease-in-out infinite alternate;
 }
+/* While talking, the right arm does not wave — it PRESENTS the scales
+   of justice, a gentle hold high at the side. */
 .goldie-arms--talk .goldie-arm--r {
-  animation: arm-wave 0.7s ease-in-out infinite alternate;
+  animation: arm-hold-r 1.6s ease-in-out infinite alternate;
 }
 .goldie-arms--drag .goldie-arm--l {
   animation: arm-flail-l 0.24s linear infinite alternate;
@@ -624,6 +808,10 @@
   from { transform: rotate(-16deg); }
   to { transform: rotate(-58deg); }
 }
+@keyframes arm-hold-r {
+  from { transform: rotate(-38deg); }
+  to { transform: rotate(-46deg); }
+}
 @keyframes arm-flail-l {
   from { transform: rotate(-34deg); }
   to { transform: rotate(24deg); }
@@ -631,6 +819,50 @@
 @keyframes arm-flail-r {
   from { transform: rotate(34deg); }
   to { transform: rotate(-24deg); }
+}
+
+/* Rights-themed props — fade in/out with the mood. */
+.goldie-prop {
+  transition: opacity 0.25s ease;
+}
+.goldie-scales-weigh {
+  animation: scales-weigh 2.6s ease-in-out infinite alternate;
+}
+@keyframes scales-weigh {
+  from { transform: rotate(-7deg); }
+  to { transform: rotate(7deg); }
+}
+
+/* "Objection!" — the § badge that pops over Goldie while he is carried. */
+.goldie-objection {
+  position: absolute;
+  top: -1.65rem;
+  right: -0.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(251, 191, 36, 0.7);
+  background: rgba(10, 20, 40, 0.92);
+  color: #fbbf24;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+  opacity: 0;
+  transform: translateY(4px) scale(0.6);
+  transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+.goldie-objection--on {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  animation: objection-pop 1.6s ease-in-out infinite alternate;
+}
+@keyframes objection-pop {
+  from { transform: translateY(0) scale(0.96); }
+  to { transform: translateY(-2px) scale(1.05); }
 }
 
 /* Talking mouth — a soft yap. */
@@ -646,7 +878,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .goldie-arm,
-  .goldie-mouth--talk {
+  .goldie-mouth--talk,
+  .goldie-scales-weigh,
+  .goldie-objection--on {
     animation: none !important;
   }
 }
