@@ -3,56 +3,54 @@
 import { useEffect, useRef } from "react";
 
 /**
- * AmbientBackground — the living backdrop, v4 "Hills Vista".
+ * AmbientBackground — the living backdrop, v5 "Night Metropolis".
  *
- * You are standing on the Beverly Hills hills: a vast Los Angeles
- * panorama (public/city-sunset-v2.jpg, shot from a high overlook, the
- * whole basin to the horizon) under a dusk sky where a deep RED sun
- * settles at the horizon. Layers, back to front:
+ * A vast night Los Angeles (public/city-sunset-v2.jpg) filling the WHOLE
+ * page — nothing is drawn on top of the photo; the horizon glow is the
+ * photo's own. Kept alive around it:
  *
- *   photo (slow ken-burns, more travel)  →  inside a scroll-parallax wrap
- *   the RED SUN: drawn as a child of the photo element so the ken-burns
- *     drift carries it exactly with the city — breathing corona, core
- *     glow and slowly rotating god rays, positioned by replicating the
- *     CSS cover math at the coordinates the photo's composition calls
- *     for (VLM-measured: sun ≈ 82% x, 41% y; horizon ≈ 42%)
- *   foreground hill silhouettes (two depths, own faster parallax — the
- *     nearer the layer, the more it slides: that is what sells "I am
- *     standing on a hill looking down at the city")
- *   canvas: stars up top, twinkling city lights, warm haze, drifting
- *     cloud shadows, bird flocks, and an airliner with blinking
- *     strobes crawling across the sky (LAX approach)
- *   film grain + navy readability scrims
+ *   photo (slow ken-burns) inside a scroll-parallax wrap
+ *   canvas, the night itself:
+ *     – stars and a faint teal-violet aurora ribbon high in the sky
+ *     – a satellite crawling in orbit, an occasional shooting star
+ *     – an airliner with blinking strobes (the LAX approach stack)
+ *     – a denser, city-wide twinkle with cyan/violet neon sparks
+ *     – LIGHT RIVERS: continuous head/tail-light streams flowing along
+ *       curved freeways — the signature of LA at night
+ *   film grain + a LIGHT navy readability veil (the city stays visible
+ *     edge to edge; the old near-black bottom band is gone)
+ *
+ * The drawn sun / red horizon strip / foreground hills of v4 were
+ * removed: they read as pasted-on. What remains is photographic.
  *
  * Performance contract (unchanged): one canvas, DPR ≤ 1.75, rAF capped
- * at ~40fps, paused when hidden, one static frame under reduced motion;
- * photo/sun/hills are GPU transform/opacity only; parallax writes are
- * clamped so long pages never run away; nothing essential lives here.
+ * at ~40fps, paused when hidden, one static frame under reduced
+ * motion; everything is transform/opacity or single-pass canvas draws.
  */
 
-/* Photo composition constants (measured on the actual image). */
-const PHOTO_W = 1920;
-const PHOTO_H = 1080;
-const SUN = { x: 0.825, y: 0.41 }; // fraction of photo width/height
-const BG_POS_Y = 0.38; // matches background-position "center 38%"
-
 type Star = { x: number; y: number; r: number; phase: number; speed: number };
-type Light = { x: number; y: number; r: number; phase: number; speed: number; warm: boolean };
-type Haze = { x: number; y: number; rx: number; ry: number; vx: number; a: number };
-type Cloud = { x: number; y: number; rx: number; ry: number; vx: number; a: number };
-type Bird = { x: number; y: number; vx: number; flap: number; size: number; phase: number };
+type Light = { x: number; y: number; r: number; phase: number; speed: number; hue: number };
+type Ribbon = { x: number; y: number; rx: number; ry: number; vx: number; hue: string; a: number; phase: number };
+type Car = { t: number; speed: number; lane: number };
+type River = {
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number; // control point
+  x2: number;
+  y2: number;
+  cars: Car[];
+  dir: 1 | -1; // 1 = head lights (warm), -1 = tail lights (red)
+};
+type Sat = { x: number; y: number; vx: number; life: number; max: number };
+type Meteor = { x: number; y: number; vx: number; vy: number; life: number; max: number };
 type Plane = { x: number; y: number; vx: number; life: number; max: number };
 
 export function AmbientBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const parallaxRef = useRef<HTMLDivElement>(null);
-  const hillsFarRef = useRef<HTMLDivElement>(null);
-  const hillsNearRef = useRef<HTMLDivElement>(null);
-  const sunRef = useRef<HTMLDivElement>(null);
-  const bloomRef = useRef<HTMLDivElement>(null);
 
-  /* Scroll parallax — three depths: the photo recedes gently, the near
-     hill slides hardest. Clamped so long pages never run away. */
+  /* Scroll parallax — the night recedes gently as you scroll. */
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return;
@@ -61,15 +59,9 @@ export function AmbientBackground() {
     const apply = () => {
       pending = false;
       const y = Math.min(window.scrollY, 2600); // saturate after ~14 screens
-      const set = (el: HTMLElement | null, k: number, cap: number) => {
-        if (el) el.style.transform = `translate3d(0, ${(-Math.min(y * k, cap)).toFixed(1)}px, 0)`;
-      };
-      set(parallaxRef.current, 0.08, 110);
-      set(hillsFarRef.current, 0.14, 170);
-      set(hillsNearRef.current, 0.22, 260);
-      // The bloom layer rides with the photo (same factor) so the sun's
-      // over-scrim glow stays glued to the panorama.
-      set(bloomRef.current, 0.08, 110);
+      if (parallaxRef.current) {
+        parallaxRef.current.style.transform = `translate3d(0, ${(-Math.min(y * 0.08, 110)).toFixed(1)}px, 0)`;
+      }
     };
     const onScroll = () => {
       if (!pending) {
@@ -81,60 +73,6 @@ export function AmbientBackground() {
     return () => {
       window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(raf);
-    };
-  }, []);
-
-  /* Pin the drawn sun onto the photo's own composition. The sun lives
-     INSIDE .city-photo, so the ken-burns transform carries it along; we
-     only need the position, computed by replicating background-size:
-     cover + background-position for the current viewport. The BLOOM
-     copy (above the scrims, so the sun actually shines through the
-     navy veil) is placed at the same screen spot: element coords minus
-     the parallax wrapper's -6% top inset (photo.offsetTop). */
-  useEffect(() => {
-    const sun = sunRef.current;
-    const bloom = bloomRef.current;
-    if (!sun || !bloom) return;
-    const glow = bloom.querySelector<HTMLElement>(".city-bloom-glow");
-    const disc = bloom.querySelector<HTMLElement>(".city-bloom-disc");
-    const place = () => {
-      const photo = sun.parentElement;
-      if (!photo) return;
-      const elW = photo.clientWidth;
-      const elH = photo.clientHeight;
-      // .city-parallax is inset -6% 0 — the element is ~12% taller than
-      // the viewport; clientHeight already accounts for that.
-      const px = window.innerWidth < 768 ? 0.94 : 0.5; // mobile: follow the sun
-      const s = Math.max(elW / PHOTO_W, elH / PHOTO_H);
-      const ox = (elW - PHOTO_W * s) * px;
-      const oy = (elH - PHOTO_H * s) * BG_POS_Y;
-      const x = ox + SUN.x * PHOTO_W * s;
-      const y = oy + SUN.y * PHOTO_H * s;
-      sun.style.left = `${x.toFixed(1)}px`;
-      sun.style.top = `${y.toFixed(1)}px`;
-      // Screen coords for the bloom: element coords + the photo box's
-      // offset inside the viewport (offsetTop ≈ -6% of the root height).
-      const bx = x + photo.offsetLeft;
-      const by = y + photo.offsetTop;
-      if (glow) {
-        glow.style.left = `${bx.toFixed(1)}px`;
-        glow.style.top = `${by.toFixed(1)}px`;
-      }
-      if (disc) {
-        disc.style.left = `${bx.toFixed(1)}px`;
-        disc.style.top = `${by.toFixed(1)}px`;
-      }
-    };
-    place();
-    let timer = 0;
-    const onResize = () => {
-      window.clearTimeout(timer);
-      timer = window.setTimeout(place, 180);
-    };
-    window.addEventListener("resize", onResize);
-    return () => {
-      window.removeEventListener("resize", onResize);
-      window.clearTimeout(timer);
     };
   }, []);
 
@@ -150,52 +88,66 @@ export function AmbientBackground() {
     let h = 0;
     let stars: Star[] = [];
     let lights: Light[] = [];
-    let haze: Haze[] = [];
-    let clouds: Cloud[] = [];
-    let birds: Bird[] = [];
+    let ribbons: Ribbon[] = [];
+    let rivers: River[] = [];
+    let sat: Sat | null = null;
+    let meteor: Meteor | null = null;
     let plane: Plane | null = null;
-    let nextFlockAt = 4;
+    let nextSatAt = 6;
+    let nextMeteorAt = 12;
     let nextPlaneAt = 9;
 
     const rand = (min: number, max: number) => min + Math.random() * (max - min);
 
     const seed = () => {
       const small = w < 768;
-      // Stars only in the dark top of the dusk sky.
-      stars = Array.from({ length: small ? 14 : 30 }, () => ({
+      stars = Array.from({ length: small ? 18 : 36 }, () => ({
         x: Math.random() * w,
-        y: Math.random() * h * 0.24,
-        r: rand(0.4, 1.1),
+        y: Math.random() * h * 0.3,
+        r: rand(0.4, 1.2),
         phase: Math.random() * Math.PI * 2,
-        speed: rand(0.5, 1.6),
+        speed: rand(0.4, 1.4),
       }));
-      // City lights across the skyline band (horizon sits ≈42%).
-      lights = Array.from({ length: small ? 30 : 64 }, () => ({
-        x: Math.random() * w,
-        y: h * rand(0.47, 0.9),
-        r: rand(0.5, 1.6),
-        phase: Math.random() * Math.PI * 2,
-        speed: rand(0.5, 1.8),
-        warm: Math.random() < 0.72,
-      }));
-      // Warm haze along the horizon — the red-sun smog glow.
-      haze = Array.from({ length: small ? 2 : 4 }, () => ({
-        x: Math.random() * w,
-        y: h * rand(0.5, 0.9),
-        rx: rand(0.22, 0.42) * w,
-        ry: rand(0.04, 0.09) * h,
-        vx: rand(6, 16) * (Math.random() < 0.5 ? -1 : 1),
-        a: rand(0.03, 0.07),
-      }));
-      // Cloud shadows drifting across the mid sky.
-      clouds = Array.from({ length: small ? 2 : 3 }, () => ({
-        x: Math.random() * w,
-        y: h * rand(0.1, 0.34),
-        rx: rand(0.2, 0.38) * w,
-        ry: rand(0.05, 0.1) * h,
-        vx: rand(9, 20) * (Math.random() < 0.5 ? -1 : 1),
-        a: rand(0.05, 0.09),
-      }));
+      // City lights across the whole lower cityscape with a few neon
+      // cyan/violet sparks — the futuristic read.
+      lights = Array.from({ length: small ? 46 : 104 }, () => {
+        const neon = Math.random() < 0.14;
+        return {
+          x: Math.random() * w,
+          y: h * rand(0.44, 0.98),
+          r: rand(0.5, neon ? 2.1 : 1.7),
+          phase: Math.random() * Math.PI * 2,
+          speed: rand(0.5, neon ? 2.4 : 1.7),
+          hue: neon ? (Math.random() < 0.5 ? 0 : 1) : 2,
+        };
+      });
+      // Aurora ribbon — two soft teal/violet bands waving high up.
+      ribbons = [
+        { x: w * 0.3, y: h * 0.1, rx: w * 0.36, ry: h * 0.06, vx: rand(3, 7), hue: "45, 212, 191", a: 0.075, phase: rand(0, 6) },
+        { x: w * 0.75, y: h * 0.16, rx: w * 0.3, ry: h * 0.05, vx: rand(-6, -3), hue: "139, 92, 246", a: 0.06, phase: rand(0, 6) },
+      ];
+      // Light rivers — flowing freeway streams across the basin.
+      const riverCount = small ? 2 : 3;
+      rivers = Array.from({ length: riverCount }, (_, i) => {
+        const y = h * (0.6 + i * 0.13);
+        const bend = rand(-1, 1) * w * 0.18;
+        const dir: 1 | -1 = i % 2 === 0 ? 1 : -1;
+        const n = small ? 9 : 16;
+        return {
+          x0: -40,
+          y0: y + rand(-14, 14),
+          x1: w * 0.5,
+          y1: y + bend,
+          x2: w + 40,
+          y2: y + rand(-14, 14),
+          dir,
+          cars: Array.from({ length: n }, () => ({
+            t: Math.random(),
+            speed: rand(0.07, 0.13),
+            lane: rand(-3.5, 3.5),
+          })),
+        };
+      });
     };
 
     const resize = () => {
@@ -218,121 +170,134 @@ export function AmbientBackground() {
       ctx.fill();
     };
 
-    const drawBird = (b: Bird, t: number) => {
-      // Tiny "m" silhouette — two strokes whose angle beats with flap.
-      const s = b.size;
-      const beat = Math.sin(t * b.flap + b.phase);
-      const dy = beat * s * 0.55;
-      ctx.strokeStyle = "rgba(20, 14, 10, 0.62)";
-      ctx.lineWidth = Math.max(1, s * 0.16);
-      ctx.lineCap = "round";
-      ctx.beginPath();
-      ctx.moveTo(b.x - s, b.y - dy);
-      ctx.quadraticCurveTo(b.x - s * 0.35, b.y + s * 0.18, b.x, b.y);
-      ctx.quadraticCurveTo(b.x + s * 0.35, b.y + s * 0.18, b.x + s, b.y - dy);
-      ctx.stroke();
-    };
-
-    const drawPlane = (p: Plane, t: number) => {
-      // A distant airliner crawling across the sky, strobes blinking —
-      // the constant LAX approach stack over the basin at dusk.
-      const fus = 5.5; // half-length
-      const dir = Math.sign(p.vx);
-      ctx.strokeStyle = "rgba(16, 12, 10, 0.55)";
-      ctx.lineWidth = 2;
-      ctx.lineCap = "round";
-      ctx.beginPath();
-      ctx.moveTo(p.x - fus * dir, p.y);
-      ctx.lineTo(p.x + fus * dir, p.y);
-      ctx.stroke();
-      // Red beacon + white strobe, alternating.
-      const blink = (t * 1.1) % 1;
-      if (blink < 0.12) drawDot(p.x - fus * dir, p.y, 1.6, "rgba(255, 64, 44, 0.95)");
-      if (blink > 0.5 && blink < 0.56) drawDot(p.x + fus * dir, p.y, 2.1, "rgba(255, 255, 255, 0.95)");
-      // Faint navigation lights between blinks.
-      drawDot(p.x - fus * dir, p.y, 0.8, "rgba(255, 64, 44, 0.35)");
-      drawDot(p.x + fus * dir, p.y, 0.9, "rgba(255, 255, 255, 0.3)");
+    /* Quadratic bezier point, for the rivers. */
+    const qPoint = (r: River, t: number) => {
+      const u = 1 - t;
+      return {
+        x: u * u * r.x0 + 2 * u * t * r.x1 + t * t * r.x2,
+        y: u * u * r.y0 + 2 * u * t * r.y1 + t * t * r.y2,
+      };
     };
 
     const draw = (t: number) => {
       ctx.clearRect(0, 0, w, h);
       const dt = 1 / 40;
 
-      // Stars — faint twinkle in the darkening top of the sky.
+      // Aurora ribbons — slow, faint, breathing.
+      for (const rb of ribbons) {
+        rb.x += rb.vx * dt;
+        if (rb.x - rb.rx > w) rb.x = -rb.rx;
+        if (rb.x + rb.rx < 0) rb.x = w + rb.rx;
+        const pulse = 0.6 + 0.4 * Math.sin(t * 0.22 + rb.phase);
+        const g = ctx.createRadialGradient(rb.x, rb.y, 0, rb.x, rb.y, rb.rx);
+        g.addColorStop(0, `rgba(${rb.hue}, ${(rb.a * pulse).toFixed(3)})`);
+        g.addColorStop(1, `rgba(${rb.hue}, 0)`);
+        ctx.save();
+        ctx.translate(rb.x, rb.y);
+        ctx.scale(1, rb.ry / rb.rx);
+        ctx.translate(-rb.x, -rb.y);
+        ctx.fillStyle = g;
+        ctx.fillRect(rb.x - rb.rx, rb.y - rb.rx, rb.rx * 2, rb.rx * 2);
+        ctx.restore();
+      }
+
+      // Stars — faint twinkle under the aurora.
       for (const s of stars) {
         const a = 0.1 + 0.34 * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase));
         drawDot(s.x, s.y, s.r, `rgba(226, 232, 240, ${a.toFixed(3)})`);
       }
 
-      // City lights — warm glimmer across the basin.
+      // City lights — amber sea with cyan/violet neon sparks.
       for (const l of lights) {
-        const a = 0.14 + 0.4 * (0.5 + 0.5 * Math.sin(t * l.speed + l.phase));
-        drawDot(
-          l.x,
-          l.y,
-          l.r,
-          l.warm
-            ? `rgba(255, 199, 120, ${a.toFixed(3)})`
-            : `rgba(190, 227, 248, ${(a * 0.8).toFixed(3)})`,
-        );
+        const a = 0.16 + 0.42 * (0.5 + 0.5 * Math.sin(t * l.speed + l.phase));
+        const fill =
+          l.hue === 0
+            ? `rgba(103, 232, 249, ${a.toFixed(3)})` // cyan spark
+            : l.hue === 1
+              ? `rgba(167, 139, 250, ${a.toFixed(3)})` // violet spark
+              : `rgba(255, 196, 110, ${a.toFixed(3)})`; // warm window
+        drawDot(l.x, l.y, l.r, fill);
       }
 
-      // Warm horizon haze drifting sideways.
-      for (const hz of haze) {
-        hz.x += hz.vx * dt;
-        if (hz.x - hz.rx > w) hz.x = -hz.rx;
-        if (hz.x + hz.rx < 0) hz.x = w + hz.rx;
-        const g = ctx.createRadialGradient(hz.x, hz.y, 0, hz.x, hz.y, hz.rx);
-        g.addColorStop(0, `rgba(233, 168, 84, ${hz.a})`);
-        g.addColorStop(1, "rgba(233, 168, 84, 0)");
-        ctx.save();
-        ctx.translate(hz.x, hz.y);
-        ctx.scale(1, hz.ry / hz.rx);
-        ctx.translate(-hz.x, -hz.y);
-        ctx.fillStyle = g;
-        ctx.fillRect(hz.x - hz.rx, hz.y - hz.rx, hz.rx * 2, hz.rx * 2);
-        ctx.restore();
+      // Light rivers — continuous head/tail-light streams. Each car is
+      // a bright dot with a soft halo, drawn along its freeway curve.
+      for (const r of rivers) {
+        for (const car of r.cars) {
+          car.t += car.speed * dt;
+          if (car.t > 1) car.t -= 1;
+          const p = qPoint(r, car.t);
+          const p2 = qPoint(r, Math.min(1, car.t + 0.012));
+          const dx = p2.x - p.x;
+          const dy = p2.y - p.y;
+          const len = Math.hypot(dx, dy) || 1;
+          const x = p.x + (dy / len) * car.lane;
+          const y = p.y + (-dx / len) * car.lane;
+          // Halo pass then core — cheap glow, no shadowBlur.
+          drawDot(x, y, 3.2, r.dir === 1 ? "rgba(255, 214, 130, 0.10)" : "rgba(255, 90, 70, 0.10)");
+          drawDot(x, y, 1.3, r.dir === 1 ? "rgba(255, 236, 180, 0.55)" : "rgba(255, 108, 86, 0.55)");
+        }
       }
 
-      // Cloud shadows sliding across the mid sky — the sky breathes.
-      for (const c of clouds) {
-        c.x += c.vx * dt;
-        if (c.x - c.rx > w) c.x = -c.rx;
-        if (c.x + c.rx < 0) c.x = w + c.rx;
-        const g = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.rx);
-        g.addColorStop(0, `rgba(10, 14, 30, ${c.a})`);
-        g.addColorStop(1, "rgba(10, 14, 30, 0)");
-        ctx.save();
-        ctx.translate(c.x, c.y);
-        ctx.scale(1, c.ry / c.rx);
-        ctx.translate(-c.x, -c.y);
-        ctx.fillStyle = g;
-        ctx.fillRect(c.x - c.rx, c.y - c.rx, c.rx * 2, c.rx * 2);
-        ctx.restore();
-      }
-
-      // Bird flocks — a small "v" crosses the sky every 10–20s.
-      if (!birds.length && t > nextFlockAt) {
+      // A satellite — a slow steady star crawling in orbit, blinking
+      // every couple of seconds as its panels catch the sun.
+      if (!sat && t > nextSatAt) {
         const fromLeft = Math.random() < 0.5;
-        const n = 3 + ((Math.random() * 4) | 0);
-        const baseY = h * rand(0.12, 0.4);
-        const vx = (fromLeft ? 1 : -1) * rand(70, 120);
-        birds = Array.from({ length: n }, (_, i) => ({
-          x: (fromLeft ? -30 : w + 30) + (fromLeft ? -1 : 1) * i * rand(18, 34),
-          y: baseY + (i % 2 === 0 ? 1 : -1) * i * rand(6, 16),
-          vx: vx * rand(0.92, 1.1),
-          flap: rand(9, 13),
-          size: rand(4.5, 8),
-          phase: Math.random() * Math.PI * 2,
-        }));
+        const vx = (fromLeft ? 1 : -1) * rand(24, 40);
+        sat = {
+          x: fromLeft ? -10 : w + 10,
+          y: h * rand(0.05, 0.24),
+          vx,
+          life: 0,
+          max: (w + 20) / Math.abs(vx),
+        };
       }
-      for (const b of birds) {
-        b.x += b.vx * dt;
-        b.y += Math.sin(t * 0.7 + b.phase) * 6 * dt;
-        drawBird(b, t);
+      if (sat) {
+        sat.life += dt;
+        sat.x += sat.vx * dt;
+        const blink = (t * 0.5) % 1 < 0.08 ? 1 : 0;
+        drawDot(sat.x, sat.y, blink ? 1.6 : 0.9, `rgba(220, 240, 255, ${blink ? 0.9 : 0.35})`);
+        if (sat.life >= sat.max || sat.x < -20 || sat.x > w + 20) {
+          sat = null;
+          nextSatAt = t + rand(28, 45);
+        }
       }
-      birds = birds.filter((b) => b.x > -60 && b.x < w + 60);
-      if (!birds.length) nextFlockAt = t + rand(10, 20);
+
+      // A shooting star — a fast streak high in the sky.
+      if (!meteor && t > nextMeteorAt) {
+        const ang = rand(0.45, 0.75);
+        const dirRight = Math.random() < 0.5 ? 1 : -1;
+        const speed = rand(620, 900);
+        meteor = {
+          x: rand(0.15, 0.85) * w,
+          y: rand(0.04, 0.22) * h,
+          vx: dirRight * Math.cos(ang) * speed,
+          vy: Math.sin(ang) * speed,
+          life: 0,
+          max: rand(0.55, 0.85),
+        };
+      }
+      if (meteor) {
+        meteor.life += dt;
+        meteor.x += meteor.vx * dt;
+        meteor.y += meteor.vy * dt;
+        const fade = Math.max(0, 1 - meteor.life / meteor.max);
+        const tailX = meteor.x - meteor.vx * 0.1;
+        const tailY = meteor.y - meteor.vy * 0.1;
+        const g = ctx.createLinearGradient(meteor.x, meteor.y, tailX, tailY);
+        g.addColorStop(0, `rgba(235, 248, 255, ${(0.85 * fade).toFixed(3)})`);
+        g.addColorStop(1, "rgba(235, 248, 255, 0)");
+        ctx.strokeStyle = g;
+        ctx.lineWidth = 1.4;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(meteor.x, meteor.y);
+        ctx.lineTo(tailX, tailY);
+        ctx.stroke();
+        if (meteor.life >= meteor.max) {
+          meteor = null;
+          nextMeteorAt = t + rand(18, 34);
+        }
+      }
 
       // The airliner — slow, far, strobes blinking.
       if (!plane && t > nextPlaneAt) {
@@ -348,7 +313,20 @@ export function AmbientBackground() {
       }
       if (plane) {
         plane.life += dt;
-        drawPlane(plane, t);
+        const fus = 5.5;
+        const dir = Math.sign(plane.vx);
+        ctx.strokeStyle = "rgba(16, 12, 10, 0.55)";
+        ctx.lineWidth = 2;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(plane.x - fus * dir, plane.y);
+        ctx.lineTo(plane.x + fus * dir, plane.y);
+        ctx.stroke();
+        const blink = (t * 1.1) % 1;
+        if (blink < 0.12) drawDot(plane.x - fus * dir, plane.y, 1.6, "rgba(255, 64, 44, 0.95)");
+        if (blink > 0.5 && blink < 0.56) drawDot(plane.x + fus * dir, plane.y, 2.1, "rgba(255, 255, 255, 0.95)");
+        drawDot(plane.x - fus * dir, plane.y, 0.8, "rgba(255, 64, 44, 0.35)");
+        drawDot(plane.x + fus * dir, plane.y, 0.9, "rgba(255, 255, 255, 0.3)");
         plane.x += plane.vx * dt;
         if (plane.life >= plane.max || plane.x < -40 || plane.x > w + 40) {
           plane = null;
@@ -402,94 +380,20 @@ export function AmbientBackground() {
 
   return (
     <div className="city-root" aria-hidden="true">
-      {/* L1 — the panorama: ken-burns photo inside a scroll-parallax wrap.
-          The drawn sun is a CHILD of the photo so the drift carries it. */}
+      {/* L1 — the night panorama: ken-burns photo inside a scroll
+          parallax wrap. Nothing is drawn on top of the photo. */}
       <div ref={parallaxRef} className="city-parallax">
-        <div className="city-photo">
-          <div ref={sunRef} className="city-sun">
-            <div className="city-sun-wash" />
-            <div className="city-sun-band" />
-            <div className="city-sun-corona" />
-            <div className="city-sun-core" />
-          </div>
-        </div>
+        <div className="city-photo" />
       </div>
-      {/* L2 — foreground hills: two silhouette depths with their own,
-          faster parallax (near slides more — the hill you stand on).
-          Each ridge carries a warm rim light: the low sun catching the
-          hilltop is what makes the silhouette READ against the sprawl. */}
-      <div ref={hillsFarRef} className="city-hills city-hills--far">
-        <svg viewBox="0 0 1440 240" preserveAspectRatio="none" aria-hidden="true">
-          <defs>
-            <linearGradient id="hill-rim-far" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="rgba(255, 132, 62, 0.42)" />
-              <stop offset="100%" stopColor="rgba(255, 132, 62, 0)" />
-            </linearGradient>
-          </defs>
-          <path
-            className="city-hill city-hill--far"
-            d="M0 240 L0 96 C 140 66 300 120 470 92 C 640 64 780 110 940 86 C 1110 60 1290 108 1440 84 L 1440 240 Z"
-          />
-          <path
-            className="city-hill-glow"
-            d="M0 96 C 140 66 300 120 470 92 C 640 64 780 110 940 86 C 1110 60 1290 108 1440 84"
-            fill="none"
-            stroke="url(#hill-rim-far)"
-            strokeWidth="10"
-          />
-          <path
-            d="M0 96 C 140 66 300 120 470 92 C 640 64 780 110 940 86 C 1110 60 1290 108 1440 84"
-            fill="none"
-            stroke="url(#hill-rim-far)"
-            strokeWidth="4"
-          />
-        </svg>
-      </div>
-      <div ref={hillsNearRef} className="city-hills city-hills--near">
-        <svg viewBox="0 0 1440 300" preserveAspectRatio="none" aria-hidden="true">
-          <defs>
-            <linearGradient id="hill-rim-near" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="rgba(255, 126, 58, 0.62)" />
-              <stop offset="100%" stopColor="rgba(255, 126, 58, 0)" />
-            </linearGradient>
-          </defs>
-          {/* Asymmetric ridge: a high dark slope on the LEFT — the hill
-              you stand on, rising into the frame — opening to a low
-              right edge so the sun-side horizon stays wide. */}
-          <path
-            className="city-hill city-hill--near"
-            d="M0 300 L0 0 C 150 14 320 104 520 148 C 760 200 950 185 1140 220 C 1270 243 1370 233 1440 238 L 1440 300 Z"
-          />
-          <path
-            className="city-hill-glow"
-            d="M0 0 C 150 14 320 104 520 148 C 760 200 950 185 1140 220 C 1270 243 1370 233 1440 238"
-            fill="none"
-            stroke="url(#hill-rim-near)"
-            strokeWidth="14"
-          />
-          <path
-            d="M0 0 C 150 14 320 104 520 148 C 760 200 950 185 1140 220 C 1270 243 1370 233 1440 238"
-            fill="none"
-            stroke="url(#hill-rim-near)"
-            strokeWidth="6"
-          />
-        </svg>
-      </div>
-      {/* L3 — living layer: stars, lights, haze, clouds, birds, plane. */}
+      {/* L2 — living layer: aurora, stars, light rivers, satellite,
+          shooting star, the airliner. */}
       <canvas ref={canvasRef} className="city-living" />
-      {/* L4 — film grain: tactile finish. */}
+      {/* L3 — film grain: tactile finish. */}
       <div className="city-grain" />
-      {/* L5 — readability: navy wash + top/bottom bands + vignette. */}
+      {/* L4 — a LIGHT navy readability veil: the city stays visible edge
+          to edge — no near-black band at the bottom. */}
       <div className="city-scrim" />
       <div className="city-vignette" />
-      {/* L6 — the sun's BLOOM, above the scrims: without it the navy
-          veil eats the glow and the red sun reads as pasted. A wide
-          warm haze plus the visible dim disc, riding the photo's
-          parallax so it stays glued to the horizon. */}
-      <div ref={bloomRef} className="city-bloom">
-        <div className="city-bloom-glow" />
-        <div className="city-bloom-disc" />
-      </div>
     </div>
   );
 }

@@ -6,16 +6,15 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X, VolumeX, MessageCircle, Scale } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { useReducedMotionSafe } from "@/lib/use-reduced-motion-safe";
-import { GoldieArms, GoldieFace, type GoldieMood } from "@/components/recovery/goldie-face";
+import { HoloOrb, type OrbMood } from "@/components/recovery/holo-orb";
 
 /**
- * Goldie — the live AI: a drawn golden coin character that roams the page.
- * He wanders to random waypoints, watches the cursor (eyes track, leans
- * toward it, springs away when a hand comes too close), can be PICKED UP
- * and dragged anywhere, and shows his mood on his face — talking arcs and
- * a waving arm for tips, wide eyes and flailing arms while carried.
- * Section tips still fire wherever he happens to be; clicking (not
- * dragging) him opens the chat with the section context.
+ * ARIA — the live AI: a holographic orb that roams the page. She drifts
+ * to random waypoints, leans toward the cursor and springs away when a
+ * hand comes too close, can be PICKED UP and carried anywhere (rings
+ * spin wild while dragged), and speaks in ripples when a tip fires.
+ * Section tips still fire wherever she happens to be; clicking (not
+ * dragging) her opens the chat with the section context.
  */
 
 interface SectionSpot {
@@ -55,7 +54,7 @@ export function AiGuide() {
   const reduceMotion = useReducedMotionSafe();
   const { t, tArr } = useI18n();
   const pathname = usePathname();
-  // Goldie walks a different set of sections on each page.
+  // ARIA walks a different set of sections on each page.
   const sectionSpots = pathname.startsWith("/tools")
     ? TOOLS_SECTION_SPOTS
     : pathname.startsWith("/business")
@@ -85,7 +84,7 @@ export function AiGuide() {
   }, [activeId]);
 
   /* ---------------------------------------------------------------- */
-  /* Roaming — Goldie is a free agent. He drifts to random waypoints  */
+  /* Roaming — ARIA is a free agent. She drifts to random waypoints  */
   /* across the viewport (never fully random: at least 22vw hops,    */
   /* margins respected), leans toward the cursor out of curiosity,    */
   /* and playfully springs away when a hand comes too close. Tips     */
@@ -105,7 +104,7 @@ export function AiGuide() {
   const lastPtrRef = useRef({ x: 0, y: 0 });
 
   /* ---------------------------------------------------------------- */
-  /* Pick-up & drag — Goldie can be carried anywhere. Pointer events */
+  /* Pick-up & drag — ARIA can be carried anywhere. Pointer events */
   /* with capture: a press that moves >6px becomes a drag (the coin   */
   /* follows 1:1, roam is paused, the click is suppressed); a press  */
   /* without movement stays a click and opens the chat. After the    */
@@ -301,7 +300,7 @@ export function AiGuide() {
         activeIdRef.current === null
       ) {
         setTip(tRef.current("guide.welcome"));
-        // The welcome tip must auto-hide — otherwise Goldie "dwells to
+        // The welcome tip must auto-hide — otherwise ARIA "dwells to
         // talk" forever and never starts roaming the page.
         const hide = setTimeout(() => setTip(null), 11000);
         timersRef.current.push(hide);
@@ -368,7 +367,7 @@ export function AiGuide() {
   const alignRight = roam.right;
 
   // Mood, most urgent first: carried > talking > fleeing > curious > idle.
-  const mood: GoldieMood = dragging
+  const mood: OrbMood = dragging
     ? "drag"
     : tip
       ? "talk"
@@ -475,7 +474,7 @@ export function AiGuide() {
               }`}
             >
               <p className="flex items-start gap-2 text-xs leading-relaxed text-zinc-300">
-                {/* Scales of justice: Goldie's tips are about your rights. */}
+                {/* Scales of justice: her tips are about your rights. */}
                 <Scale
                   className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-300"
                   aria-hidden="true"
@@ -563,32 +562,24 @@ export function AiGuide() {
               transition: "transform 0.18s cubic-bezier(0.22, 1, 0.36, 1)",
             }}
           >
+            {/* Ambient bloom behind the orb (own layer, cheap). */}
             <span
               aria-hidden="true"
-              className={`absolute -inset-1.5 rounded-full bg-amber-400/25 blur-md transition-opacity duration-300 ${
-                tip ? "opacity-100 animate-glow" : "opacity-60 group-hover:opacity-100"
+              className={`absolute -inset-2.5 rounded-full bg-teal-300/20 blur-lg transition-opacity duration-300 ${
+                tip ? "opacity-100 animate-glow" : "opacity-50 group-hover:opacity-90"
               }`}
             />
-            {/* Arms — behind the coin, poking out at the sides. */}
-            <GoldieArms mood={mood} />
-            {/* The coin — round golden ring, drawn character face, glow,
-                hover scale. Later sibling of the arms → stacked on top. */}
+            {/* ARIA — the holographic orb: core, gyroscope rings, spark.
+                Rings may poke outside the hit circle (no overflow clip). */}
             <span
-              className={`relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 bg-cf-deep/70 shadow-[0_0_28px_-6px_rgba(251,191,36,0.55)] transition-transform duration-200 group-hover:scale-105 sm:h-16 sm:w-16 ${
-                tip ? "border-amber-300" : "border-amber-300/70"
+              className={`relative block h-14 w-14 transition-transform duration-200 group-hover:scale-105 sm:h-16 sm:w-16 ${
+                tip ? "animate-glow" : ""
               }`}
             >
-              <GoldieFace mood={mood} />
+              <HoloOrb mood={mood} />
             </span>
-            <span className="pointer-events-none absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-zinc-950 bg-amber-400 text-zinc-950">
+            <span className="pointer-events-none absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-zinc-950 bg-teal-300 text-zinc-950">
               <MessageCircle className="h-3 w-3" aria-hidden="true" />
-            </span>
-            {/* "Objection!" — the § badge while he is carried away. */}
-            <span
-              aria-hidden="true"
-              className={`goldie-objection ${dragging ? "goldie-objection--on" : ""}`}
-            >
-              §
             </span>
           </span>
         </motion.button>

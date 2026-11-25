@@ -1,11 +1,11 @@
 export default {
   welcome:
-    "Welcome! I'm Goldie — I roam this site and drop tips as you scroll. Click me anytime to chat with our AI assistant.",
+    "Welcome! I'm ARIA — I roam this site and drop tips as you scroll. Click me anytime to chat with our AI assistant.",
   dismiss: "Dismiss tip",
   mute: "Mute tips for this visit",
   unmute: "Tips off — turn on",
-  avatarLabel: "Goldie, the site guide — click to chat with the AI",
-  askGoldie: "Ask Goldie about this section",
+  avatarLabel: "ARIA, the site guide — click to chat with the AI",
+  askARIA: "Ask ARIA about this section",
   tips: {
     how: [
       "New here? The whole flow is: answer a few questions, see matching programs with reasons, file with a checklist. No signup needed.",

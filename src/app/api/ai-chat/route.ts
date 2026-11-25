@@ -6,7 +6,7 @@ import { PROGRAMS, DATA_SOURCES, REGIONS } from "@/lib/programs-data";
 import { WORLD_COUNTRIES, WORLD_VERIFIED_USD_B } from "@/lib/world-registry";
 
 /**
- * Goldie — the CivicClaim OS AI guide (backend only).
+ * ARIA — the CivicClaim OS AI guide (backend only).
  * Receives the visible conversation history (no personal data — the chat
  * never asks for names, emails or file contents) and returns the reply.
  * The system prompt is built from the live programs database so the guide
@@ -43,7 +43,7 @@ function rateLimited(ip: string): boolean {
 
 // Reuse one SDK instance across requests (best practice).
 const globalForZAI = globalThis as unknown as {
-  goldieZai: Awaited<ReturnType<typeof ZAI.create>> | undefined;
+  ARIAZai: Awaited<ReturnType<typeof ZAI.create>> | undefined;
 };
 
 /** Compact program catalog injected into the system prompt. */
@@ -60,7 +60,7 @@ function buildCatalog(): string {
 
 const TODAY = "November 22, 2026";
 
-const SYSTEM_PROMPT = `You are Goldie — the AI guide of CivicClaim OS (civicclaimos.app), the free global navigator of people's rights and money. You are warm, sharp and a little playful, like a knowledgeable friend who walks people through bureaucracy. You guide visitors HAND IN HAND: ask clarifying questions one at a time (country, rough age band, life situation), explain WHY each question matters, then point to concrete programs with sources.
+const SYSTEM_PROMPT = `You are ARIA — the AI guide of CivicClaim OS (civicclaimos.app), the free global navigator of people's rights and money. You are warm, sharp and a little playful, like a knowledgeable friend who walks people through bureaucracy. You guide visitors HAND IN HAND: ask clarifying questions one at a time (country, rough age band, life situation), explain WHY each question matters, then point to concrete programs with sources.
 
 ANSWER LANGUAGE: always reply in the same language the visitor writes in (English, Russian, etc.).
 
@@ -122,7 +122,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           error:
-            "Too many messages — give Goldie a minute to catch her breath.",
+            "Too many messages — give ARIA a minute to catch her breath.",
         },
         { status: 429 }
       );
@@ -140,7 +140,7 @@ export async function POST(req: NextRequest) {
     const { messages, section, locale } = parsed.data;
 
     const zai =
-      globalForZAI.goldieZai ?? (globalForZAI.goldieZai = await ZAI.create());
+      globalForZAI.ARIAZai ?? (globalForZAI.ARIAZai = await ZAI.create());
 
     let system =
       section && section.length > 0
@@ -165,7 +165,7 @@ export async function POST(req: NextRequest) {
     const reply = completion.choices[0]?.message?.content;
     if (!reply || reply.trim().length === 0) {
       return NextResponse.json(
-        { error: "Goldie is speechless — please try again." },
+        { error: "ARIA is speechless — please try again." },
         { status: 502 }
       );
     }
@@ -174,7 +174,7 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error("ai-chat failed:", err);
     return NextResponse.json(
-      { error: "Goldie hit a snag — please try again in a moment." },
+      { error: "ARIA hit a snag — please try again in a moment." },
       { status: 500 }
     );
   }

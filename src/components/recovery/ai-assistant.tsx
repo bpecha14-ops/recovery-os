@@ -15,7 +15,7 @@ export interface ChatMessage {
 }
 
 /** The corner trigger: a clean gold “spark” glyph — the universal AI mark.
- *  Goldie (the golden coin) roams the page as the live guide; this button
+ *  ARIA (the golden coin) roams the page as the live guide; this button
  *  stays a quiet, abstract launcher for the same chat. */
 function AiGlyph({ className = "" }: { className?: string }) {
   const uid = useId().replace(/[^a-zA-Z0-9-]/g, "");
@@ -202,7 +202,7 @@ export function AiAssistant() {
           </span>
         )}
         <span className="pointer-events-none absolute -left-1 top-0 hidden -translate-x-full whitespace-nowrap rounded-md border border-amber-400/25 bg-cf-deep/95 px-2.5 py-1.5 text-xs font-medium text-amber-100 opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100 sm:block">
-          {t("assistant.askGoldie")}
+          {t("assistant.askARIA")}
         </span>
       </motion.button>
 
@@ -223,14 +223,14 @@ export function AiAssistant() {
               <span className="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full border border-amber-300/60">
                 { }
                 <img
-                  src="/ai-goldie.png"
+                  src="/ai-ARIA.png"
                   alt=""
                   className="h-full w-full object-cover"
                 />
               </span>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-bold text-white">
-                  Goldie
+                  ARIA
                   <span className="ml-2 rounded-full border border-amber-400/30 bg-amber-400/10 px-1.5 py-0.5 align-middle text-[10px] font-semibold uppercase tracking-wide text-amber-300">
                     {t("assistant.aiScout")}
                   </span>
@@ -289,7 +289,7 @@ export function AiAssistant() {
                   {m.role === "assistant" && (
                     <span className="h-7 w-7 shrink-0 overflow-hidden rounded-full border border-amber-300/50">
                       { }
-                      <img src="/ai-goldie.png" alt="" className="h-full w-full object-cover" />
+                      <img src="/ai-ARIA.png" alt="" className="h-full w-full object-cover" />
                     </span>
                   )}
                   <div
@@ -312,7 +312,7 @@ export function AiAssistant() {
                 <div className="flex items-end gap-2">
                   <span className="h-7 w-7 shrink-0 overflow-hidden rounded-full border border-amber-300/50">
                     { }
-                    <img src="/ai-goldie.png" alt="" className="h-full w-full object-cover" />
+                    <img src="/ai-ARIA.png" alt="" className="h-full w-full object-cover" />
                   </span>
                   <div className="flex items-center gap-1.5 rounded-2xl rounded-bl-md border border-amber-400/15 bg-white/[0.03] px-4 py-3">
                     {[0, 1, 2].map((d) => (

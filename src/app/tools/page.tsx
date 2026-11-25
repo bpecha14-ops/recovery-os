@@ -6,7 +6,7 @@ import { ToolsPage } from "@/components/recovery/tools-page";
  * /tools — the eligibility wizard leads (it is the product's core),
  * followed by the program search, the claim assistant and the heritage
  * money-recovery tools. The global layout provides the ambient
- * background, header, footer and Goldie.
+ * background, header, footer and ARIA.
  */
 export const metadata: Metadata = {
   title: "Check what you're owed — the anonymous eligibility wizard",

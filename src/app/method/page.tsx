@@ -221,7 +221,7 @@ export default function MethodPage() {
           them — never case strategy, never outcome predictions, never
           representation. A complex case (disputes, appeals, denied claims,
           anything a form can&apos;t settle) is a case for a human: the
-          wizard and Goldie both say so and point to the official channels.
+          wizard and ARIA both say so and point to the official channels.
           See{" "}
           <Link href="/terms" className="text-cf-cyan hover:underline">
             /terms
@@ -236,7 +236,7 @@ export default function MethodPage() {
           AI behaviours we test
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-zinc-400">
-          Goldie, the AI guide, is a guide — not an oracle. It answers only
+          ARIA, the AI guide, is a guide — not an oracle. It answers only
           from verified package records, never decides eligibility, never
           gives legal advice, and labels machine translation. These are the
           behaviours we run against the live assistant:

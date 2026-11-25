@@ -97,7 +97,7 @@ export default {
     whyHeading: "Why it matched",
     whyMissing: "What is missing",
     unknownNote: "Needs confirmation with the official source",
-    empty: "No strong matches with those answers. Try adjusting the category filter or a life-situation answer — or ask Goldie, the AI guide, what to check.",
+    empty: "No strong matches with those answers. Try adjusting the category filter or a life-situation answer — or ask ARIA, the AI guide, what to check.",
     privacyNote: "Your answers never left this browser. Nothing was saved or sent.",
   },
   claim: {
