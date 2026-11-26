@@ -355,15 +355,15 @@
 .city-photo {
   position: absolute;
   inset: 0;
-  background-image: url("/city-sunset-v2.jpg");
+  background-image: url("/night-la-v1.jpg");
   background-size: cover;
-  background-position: center 46%;
+  background-position: center 50%;
   will-change: transform;
   animation: city-kenburns 90s ease-in-out infinite alternate;
 }
 @media (max-width: 767px) {
   .city-photo {
-    background-position: 88% 46%;
+    background-position: center 58%;
   }
 }
 @keyframes city-kenburns {
@@ -403,7 +403,7 @@
     rgba(6, 11, 24, 0.36) 26%,
     rgba(6, 11, 24, 0.32) 55%,
     rgba(6, 11, 24, 0.36) 80%,
-    rgba(4, 8, 18, 0.5) 100%
+    rgba(4, 8, 18, 0.56) 100%
   );
 }
 .city-vignette {
@@ -552,48 +552,72 @@
 }
 
 /* The orbital rings — one circle each, tilted into ellipses and spun.
-   Ring A: wide near-horizontal, slow. Ring B: counter-rotating, mid
-   tilt. Ring C: steep, fastest — a gyroscope in three axes. */
+   Ring A: wide near-horizontal, slow, with a warm electron riding it.
+   Ring B: STEEP crossing orbit (rotateY-dominant) that pierces the
+   core diagonally — that break from concentric is what keeps the orb
+   reading as an atom, not an eye. Ring C: flat, fast, close-in. */
 .halo-ring {
   position: absolute;
   inset: 4%;
   border-radius: 50%;
-  border: 1.5px solid rgba(125, 211, 252, 0.5);
+  border: 1.5px solid rgba(125, 211, 252, 0.66);
   box-shadow:
-    0 0 6px rgba(56, 189, 248, 0.25),
-    inset 0 0 6px rgba(56, 189, 248, 0.18);
+    0 0 7px rgba(56, 189, 248, 0.34),
+    inset 0 0 6px rgba(56, 189, 248, 0.22);
   will-change: transform;
 }
 .halo-ring--a {
   animation: halo-orbit-a 9s linear infinite;
 }
 .halo-ring--b {
-  inset: 8%;
-  border-color: rgba(167, 139, 250, 0.55);
+  inset: 6%;
+  border-color: rgba(167, 139, 250, 0.66);
   box-shadow:
-    0 0 6px rgba(139, 92, 246, 0.25),
-    inset 0 0 6px rgba(139, 92, 246, 0.18);
+    0 0 7px rgba(139, 92, 246, 0.34),
+    inset 0 0 6px rgba(139, 92, 246, 0.22);
   animation: halo-orbit-b 13s linear infinite;
 }
 .halo-ring--c {
   inset: 0%;
-  border-color: rgba(94, 234, 212, 0.42);
+  border-color: rgba(94, 234, 212, 0.5);
   box-shadow:
-    0 0 5px rgba(45, 212, 191, 0.22),
-    inset 0 0 5px rgba(45, 212, 191, 0.16);
+    0 0 5px rgba(45, 212, 191, 0.26),
+    inset 0 0 5px rgba(45, 212, 191, 0.18);
   animation: halo-orbit-c 6.5s linear infinite;
 }
 @keyframes halo-orbit-a {
-  from { transform: rotateX(74deg) rotateZ(0deg); }
-  to { transform: rotateX(74deg) rotateZ(360deg); }
+  from { transform: rotateX(76deg) rotateZ(0deg); }
+  to { transform: rotateX(76deg) rotateZ(360deg); }
 }
 @keyframes halo-orbit-b {
-  from { transform: rotateX(62deg) rotateZ(360deg); }
-  to { transform: rotateX(62deg) rotateZ(0deg); }
+  from { transform: rotateY(64deg) rotateX(22deg) rotateZ(360deg); }
+  to { transform: rotateY(64deg) rotateX(22deg) rotateZ(0deg); }
 }
 @keyframes halo-orbit-c {
   from { transform: rotateX(80deg) rotateY(24deg) rotateZ(0deg); }
   to { transform: rotateX(80deg) rotateY(24deg) rotateZ(360deg); }
+}
+
+/* Electrons — bright sparks riding the rings. They are children of the
+   ring elements positioned at the ring's rim, so the ring's own 3D
+   rotation carries each spark around its whole orbit for free. */
+.halo-dot {
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  will-change: transform;
+}
+.halo-dot--a {
+  background: radial-gradient(circle, #fff 0%, rgba(186, 230, 253, 0.95) 45%, rgba(56, 189, 248, 0) 75%);
+  box-shadow: 0 0 6px rgba(125, 211, 252, 0.9);
+}
+.halo-dot--b {
+  background: radial-gradient(circle, #fff 0%, rgba(196, 181, 253, 0.95) 45%, rgba(139, 92, 246, 0) 75%);
+  box-shadow: 0 0 6px rgba(167, 139, 250, 0.9);
 }
 
 /* The glassy core. */
@@ -714,8 +738,8 @@
   to { transform: rotateX(58deg) rotateZ(360deg); }
 }
 @keyframes halo-orbit-drag-b {
-  from { transform: rotateX(46deg) rotateZ(360deg); }
-  to { transform: rotateX(46deg) rotateZ(0deg); }
+  from { transform: rotateY(48deg) rotateX(16deg) rotateZ(360deg); }
+  to { transform: rotateY(48deg) rotateX(16deg) rotateZ(0deg); }
 }
 @keyframes halo-orbit-drag-c {
   from { transform: rotateX(66deg) rotateY(30deg) rotateZ(0deg); }

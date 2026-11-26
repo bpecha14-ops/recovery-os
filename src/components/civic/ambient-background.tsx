@@ -3,25 +3,28 @@
 import { useEffect, useRef } from "react";
 
 /**
- * AmbientBackground — the living backdrop, v5 "Night Metropolis".
+ * AmbientBackground — the living backdrop, v5.1 "Night Metropolis".
  *
- * A vast night Los Angeles (public/city-sunset-v2.jpg) filling the WHOLE
- * page — nothing is drawn on top of the photo; the horizon glow is the
- * photo's own. Kept alive around it:
+ * A true deep-night Los Angeles (public/night-la-v1.jpg — real night
+ * shot, freeway light trails, DTLA skyline) filling the WHOLE page.
+ * Nothing is painted on top of the photo. Kept alive around it:
  *
  *   photo (slow ken-burns) inside a scroll-parallax wrap
  *   canvas, the night itself:
  *     – stars and a faint teal-violet aurora ribbon high in the sky
  *     – a satellite crawling in orbit, an occasional shooting star
- *     – an airliner with blinking strobes (the LAX approach stack)
+ *     – airliners with blinking strobes (the LAX approach stack)
+ *     – an LAPD helicopter patrolling with a sweeping searchlight
+ *     – red tower beacons blinking on the skyline's tallest buildings
  *     – a denser, city-wide twinkle with cyan/violet neon sparks
  *     – LIGHT RIVERS: continuous head/tail-light streams flowing along
  *       curved freeways — the signature of LA at night
  *   film grain + a LIGHT navy readability veil (the city stays visible
- *     edge to edge; the old near-black bottom band is gone)
+ *     edge to edge — the old near-black bottom band is gone)
  *
  * The drawn sun / red horizon strip / foreground hills of v4 were
- * removed: they read as pasted-on. What remains is photographic.
+ * removed, and the dusk photo itself was replaced with a true night
+ * one: any horizon warmth now belongs to the real city, not a sun.
  *
  * Performance contract (unchanged): one canvas, DPR ≤ 1.75, rAF capped
  * at ~40fps, paused when hidden, one static frame under reduced
@@ -41,10 +44,13 @@ type River = {
   y2: number;
   cars: Car[];
   dir: 1 | -1; // 1 = head lights (warm), -1 = tail lights (red)
+  scale: number; // depth: nearer rivers draw larger cars
 };
 type Sat = { x: number; y: number; vx: number; life: number; max: number };
 type Meteor = { x: number; y: number; vx: number; vy: number; life: number; max: number };
 type Plane = { x: number; y: number; vx: number; life: number; max: number };
+type Beacon = { x: number; y: number; phase: number; speed: number };
+type Heli = { x: number; y: number; vx: number; sway: number; life: number; max: number };
 
 export function AmbientBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -90,6 +96,9 @@ export function AmbientBackground() {
     let lights: Light[] = [];
     let ribbons: Ribbon[] = [];
     let rivers: River[] = [];
+    let beacons: Beacon[] = [];
+    let heli: Heli | null = null;
+    let nextHeliAt = 20;
     let sat: Sat | null = null;
     let meteor: Meteor | null = null;
     let plane: Plane | null = null;
@@ -104,7 +113,7 @@ export function AmbientBackground() {
       stars = Array.from({ length: small ? 18 : 36 }, () => ({
         x: Math.random() * w,
         y: Math.random() * h * 0.3,
-        r: rand(0.4, 1.2),
+        r: rand(0.5, 1.6),
         phase: Math.random() * Math.PI * 2,
         speed: rand(0.4, 1.4),
       }));
@@ -123,24 +132,27 @@ export function AmbientBackground() {
       });
       // Aurora ribbon — two soft teal/violet bands waving high up.
       ribbons = [
-        { x: w * 0.3, y: h * 0.1, rx: w * 0.36, ry: h * 0.06, vx: rand(3, 7), hue: "45, 212, 191", a: 0.075, phase: rand(0, 6) },
-        { x: w * 0.75, y: h * 0.16, rx: w * 0.3, ry: h * 0.05, vx: rand(-6, -3), hue: "139, 92, 246", a: 0.06, phase: rand(0, 6) },
+        { x: w * 0.3, y: h * 0.1, rx: w * 0.36, ry: h * 0.06, vx: rand(3, 7), hue: "45, 212, 191", a: 0.16, phase: rand(0, 6) },
+        { x: w * 0.75, y: h * 0.16, rx: w * 0.3, ry: h * 0.05, vx: rand(-6, -3), hue: "139, 92, 246", a: 0.13, phase: rand(0, 6) },
       ];
-      // Light rivers — flowing freeway streams across the basin.
+      // Light rivers — freeway streams kept BELOW the skyline band
+      // (y 0.66-0.87) with gentle road-like bends, so the streaks trace
+      // plausible corridors through the basin instead of crossing sky.
       const riverCount = small ? 2 : 3;
       rivers = Array.from({ length: riverCount }, (_, i) => {
-        const y = h * (0.6 + i * 0.13);
-        const bend = rand(-1, 1) * w * 0.18;
+        const y = h * (0.66 + i * 0.105);
+        const bend = rand(-1, 1) * w * 0.05;
         const dir: 1 | -1 = i % 2 === 0 ? 1 : -1;
-        const n = small ? 9 : 16;
+        const n = small ? 12 : 24;
         return {
           x0: -40,
-          y0: y + rand(-14, 14),
+          y0: y + rand(-10, 10),
           x1: w * 0.5,
           y1: y + bend,
           x2: w + 40,
-          y2: y + rand(-14, 14),
+          y2: y + rand(-10, 10),
           dir,
+          scale: rand(0.8, 1.25),
           cars: Array.from({ length: n }, () => ({
             t: Math.random(),
             speed: rand(0.07, 0.13),
@@ -148,6 +160,14 @@ export function AmbientBackground() {
           })),
         };
       });
+      // Tower beacons — the red aircraft-warning lights on the skyline's
+      // tallest buildings, blinking lazily out of phase.
+      beacons = Array.from({ length: small ? 5 : 8 }, () => ({
+        x: rand(0.06, 0.94) * w,
+        y: h * rand(0.33, 0.5),
+        phase: Math.random() * Math.PI * 2,
+        speed: rand(0.9, 1.6),
+      }));
     };
 
     const resize = () => {
@@ -203,13 +223,13 @@ export function AmbientBackground() {
 
       // Stars — faint twinkle under the aurora.
       for (const s of stars) {
-        const a = 0.1 + 0.34 * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase));
+        const a = 0.22 + 0.5 * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase));
         drawDot(s.x, s.y, s.r, `rgba(226, 232, 240, ${a.toFixed(3)})`);
       }
 
       // City lights — amber sea with cyan/violet neon sparks.
       for (const l of lights) {
-        const a = 0.16 + 0.42 * (0.5 + 0.5 * Math.sin(t * l.speed + l.phase));
+        const a = 0.22 + 0.5 * (0.5 + 0.5 * Math.sin(t * l.speed + l.phase));
         const fill =
           l.hue === 0
             ? `rgba(103, 232, 249, ${a.toFixed(3)})` // cyan spark
@@ -217,6 +237,18 @@ export function AmbientBackground() {
               ? `rgba(167, 139, 250, ${a.toFixed(3)})` // violet spark
               : `rgba(255, 196, 110, ${a.toFixed(3)})`; // warm window
         drawDot(l.x, l.y, l.r, fill);
+      }
+
+      // Tower beacons — red aircraft-warning lights blinking lazily
+      // on the skyline's tallest buildings.
+      for (const bc of beacons) {
+        // 35% of each cycle ON with a soft ramp — a real beacon pulse.
+        const cycle = (t * bc.speed + bc.phase) % (Math.PI * 2);
+        const a = cycle < 2.2 ? 0.95 * Math.sin((cycle / 2.2) * Math.PI) : 0;
+        if (a > 0.02) {
+          drawDot(bc.x, bc.y, 2.4, `rgba(255, 64, 64, ${a.toFixed(3)})`);
+          drawDot(bc.x, bc.y, 6.5, `rgba(255, 64, 64, ${(a * 0.4).toFixed(3)})`);
+        }
       }
 
       // Light rivers — continuous head/tail-light streams. Each car is
@@ -230,11 +262,28 @@ export function AmbientBackground() {
           const dx = p2.x - p.x;
           const dy = p2.y - p.y;
           const len = Math.hypot(dx, dy) || 1;
-          const x = p.x + (dy / len) * car.lane;
-          const y = p.y + (-dx / len) * car.lane;
-          // Halo pass then core — cheap glow, no shadowBlur.
-          drawDot(x, y, 3.2, r.dir === 1 ? "rgba(255, 214, 130, 0.10)" : "rgba(255, 90, 70, 0.10)");
-          drawDot(x, y, 1.3, r.dir === 1 ? "rgba(255, 236, 180, 0.55)" : "rgba(255, 108, 86, 0.55)");
+          const x = p.x + (dy / len) * car.lane * r.scale;
+          const y = p.y + (-dx / len) * car.lane * r.scale;
+          // A streak: two solid tail segments + hot head — the
+          // night-traffic read with zero gradient objects (the v1
+          // per-car gradient cost 20fps).
+          const ux = dx / len;
+          const uy = dy / len;
+          const streak = 14 * r.scale;
+          const warm = r.dir === 1;
+          ctx.lineWidth = 2.2 * r.scale;
+          ctx.lineCap = "round";
+          ctx.strokeStyle = warm ? "rgba(255, 236, 190, 0.30)" : "rgba(255, 116, 92, 0.30)";
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(x - ux * streak, y - uy * streak);
+          ctx.stroke();
+          ctx.strokeStyle = warm ? "rgba(255, 244, 214, 0.6)" : "rgba(255, 132, 108, 0.6)";
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(x - ux * streak * 0.45, y - uy * streak * 0.45);
+          ctx.stroke();
+          drawDot(x, y, 2.2 * r.scale, warm ? "rgba(255, 250, 236, 0.95)" : "rgba(255, 138, 116, 0.95)");
         }
       }
 
@@ -333,6 +382,57 @@ export function AmbientBackground() {
           nextPlaneAt = t + rand(25, 40);
         }
       }
+
+      // The LAPD helicopter — lower and closer than the airliners, with
+      // a sweeping searchlight cone that sways as it patrols.
+      if (!heli && t > nextHeliAt) {
+        const fromLeft = Math.random() < 0.5;
+        heli = {
+          x: fromLeft ? -30 : w + 30,
+          y: h * rand(0.3, 0.42),
+          vx: (fromLeft ? 1 : -1) * rand(38, 55),
+          sway: rand(0, Math.PI * 2),
+          life: 0,
+          max: (w + 80) / 45,
+        };
+        heli.max = (w + 80) / Math.abs(heli.vx);
+      }
+      if (heli) {
+        heli.life += dt;
+        heli.x += heli.vx * dt;
+        heli.sway += dt * 1.6;
+        const swayAngle = Math.sin(heli.sway) * 0.22; // rad off vertical
+        const beamLen = h * 0.34;
+        const beamW = 0.1; // half-width fraction
+        // Searchlight: a translucent trapezoid from the hull down to
+        // the city, bright where it lands, swaying with the patrol.
+        const bx = heli.x + Math.tan(swayAngle) * beamLen;
+        const by = heli.y + beamLen;
+        const g = ctx.createLinearGradient(heli.x, heli.y, bx, by);
+        g.addColorStop(0, "rgba(200, 224, 255, 0.0)");
+        g.addColorStop(0.25, "rgba(200, 224, 255, 0.05)");
+        g.addColorStop(1, "rgba(210, 232, 255, 0.11)");
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.moveTo(heli.x - 2, heli.y);
+        ctx.lineTo(heli.x + 2, heli.y);
+        ctx.lineTo(bx + beamW * beamLen, by);
+        ctx.lineTo(bx - beamW * beamLen, by);
+        ctx.closePath();
+        ctx.fill();
+        // Landing glow where the beam meets the city.
+        drawDot(bx, by, 9, "rgba(210, 232, 255, 0.05)");
+        drawDot(bx, by, 4, "rgba(215, 235, 255, 0.10)");
+        // Hull: dark dot + blinking red/white nav lights.
+        drawDot(heli.x, heli.y, 1.6, "rgba(12, 16, 26, 0.9)");
+        const hb = (t * 0.8) % 1;
+        if (hb < 0.5) drawDot(heli.x, heli.y, 1.2, "rgba(255, 60, 48, 0.85)");
+        if (hb > 0.25 && hb < 0.3) drawDot(heli.x, heli.y, 2, "rgba(255, 255, 255, 0.9)");
+        if (heli.life >= heli.max || heli.x < -50 || heli.x > w + 50) {
+          heli = null;
+          nextHeliAt = t + rand(40, 70);
+        }
+      }
     };
 
     let last = 0;
@@ -385,15 +485,16 @@ export function AmbientBackground() {
       <div ref={parallaxRef} className="city-parallax">
         <div className="city-photo" />
       </div>
-      {/* L2 — living layer: aurora, stars, light rivers, satellite,
-          shooting star, the airliner. */}
-      <canvas ref={canvasRef} className="city-living" />
-      {/* L3 — film grain: tactile finish. */}
-      <div className="city-grain" />
-      {/* L4 — a LIGHT navy readability veil: the city stays visible edge
-          to edge — no near-black band at the bottom. */}
+      {/* L2 — the navy readability veil FIRST: it dims the photo so
+          text contrasts, while the living lights above it stay BRIGHT
+          — distant lights punching through the haze, as in life. */}
       <div className="city-scrim" />
       <div className="city-vignette" />
+      {/* L3 — living layer ABOVE the veil: aurora, stars, light rivers,
+          beacons, satellite, shooting star, helicopter, the airliner. */}
+      <canvas ref={canvasRef} className="city-living" />
+      {/* L4 — film grain: tactile finish. */}
+      <div className="city-grain" />
     </div>
   );
 }

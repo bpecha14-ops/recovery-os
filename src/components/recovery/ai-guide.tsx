@@ -291,13 +291,16 @@ export function AiGuide() {
   };
 
   // Show a welcome tip shortly after load — only if the visitor is still
-  // at the top (no section tip has taken over).
+  // at the top (no section tip has taken over). On phones the tip bubble
+  // would cover the hero's eyebrow/heading, so she stays silent there
+  // and the orb alone marks her presence (tap → chat).
   useEffect(() => {
     const timer = setTimeout(() => {
       if (
         !muted &&
         dismissedRef.current.size === 0 &&
-        activeIdRef.current === null
+        activeIdRef.current === null &&
+        window.innerWidth >= 768
       ) {
         setTip(tRef.current("guide.welcome"));
         // The welcome tip must auto-hide — otherwise ARIA "dwells to
@@ -319,6 +322,8 @@ export function AiGuide() {
     }
     clearTimers();
     if (!section) return;
+    // Phones: the bubble covers content — tips stay desktop-only.
+    if (window.innerWidth < 768) return;
     const show = setTimeout(() => {
       if (muted || dismissedRef.current.has(section.id)) {
         setTip(null);
