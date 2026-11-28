@@ -323,15 +323,20 @@
 }
 
 /* ---------------------------------------------------------------------------
- * AMBIENT BACKGROUND v5 — "Night Metropolis".
- * A vast night Los Angeles (public/city-sunset-v2.jpg) filling the whole
- * page: ken-burns drift inside a scroll-parallax wrap, and a canvas of
- * aurora ribbons, stars, neon-sparked city twinkle, LIGHT RIVERS (freeway
- * light streams), a satellite, shooting stars and an LAX-bound airliner.
- * Nothing is painted on top of the photo — the v4 sun/hills overlays
- * were removed (they read as pasted-on). The readability veil is LIGHT:
- * the city stays visible edge to edge, no near-black bottom band. If the
- * photo is ever replaced, ship it under a NEW filename (cache rule).
+ * AMBIENT BACKGROUND v5.2 — "Locked-Camera Night".
+ * A true night Los Angeles photograph (public/night-la-v2.jpg — the v1
+ * frame with its baked side bars cropped off) filling the whole page.
+ * The camera is LOCKED — no ken-burns, no scroll parallax — like
+ * footage from a tripod-mounted cinema camera; only what is inside
+ * the frame moves, on the living canvas: faint stars, TRAFFIC (light
+ * streams flowing along three roads anchored to the photo's city band
+ * through the exact cover transform) and distant airliners (red
+ * beacon + double white strobe, no searchlight, no fuselage). The
+ * flying-dot/firefly layer, the LAPD helicopter and the aurora were
+ * removed after review — they read as fake over a real photo. The
+ * readability veil is LIGHT: the city stays visible edge to edge. If
+ * the photo is ever replaced, ship it under a NEW filename (cache
+ * rule) and keep IMG_W/IMG_H in the TSX in sync.
  * ------------------------------------------------------------------------- */
 .city-root {
   position: fixed;
@@ -343,39 +348,22 @@
   contain: strict;
 }
 
-/* Parallax wrapper — transform written by JS (scroll listener, clamped). */
-.city-parallax {
-  position: absolute;
-  inset: -6% 0; /* headroom so the drift never exposes an edge */
-  will-change: transform;
-}
-
-/* The photo — slow ken-burns, 90s each way, the whole night city
-   visible edge to edge. */
+/* The photograph — v2: the v1 frame with its baked side bars cropped
+   off. The camera is LOCKED (no ken-burns, no parallax): the frame
+   sits still like tripod footage, and only what is inside it moves
+   (traffic + airliners on the living canvas). */
 .city-photo {
   position: absolute;
   inset: 0;
-  background-image: url("/night-la-v1.jpg");
+  background-image: url("/night-la-v2.jpg");
   background-size: cover;
-  background-position: center 50%;
-  will-change: transform;
-  animation: city-kenburns 90s ease-in-out infinite alternate;
-}
-@media (max-width: 767px) {
-  .city-photo {
-    background-position: center 58%;
-  }
-}
-@keyframes city-kenburns {
-  from {
-    transform: scale(1.07) translate3d(-2.2%, 1%, 0);
-  }
-  to {
-    transform: scale(1.18) translate3d(2.4%, -1.8%, 0);
-  }
+  /* Bottom-anchored: on wide screens cover crops the sky, never the
+     city band — the traffic roads always stay on screen. JS mirrors
+     this exact anchor when mapping image coords to the canvas. */
+  background-position: center 100%;
 }
 
-/* Living canvas (aurora, stars, rivers, satellites, plane) — see TSX. */
+/* Living canvas (stars, traffic rivers, airliners) — see TSX. */
 .city-living {
   position: absolute;
   inset: 0;
@@ -410,12 +398,6 @@
   position: absolute;
   inset: 0;
   background: radial-gradient(120% 92% at 50% 42%, transparent 46%, rgba(3, 6, 16, 0.42) 100%);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .city-photo {
-    animation: none;
-  }
 }
 
 /* ---------------------------------------------------------------------------

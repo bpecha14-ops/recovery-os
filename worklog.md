@@ -227,3 +227,19 @@ Stage Summary:
 **QA:** tsc clean (app scope); `next build` EXIT 0 — /sitemap.xml prerendered, 74 SSG program pages, all APIs intact.
 
 **State:** not yet committed/pushed (awaiting user's Vercel + DNS steps); deployment note: old deployment URLs 301 to the primary domain once civicclaim.tech is set primary in Vercel.
+
+---
+
+## 2026-11-28 — Living page v5.2 "Locked-Camera Night" + DNS state
+
+**User review fixes (all four points):**
+- Black side bars: they were BAKED INTO night-la-v1.jpg (cols 0..149 and 1770..1919 near-black). Cropped the frame to its real content -> public/night-la-v2.jpg (1621x1080, q90); CSS points at the new filename (cache rule kept). Photo now fills the viewport edge to edge.
+- Flying "firefly" dots mid-screen: removed the abstract light rivers, the city-wide twinkle layer, satellite, shooting star, aurora ribbons and the random skyline beacons — none of them read as real over a real photograph.
+- Helicopter + searchlight: removed entirely (with the airliner's dark fuselage silhouette).
+- "Make it move like expensive video footage": camera is now LOCKED (ken-burns and scroll parallax deleted — tripod feel) and the motion lives INSIDE the frame: (a) TRAFFIC — continuous head/tail-light streams along three road curves placed in the photo's city band, geometry defined in photo-fraction coords and mapped through the exact CSS background cover transform (IMG_W/IMG_H mirror the asset), so streaks sit on the city on every viewport; photo is bottom-anchored (background-position center 100%, mirrored in JS) so wide screens crop sky, never the roads; (b) AIRLINERS — up to two distant crossings in the sky: soft red beacon pulse + double white strobe every ~1.4s, no lights-in-the-sky-ness.
+
+**QA:** geometry simulated on 1440x900 / 1920x1080 / 390x844 / 2560x1080 — all three roads on-canvas, tails wrap left, planes in band (scripts/verify_living_geometry.js + photo_crop_analyze.py); tsc clean; next build EXIT 0 (96 pages).
+
+**DNS:** www.civicclaim.tech live (CNAME -> cname.vercel-dns.com verified via 1.1.1.1/8.8.8.8); apex A record NOT found at registrant (InterNetX) — user must add A @ 76.76.21.21; old civicclaim-os.vercel.app already 308-redirects to the apex.
+
+**State:** pushing to GitHub main -> auto deploy; civicclaim.tech is primary production domain.
