@@ -209,3 +209,21 @@ Stage Summary:
 **QA:** build EXIT 0 (/, /tools, /business static); tsc clean; hydration-check clean on all 3 pages (normal + reduced motion); SSR HTML asserts ($70B/$186B+, no "missions", cross-page links, repo link); DOM QA: no horizontal overflow, sections correct, no page errors; PDF 15 pages, no blank pages.
 
 **State:** origin/main = this commit; production redeployed to civicclaim-os.vercel.app.
+
+---
+
+## 2026-11-28 — Primary domain civicclaim.tech: code-side switch
+
+**Domain (owned):** civicclaim.tech replaces civicclaimos.app / civicclaim-os.vercel.app as the canonical public URL. Vercel Domains + registrar DNS are done from the owner's accounts (not accessible from this sandbox); code below makes the app fully domain-ready.
+
+**Code:**
+- `src/lib/site.ts` (new): SITE_URL = https://civicclaim.tech — single source of truth for the public URL.
+- `layout.tsx`: metadataBase = SITE_URL (canonical/OG URL resolution); favicon switched from the external z-cdn URL to the local `/logo.svg` — site is now self-hosted end to end.
+- `src/app/sitemap.ts` (new): sitemap.xml with 11 static routes + all 74 program pages (/programs/[country]/[id], slugs identical to generateStaticParams). Verified in build output: 85 URLs, apex first.
+- `public/robots.txt`: added `Sitemap: https://civicclaim.tech/sitemap.xml`.
+- Program page generateMetadata: per-page canonical (/programs/[country]/[name]).
+- ai-chat system prompt: domain updated to civicclaim.tech. No other old-domain references remain in src/ or public/.
+
+**QA:** tsc clean (app scope); `next build` EXIT 0 — /sitemap.xml prerendered, 74 SSG program pages, all APIs intact.
+
+**State:** not yet committed/pushed (awaiting user's Vercel + DNS steps); deployment note: old deployment URLs 301 to the primary domain once civicclaim.tech is set primary in Vercel.

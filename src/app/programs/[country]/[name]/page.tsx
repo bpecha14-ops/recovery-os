@@ -116,12 +116,13 @@ export async function generateMetadata({
 }: {
   params: Promise<{ country: string; name: string }>;
 }): Promise<Metadata> {
-  const { name } = await params;
+  const { country, name } = await params;
   const program = PROGRAMS.find((p) => p.id === name);
   if (!program) return { title: "Program" };
   return {
     title: `${program.name} — ${program.country}`,
     description: `${program.summary} Official source and verification date included.`,
+    alternates: { canonical: `/programs/${country}/${name}` },
   };
 }
 

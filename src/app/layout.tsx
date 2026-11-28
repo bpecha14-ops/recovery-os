@@ -12,6 +12,7 @@ import "@fontsource/ibm-plex-mono/500.css";
 import "@fontsource-variable/source-serif-4";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { SITE_URL } from "@/lib/site";
 import { I18nProvider } from "@/lib/i18n/context";
 import { AmbientBackground } from "@/components/civic/ambient-background";
 import { InteractionFX } from "@/components/cursor/interaction-fx";
@@ -28,8 +29,9 @@ export const metadata: Metadata = {
   description:
     "Free and private. Every answer carries an official source, a verification date, and the next step. No source — no result.",
   applicationName: "CivicClaim",
+  metadataBase: new URL(SITE_URL),
   icons: {
-    icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
+    icon: "/logo.svg",
   },
   openGraph: {
     title: "CivicClaim — find out what you're owed under official programs",
