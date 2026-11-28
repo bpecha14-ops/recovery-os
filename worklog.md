@@ -243,3 +243,9 @@ Stage Summary:
 **DNS:** www.civicclaim.tech live (CNAME -> cname.vercel-dns.com verified via 1.1.1.1/8.8.8.8); apex A record NOT found at registrant (InterNetX) — user must add A @ 76.76.21.21; old civicclaim-os.vercel.app already 308-redirects to the apex.
 
 **State:** pushing to GitHub main -> auto deploy; civicclaim.tech is primary production domain.
+
+## 2026-11-28 (позже) — civicclaim.tech ПОЛНОСТЬЮ живой
+
+- Пользователь добавил A-запись @ -> 76.76.21.21 (подтверждено через 1.1.1.1 и 8.8.8.8).
+- Apex отдавался с сертификатом только для www (CN=www.civicclaim.tech) — hostname mismatch. Лечилось не ожиданием, а PATCH v9/projects/{p}/domains/civicclaim.tech (подталкивание записи): Vercel перевыпустил Let's Encrypt-сертификат, CN=civicclaim.tech.
+- End-to-end на новом домене: / = 200 (title «CivicClaim — …»); sitemap.xml = 85 URL на civicclaim.tech (включая /programs/…); robots.txt со Sitemap-строкой; night-la-v2.jpg = 200 (277KB — кадр без полос); www = 308 -> apex; civicclaim-os.vercel.app = 308 -> apex. Миграция домена завершена.
